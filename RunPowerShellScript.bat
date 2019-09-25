@@ -1,0 +1,1 @@
+start powershell.exe "%~dp0DockerRunPostgreSQL.ps1" 
