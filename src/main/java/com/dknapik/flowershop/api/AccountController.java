@@ -1,9 +1,6 @@
 package com.dknapik.flowershop.api;
 
 
-
-import java.util.HashMap;
-
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,7 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dknapik.flowershop.api.viewmodel.AccountViewModel;
+import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
+import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
+import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
+import com.dknapik.flowershop.viewmodel.account.PasswordViewModel;
+import com.dknapik.flowershop.exceptions.BindingException;
+import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.services.AccountService;
 
@@ -42,60 +43,79 @@ public class AccountController {
 
 	@PostMapping("/register")
 	public ResponseEntity<String> createAccount(@Valid @RequestBody AccountViewModel accountViewModel, BindingResult bindingResult) {
-		String responseMsg = "Account created succesfully";
+		String returnMsg = "Account created succesfully !";
 		HttpStatus status = HttpStatus.OK;
 		
-		if(bindingResult.hasErrors()) {
-			log.error("Couldn't map provided credentials with AccountViewModel");
-			responseMsg = "Couldn't create account with provided credentials";
-			status = HttpStatus.BAD_REQUEST;
+		try {
+			this.service.createNewUser(accountViewModel, bindingResult);
+		} catch (BindingException e) {
+			log.warn("Exception creating new account", e);
+			returnMsg = e.getMessage();
+			status = e.getHttpStatus();
 		}
-		
-		this.service.createNewUser(accountViewModel);
-		
-		return new ResponseEntity<>(responseMsg, status);
+		return new ResponseEntity<>(returnMsg, status);
 	}
 	
 	@GetMapping()
 	public ResponseEntity<Account> retrieveAccount(@RequestParam String accountID) {
 		Account acc = null;
 		HttpStatus status = HttpStatus.OK;
-		try {
-			acc = this.service.retrieveAccountDetails(accountID);
-		} catch(Exception e) {
-			log.error(e.getMessage());
-			status = HttpStatus.NOT_FOUND;
-		}
+			try {
+				acc = this.service.retrieveAccountDetails(accountID);
+			} catch (DataProcessingException e) {
+				log.warn("Exception retrieving account data", e);
+				status = e.getHttpStatus();
+			}
 		
 		return new ResponseEntity<>(acc, status);
 	}
 	
-	//TODO separate DTO needed for password update to confirm that updating user is an actual user
 	@PutMapping()
-	public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountViewModel accountViewModel, BindingResult bindingResult) {
-		String message = "Update Succesfull !";
+	public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountDetailsViewModel accountDetailsViewModel, BindingResult bindingResult) {
+		String returnMsg = "Account details updated succesfully !";
 		HttpStatus status = HttpStatus.OK;
 		
-		this.service.updateAccount(accountViewModel, bindingResult);
+		try {
+			this.service.updateAccount(accountDetailsViewModel, bindingResult);
+		} catch (BindingException | DataProcessingException e) {
+			log.warn("Exception updating account data", e);
+			returnMsg = e.getMessage();
+			status = e.getHttpStatus();
+		}
 
-		return new ResponseEntity<>(message, status);
+		return new ResponseEntity<>(returnMsg, status);
+	}
+	
+	@PutMapping("/password")
+	public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult) {
+		String returnMsg = "Password updated succesfully !";
+		HttpStatus status = HttpStatus.OK;
+		
+		try {
+			this.service.updatePassword(passwordChangeViewModel, bindingResult);
+		} catch (BindingException | DataProcessingException e) {
+			this.log.warn("Exception changing password", e);
+			returnMsg = e.getMessage();
+			status = e.getHttpStatus();
+		}
+		
+		return new ResponseEntity<>(returnMsg, status);
 	}
 	
 	//TODO add DTO to confirm that user deleting account is an actual user
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@RequestParam String accountID) {
+	public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordViewModel passwordViewModel, BindingResult bindingResult) {
 		String message = "Account deleted succesfully !";
 		HttpStatus status =  HttpStatus.OK;
 		
-		try {
-			this.service.deleteAccount(accountID);
-			
-		} catch(Exception e) {
-			this.log.error(e.getMessage());
-			message = e.getMessage(); 
-			status = HttpStatus.BAD_REQUEST;
-		}
-		
+			try {
+				this.service.deleteAccount(passwordViewModel, bindingResult);
+			} catch (DataProcessingException e) {
+				this.log.warn("Exception deleting account", e);
+				message = e.getMessage();
+				status = e.getHttpStatus();
+			}
+
 		return new ResponseEntity<>(message, status);
 	}
 	
