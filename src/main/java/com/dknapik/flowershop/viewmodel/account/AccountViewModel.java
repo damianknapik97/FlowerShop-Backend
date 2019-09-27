@@ -1,4 +1,6 @@
-package com.dknapik.flowershop.api.viewmodel;
+package com.dknapik.flowershop.viewmodel.account;
+
+import java.util.UUID;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -12,6 +14,9 @@ import org.hibernate.validator.constraints.Length;
 import com.dknapik.security.UserRoles;
 
 public class AccountViewModel {
+	
+	@NotBlank
+	private UUID id;
 	
 	@NotEmpty
 	@Size(min = 4)
@@ -29,6 +34,14 @@ public class AccountViewModel {
 	private String role = UserRoles.USER;
 
 	
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
