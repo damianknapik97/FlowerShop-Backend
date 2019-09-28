@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.services;
 
+import java.security.Principal;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,49 +36,63 @@ public class AccountService {
 	}
 	
 	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException {
+		
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accViewModel.getClass());
 		
 		this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
 	}
 	
-	public Account retrieveAccountDetails(String id) throws DataProcessingException {
-		UUID accId = UUID.fromString(id);	
-		Account acc = accountRepo.findById(accId).orElseThrow(() -> new DataProcessingException("Account with provided ID not found in database"));
+	public Account retrieveAccountDetails(Principal principal) throws DataProcessingException {
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		acc.setPasswordNoEncoding("");
 		return acc;
 	}
 	
-	public void updateAccount(AccountDetailsViewModel accDetailsViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException  {
+	public void updateAccount(AccountDetailsViewModel accDetailsViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException  {
 		
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accDetailsViewModel.getClass());
 		
-		Account acc = this.accountRepo.findById(accDetailsViewModel.getId()).orElseThrow(() -> new DataProcessingException("Account with provided ID not found in database"));
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		
 		this.mapper.map(accDetailsViewModel, acc);
+		
 		this.accountRepo.saveAndFlush(acc);
 	}
 	
-	public void updatePassword(PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
+	public void updatePassword(PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException {
 	
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), passwordChangeViewModel.getClass());
 		
-		Account acc = this.accountRepo.findById(passwordChangeViewModel.getId()).orElseThrow(() -> new DataProcessingException("Account with provided ID not found in database"));
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+					() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+				);
+		
 		PasswordEncoder encoder = SpringContext.getBean(PasswordEncoder.class);
 		
 		if (encoder.matches(passwordChangeViewModel.getCurrentPassword(), acc.getPassword()) 
 				&& passwordChangeViewModel.getNewPassword().contentEquals(passwordChangeViewModel.getNewPasswordConfirmation()) ) {
+			
 			acc.setPassword(passwordChangeViewModel.getNewPassword());
 			this.accountRepo.saveAndFlush(acc);
+			
 		} else {
 			throw new DataProcessingException("Provided password doesn't match actual password");
 		}
 	}
 	
-	public void deleteAccount(PasswordViewModel passwordViewModel, BindingResult bindingResult) throws DataProcessingException {
-		Account acc = accountRepo.findById(passwordViewModel.getId()).orElseThrow(() -> new DataProcessingException("Couldn't map provided ID with any account from database"));
+	public void deleteAccount(PasswordViewModel passwordViewModel, BindingResult bindingResult, Principal principal) throws DataProcessingException {
+		
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
+		
 		this.accountRepo.delete(acc);
 	}
 }

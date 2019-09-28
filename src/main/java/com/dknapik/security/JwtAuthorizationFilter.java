@@ -24,10 +24,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
 			AccountRepository accountRepository) {
-		
 		super(authenticationManager);
 		this.accountRepository = accountRepository;
-
 	}
 
 	@Override

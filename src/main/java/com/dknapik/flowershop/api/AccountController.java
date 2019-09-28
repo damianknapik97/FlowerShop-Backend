@@ -1,6 +1,8 @@
 package com.dknapik.flowershop.api;
 
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +44,8 @@ public class AccountController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> createAccount(@Valid @RequestBody AccountViewModel accountViewModel, BindingResult bindingResult) {
+	public ResponseEntity<String> createAccount(@Valid @RequestBody AccountViewModel accountViewModel,
+												BindingResult bindingResult) {
 		String returnMsg = "Account created succesfully !";
 		HttpStatus status = HttpStatus.OK;
 		
@@ -57,11 +60,12 @@ public class AccountController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<Account> retrieveAccount(@RequestParam String accountID) {
+	public ResponseEntity<Account> retrieveAccount(@RequestParam Principal principal) {
 		Account acc = null;
 		HttpStatus status = HttpStatus.OK;
+		
 			try {
-				acc = this.service.retrieveAccountDetails(accountID);
+				acc = this.service.retrieveAccountDetails(principal);
 			} catch (DataProcessingException e) {
 				log.warn("Exception retrieving account data", e);
 				status = e.getHttpStatus();
@@ -71,12 +75,15 @@ public class AccountController {
 	}
 	
 	@PutMapping()
-	public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountDetailsViewModel accountDetailsViewModel, BindingResult bindingResult) {
+	public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountDetailsViewModel accountDetailsViewModel,
+												BindingResult bindingResult,
+												Principal principal) {
+		
 		String returnMsg = "Account details updated succesfully !";
 		HttpStatus status = HttpStatus.OK;
 		
 		try {
-			this.service.updateAccount(accountDetailsViewModel, bindingResult);
+			this.service.updateAccount(accountDetailsViewModel, bindingResult, principal);
 		} catch (BindingException | DataProcessingException e) {
 			log.warn("Exception updating account data", e);
 			returnMsg = e.getMessage();
@@ -87,12 +94,15 @@ public class AccountController {
 	}
 	
 	@PutMapping("/password")
-	public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult) {
+	public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeViewModel passwordChangeViewModel,
+												 BindingResult bindingResult,
+												 Principal principal) {
+		
 		String returnMsg = "Password updated succesfully !";
 		HttpStatus status = HttpStatus.OK;
 		
 		try {
-			this.service.updatePassword(passwordChangeViewModel, bindingResult);
+			this.service.updatePassword(passwordChangeViewModel, bindingResult, principal);
 		} catch (BindingException | DataProcessingException e) {
 			this.log.warn("Exception changing password", e);
 			returnMsg = e.getMessage();
@@ -104,12 +114,14 @@ public class AccountController {
 	
 	//TODO add DTO to confirm that user deleting account is an actual user
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordViewModel passwordViewModel, BindingResult bindingResult) {
+	public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordViewModel passwordViewModel,
+												BindingResult bindingResult,
+												Principal principal) {
 		String message = "Account deleted succesfully !";
 		HttpStatus status =  HttpStatus.OK;
 		
 			try {
-				this.service.deleteAccount(passwordViewModel, bindingResult);
+				this.service.deleteAccount(passwordViewModel, bindingResult, principal);
 			} catch (DataProcessingException e) {
 				this.log.warn("Exception deleting account", e);
 				message = e.getMessage();

@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 public class PasswordChangeViewModel {
 	
-	@NotBlank
 	private UUID id;
 	
 	@NotBlank

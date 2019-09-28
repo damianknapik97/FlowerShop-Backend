@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 
 public class AccountDetailsViewModel {
 	
-	@NotBlank
 	private UUID id;
 	
 	@NotBlank

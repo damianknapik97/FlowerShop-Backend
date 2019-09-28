@@ -41,15 +41,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and()
     			.csrf().disable()
-    			.logout()
+    			.cors()
     			.and()
     			.addFilter(new JwtAuthenticationFilter(authenticationManager()))
     			.addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accRepository))
     			.authorizeRequests()
     			.antMatchers("/login").permitAll()
-    			.antMatchers("/account/profile").authenticated()
-    			.antMatchers("/account/GetAllUsers").hasRole(UserRoles.ADMIN)
-    			.antMatchers("/**").permitAll();
+    			.antMatchers("/register").permitAll()
+    			.anyRequest().authenticated();
     }
     
     @Bean

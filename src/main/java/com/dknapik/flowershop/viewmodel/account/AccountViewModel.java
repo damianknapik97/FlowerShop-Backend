@@ -15,7 +15,6 @@ import com.dknapik.security.UserRoles;
 
 public class AccountViewModel {
 	
-	@NotBlank
 	private UUID id;
 	
 	@NotEmpty
