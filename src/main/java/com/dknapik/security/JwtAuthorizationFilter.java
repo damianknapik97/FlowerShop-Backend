@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,11 +18,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.dknapik.flowershop.database.AccountRepository;
+import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.model.Account;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	
 	private AccountRepository accountRepository;
+	protected final Logger log = LogManager.getLogger(getClass().getName()); 
 	
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
 			AccountRepository accountRepository) {
@@ -42,10 +46,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 		
 		// If header is present, try to grab user principal from database and perform authoritzation
-		Authentication authentication = getUsernamePasswordAuthentication(request);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Authentication authentication;
+			authentication = getUsernamePasswordAuthentication(request);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
 		
 		chain.doFilter(request, response);
+		
+		
 	}
 	
 	private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {

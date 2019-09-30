@@ -11,5 +11,5 @@ import com.dknapik.flowershop.model.Account;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, UUID> {
-	Optional<Account> findByName(String name);
+	Account findByName(String name);
 }

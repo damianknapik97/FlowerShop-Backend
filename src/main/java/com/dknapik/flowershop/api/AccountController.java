@@ -112,16 +112,15 @@ public class AccountController {
 		return new ResponseEntity<>(returnMsg, status);
 	}
 	
-	//TODO add DTO to confirm that user deleting account is an actual user
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@Valid @RequestBody PasswordViewModel passwordViewModel,
+	public ResponseEntity<String> deleteAccount(@Valid @RequestBody String password,
 												BindingResult bindingResult,
 												Principal principal) {
 		String message = "Account deleted succesfully !";
 		HttpStatus status =  HttpStatus.OK;
 		
 			try {
-				this.service.deleteAccount(passwordViewModel, bindingResult, principal);
+				this.service.deleteAccount(password, bindingResult, principal);
 			} catch (DataProcessingException e) {
 				this.log.warn("Exception deleting account", e);
 				message = e.getMessage();
