@@ -71,7 +71,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 	public void initializeAccounts() {
 		List<Account> initialDataAccounts = new ArrayList<>();
 		
-		if(accountRepository.findByName("root") == null) {
+		if(!accountRepository.findByName("root").isPresent()) {
 			initialDataAccounts.add(new Account("root", "root", "root@test.pl", UserRoles.ADMIN));
 		}
 		

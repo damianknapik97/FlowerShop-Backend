@@ -1,5 +1,7 @@
 package com.dknapik.flowershop;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +14,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.dknapik.flowershop.database.AccountRepository;
@@ -47,8 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     			.addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accRepository))
     			.authorizeRequests()
     			.antMatchers("/login").permitAll()
-    			.antMatchers("/account/register").permitAll();
-    			//.anyRequest().authenticated();
+    			.antMatchers("/account/register").permitAll()
+    			.anyRequest().authenticated();
     			
     }
     
@@ -68,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
     
-    @Bean("PasswordEncoder")
+    @Bean(name = "PasswordEncoder")
     PasswordEncoder passwordEncoder() {
     	return new BCryptPasswordEncoder();
     }

@@ -65,7 +65,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			
 			//Validate that user exists in database
 			if(userName != null) {
-				Account account = accountRepository.findByName(userName);
+				Account account = accountRepository.findByName(userName).orElse(null);
 				UserPrincipal userPrincipal = new UserPrincipal(account);
 				return new UsernamePasswordAuthenticationToken(userName, null, userPrincipal.getAuthorities());
 			}

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -27,12 +28,13 @@ public class AccountService {
 	protected final Logger log = LogManager.getLogger(getClass().getName()); 
 	private final ModelMapper mapper;
 	private final AccountRepository accountRepo;
+	private final ApplicationContext context;
 	
 	@Autowired
-	public AccountService(AccountRepository accountRepo) {
+	public AccountService(AccountRepository accountRepo, ApplicationContext context) {
 		this.accountRepo = accountRepo;
 		this.mapper = new ModelMapper();
-		
+		this.context = context;
 	}
 	
 	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException {
@@ -44,9 +46,9 @@ public class AccountService {
 	}
 	
 	public Account retrieveAccountDetails(Principal principal) throws DataProcessingException {
-		Account acc = this.accountRepo.findByName(principal.getName());//.orElseThrow(
-				//() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-			//);
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		acc.setPasswordNoEncoding("");
 		return acc;
 	}
@@ -56,9 +58,9 @@ public class AccountService {
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accDetailsViewModel.getClass());
 		
-		Account acc = this.accountRepo.findByName(principal.getName());//.orElseThrow(
-				//() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-			//);
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		
 		this.mapper.map(accDetailsViewModel, acc);
 		
@@ -70,11 +72,11 @@ public class AccountService {
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), passwordChangeViewModel.getClass());
 		
-		Account acc = this.accountRepo.findByName(principal.getName());//.orElseThrow(
-					//() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-				//);
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+					() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+				);
 		
-		PasswordEncoder encoder = SpringContext.getBean(PasswordEncoder.class);
+		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		
 		if (encoder.matches(passwordChangeViewModel.getCurrentPassword(), acc.getPassword()) 
 				&& passwordChangeViewModel.getNewPassword().contentEquals(passwordChangeViewModel.getNewPasswordConfirmation()) ) {
@@ -90,11 +92,12 @@ public class AccountService {
 	public void deleteAccount(String password, BindingResult bindingResult, Principal principal) throws DataProcessingException {
 		
 		
-		Account acc = this.accountRepo.findByName(principal.getName());//.orElseThrow(
-				//() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-			//);
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		
-		PasswordEncoder encoder = SpringContext.getBean(PasswordEncoder.class);
+		
+		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		if(encoder.matches(password, acc.getPassword())) {
 			this.accountRepo.delete(acc);
 		} else {
