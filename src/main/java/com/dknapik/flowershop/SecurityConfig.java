@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.dknapik.flowershop.database.AccountRepository;
@@ -53,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     			.authorizeRequests()
     			.antMatchers("/login").permitAll()
     			.antMatchers("/account/register").permitAll()
+    			.antMatchers("/logout").permitAll()
     			.anyRequest().authenticated();
     			
     }
@@ -71,6 +73,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
 
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // you USUALLY want this
+        // likely you should limit this to specific origins
+        config.addAllowedOrigin("*"); 
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedHeader("OPTIONS");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
     
     @Bean(name = "PasswordEncoder")
