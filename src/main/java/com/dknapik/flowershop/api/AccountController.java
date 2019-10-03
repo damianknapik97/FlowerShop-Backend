@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -51,7 +52,7 @@ public class AccountController {
 		
 		try {
 			this.service.createNewUser(accountViewModel, bindingResult);
-		} catch (BindingException e) {
+		} catch (BindingException | DataProcessingException e) {
 			log.warn("Exception creating new account", e);
 			returnMsg = e.getMessage();
 			status = e.getHttpStatus();
@@ -60,8 +61,8 @@ public class AccountController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<Account> retrieveAccount(@RequestParam Principal principal) {
-		Account acc = null;
+	public ResponseEntity<AccountDetailsViewModel> retrieveAccount(@RequestParam Principal principal) {
+		AccountDetailsViewModel acc = null;
 		HttpStatus status = HttpStatus.OK;
 		
 			try {
@@ -113,14 +114,14 @@ public class AccountController {
 	}
 	
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@Valid @RequestBody String password,
-												BindingResult bindingResult,
+	public ResponseEntity<String> deleteAccount(@RequestParam("password") String password,
 												Principal principal) {
 		String message = "Account deleted succesfully !";
 		HttpStatus status =  HttpStatus.OK;
 		
 			try {
-				this.service.deleteAccount(password, bindingResult, principal);
+				this.service.deleteAccount(password, principal);
+				System.out.println(password);
 			} catch (DataProcessingException e) {
 				this.log.warn("Exception deleting account", e);
 				message = e.getMessage();

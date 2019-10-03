@@ -1,10 +1,10 @@
 package com.dknapik.flowershop.services;
 
 import java.security.Principal;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,8 +15,6 @@ import org.springframework.validation.BindingResult;
 import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
 import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
 import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
-import com.dknapik.flowershop.viewmodel.account.PasswordViewModel;
-import com.dknapik.flowershop.SpringContext;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
@@ -37,20 +35,26 @@ public class AccountService {
 		this.context = context;
 	}
 	
-	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException {
+	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
 		
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accViewModel.getClass());
 		
-		this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
+		if(!this.accountRepo.existsByName(accViewModel.getName())) {
+			this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
+		} else {
+			throw new DataProcessingException("User with provided username already exists, please pick different name");
+		}
+		
+		
 	}
 	
-	public Account retrieveAccountDetails(Principal principal) throws DataProcessingException {
+	public AccountDetailsViewModel retrieveAccountDetails(Principal principal) throws DataProcessingException {
 		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
 				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 			);
-		acc.setPasswordNoEncoding("");
-		return acc;
+		
+		return this.mapper.map(acc, AccountDetailsViewModel.class);
 	}
 	
 	public void updateAccount(AccountDetailsViewModel accDetailsViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException  {
@@ -89,13 +93,14 @@ public class AccountService {
 		}
 	}
 	
-	public void deleteAccount(String password, BindingResult bindingResult, Principal principal) throws DataProcessingException {
+	public void deleteAccount(String password, Principal principal) throws DataProcessingException {
 		
 		
 		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
 				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 			);
 		
+		System.out.println(password);
 		
 		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		if(encoder.matches(password, acc.getPassword())) {
