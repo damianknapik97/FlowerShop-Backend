@@ -24,12 +24,10 @@ configurations {
 
 
 
-task runDocker(type: Exec) {
-	commandLine "cmd", "/c", 'RunPowerShellScript.bat'
-}
-
-
-bootRun.dependsOn(runDocker)
+//#task runDocker(type: Exec) {
+//	commandLine "cmd", "/c", 'RunPowerShellScript.bat'
+//}
+//bootRun.dependsOn(runDocker)
 
 repositories {
 	mavenCentral()
