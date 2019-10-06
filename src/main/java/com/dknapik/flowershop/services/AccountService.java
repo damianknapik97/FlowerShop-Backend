@@ -49,6 +49,7 @@ public class AccountService {
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accViewModel.getClass());
 		
 		if(!this.accountRepo.existsByName(accViewModel.getName())) {
+			accViewModel.setPassword(context.getBean(PasswordEncoder.class).encode(accViewModel.getPassword()));
 			this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
 		} else {
 			throw new DataProcessingException("User with provided username already exists, please pick different name");
