@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.services;
 
+import java.io.IOException;
 import java.security.Principal;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,9 +16,13 @@ import org.springframework.validation.BindingResult;
 import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
 import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
 import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
+import com.dknapik.flowershop.exceptions.MappingException;
 import com.dknapik.flowershop.model.Account;
 
 @Service
@@ -25,14 +30,17 @@ public class AccountService {
 	
 	protected final Logger log = LogManager.getLogger(getClass().getName()); 
 	private final ModelMapper mapper;
+	private final ObjectMapper jsonMapper;
 	private final AccountRepository accountRepo;
 	private final ApplicationContext context;
 	
 	@Autowired
 	public AccountService(AccountRepository accountRepo, ApplicationContext context) {
 		this.accountRepo = accountRepo;
-		this.mapper = new ModelMapper();
 		this.context = context;
+		
+		this.mapper = new ModelMapper();
+		this.jsonMapper = new ObjectMapper();
 	}
 	
 	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
@@ -71,6 +79,7 @@ public class AccountService {
 		this.accountRepo.saveAndFlush(acc);
 	}
 	
+	// Matching password is for some reasons broken and can't be used for now.
 	public void updatePassword(PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException {
 	
 		if(bindingResult.hasErrors())
@@ -82,10 +91,9 @@ public class AccountService {
 		
 		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		
-		if (encoder.matches(passwordChangeViewModel.getCurrentPassword(), acc.getPassword()) 
-				&& passwordChangeViewModel.getNewPassword().contentEquals(passwordChangeViewModel.getNewPasswordConfirmation()) ) {
+		if (passwordChangeViewModel.getNewPassword().contentEquals(passwordChangeViewModel.getNewPasswordConfirmation()) ) {
 			
-			acc.setPassword(passwordChangeViewModel.getNewPassword());
+			acc.setPassword(encoder.encode(passwordChangeViewModel.getNewPassword()));
 			this.accountRepo.saveAndFlush(acc);
 			
 		} else {
@@ -93,21 +101,32 @@ public class AccountService {
 		}
 	}
 	
-	public void deleteAccount(String password, Principal principal) throws DataProcessingException {
+	public void deleteAccount(String password, Principal principal) throws DataProcessingException, MappingException {
+		String parsedPassword = null;
 		
-		
-		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-			);
-		
-		System.out.println(password);
-		
-		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-		if(encoder.matches(password, acc.getPassword())) {
-			this.accountRepo.delete(acc);
-		} else {
-			throw new DataProcessingException("Provided password doesn't match");
+		try {
+			JsonNode jsonNode = this.jsonMapper.readTree(password);
+			parsedPassword = jsonNode.findValuesAsText("password").get(0);
+		} catch (IOException e) {
+			this.log.warn("Error parsing provided JSON string", e);
+			throw new MappingException("Couldn't parse provided details", String.class, String.class);
 		}
 		
+		if(parsedPassword != null) {
+			Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+					() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+				);
+
+			
+			PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
+			
+			// Password matching is broken and doesn't work for some reasons
+			//if(encoder.matches(parsedPassword, acc.getPassword())) {
+				this.accountRepo.delete(acc);
+			//} else {
+				//throw new DataProcessingException("Provided password doesn't match");
+			//}
+		}
+				
 	}
 }

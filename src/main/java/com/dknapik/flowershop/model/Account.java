@@ -30,12 +30,12 @@ public class Account {
 	private String email;
 	@Column
 	private String role;
-
+	
 	public Account() {}
 
 	public Account(String password, String email, String role) {
 		super();
-		this.password = new BCryptPasswordEncoder().encode(password);
+		this.password = password;
 		this.email = email;
 		this.role = role;
 	}
@@ -43,7 +43,7 @@ public class Account {
 	public Account(String name, String password, String email, String role) {
 		super();
 		this.name = name;
-		this.password = new BCryptPasswordEncoder().encode(password);
+		this.password = password;
 		this.email = email;
 		this.role = role;
 	}
@@ -66,7 +66,7 @@ public class Account {
 	}
 
 	public void setPassword(String password) {
-		this.password = new BCryptPasswordEncoder().encode(password);
+		this.password = password;
 	}
 	public void setPasswordNoEncoding(String password) {
 		this.password = password;

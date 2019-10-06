@@ -26,8 +26,10 @@ import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
 import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
 import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
 import com.dknapik.flowershop.viewmodel.account.PasswordViewModel;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
+import com.dknapik.flowershop.exceptions.MappingException;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.services.AccountService;
 
@@ -44,7 +46,7 @@ public class AccountController {
 		this.service = service;
 	}
 
-	@PostMapping("/register")
+	@PostMapping()
 	public ResponseEntity<String> createAccount(@Valid @RequestBody AccountViewModel accountViewModel,
 												BindingResult bindingResult) {
 		String returnMsg = "Account created succesfully !";
@@ -61,7 +63,7 @@ public class AccountController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<AccountDetailsViewModel> retrieveAccount(@RequestParam Principal principal) {
+	public ResponseEntity<AccountDetailsViewModel> retrieveAccount(Principal principal) {
 		AccountDetailsViewModel acc = null;
 		HttpStatus status = HttpStatus.OK;
 		
@@ -112,17 +114,15 @@ public class AccountController {
 		
 		return new ResponseEntity<>(returnMsg, status);
 	}
-	
+	//@RequestParam("password")
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@RequestParam("password") String password,
+	public ResponseEntity<String> deleteAccount(@RequestBody String password,
 												Principal principal) {
 		String message = "Account deleted succesfully !";
 		HttpStatus status =  HttpStatus.OK;
-		
 			try {
 				this.service.deleteAccount(password, principal);
-				System.out.println(password);
-			} catch (DataProcessingException e) {
+			} catch (DataProcessingException | MappingException e) {
 				this.log.warn("Exception deleting account", e);
 				message = e.getMessage();
 				status = e.getHttpStatus();

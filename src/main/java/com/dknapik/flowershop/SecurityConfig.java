@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     			.addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accRepository))
     			.authorizeRequests()
     			.antMatchers("/login").permitAll()
-    			.antMatchers("/account/register").permitAll()
+    			.antMatchers("/account").permitAll()
     			.antMatchers("/logout").permitAll()
     			.anyRequest().authenticated();
     			
@@ -90,7 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");
-        config.addAllowedHeader("OPTIONS");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("OPTIONS");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

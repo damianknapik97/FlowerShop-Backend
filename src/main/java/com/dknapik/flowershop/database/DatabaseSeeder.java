@@ -12,7 +12,9 @@ import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.dknapik.flowershop.model.Bouquet;
@@ -39,15 +41,17 @@ public class DatabaseSeeder implements CommandLineRunner {
 	private final BouquetRepository bouquetRepository;
 	private final FlowerRepository flowerRepository;
 	private final AccountRepository accountRepository;
+	private final ApplicationContext context;
 	
 	private final CurrencyUnit currency;
 	
 	
 	@Autowired
-	public DatabaseSeeder(BouquetRepository bouquetRepository, FlowerRepository flowerRepository, AccountRepository accountRepository, Environment env) {
+	public DatabaseSeeder(BouquetRepository bouquetRepository, FlowerRepository flowerRepository, AccountRepository accountRepository, Environment env, ApplicationContext context) {
 		this.bouquetRepository = bouquetRepository;
 		this.flowerRepository = flowerRepository;
 		this.accountRepository = accountRepository;
+		this.context = context;
 		
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 	}
@@ -71,13 +75,15 @@ public class DatabaseSeeder implements CommandLineRunner {
 	public void initializeAccounts() {
 		List<Account> initialDataAccounts = new ArrayList<>();
 		
+		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
+		
 		if(!accountRepository.findByName("root").isPresent()) {
-			initialDataAccounts.add(new Account("root", "root", "root@test.pl", UserRoles.ADMIN));
+			initialDataAccounts.add(new Account("root", encoder.encode("root"), "root@test.pl", UserRoles.ADMIN));
 		}
 		
 		if(debugMode) {
-			initialDataAccounts.add(new Account("employee", "employee", "employee@test.pl", UserRoles.EMPLOYEE));
-			initialDataAccounts.add(new Account("user", "user", "user@test.pl", UserRoles.USER));	
+			initialDataAccounts.add(new Account("employee", encoder.encode("employee"), "employee@test.pl", UserRoles.EMPLOYEE));
+			initialDataAccounts.add(new Account("user", encoder.encode("user"), "user@test.pl", UserRoles.USER));	
 		}
 		
 		accountRepository.saveAll(initialDataAccounts);
