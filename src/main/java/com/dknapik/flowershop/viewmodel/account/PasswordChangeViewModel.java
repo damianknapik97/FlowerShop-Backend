@@ -11,8 +11,7 @@ public class PasswordChangeViewModel {
 	private UUID id;
 	
 	@NotBlank
-	@Size(min = 8)
-	@Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
+	@Size(min = 4)
 	private String currentPassword;
 	
 	@NotBlank
