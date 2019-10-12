@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
-import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
-import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
-import com.dknapik.flowershop.viewmodel.account.PasswordViewModel;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.dknapik.flowershop.dto.MessageResponseDto;
+import com.dknapik.flowershop.dto.account.AccountDetailsDto;
+import com.dknapik.flowershop.dto.account.AccountDto;
+import com.dknapik.flowershop.dto.account.PasswordChangeDto;
+import com.dknapik.flowershop.dto.account.PasswordDto;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.exceptions.MappingException;
@@ -47,24 +48,25 @@ public class AccountController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<String> createAccount(@Valid @RequestBody AccountViewModel accountViewModel,
+	public ResponseEntity<MessageResponseDto> createAccount(@Valid @RequestBody AccountDto accountViewModel,
 												BindingResult bindingResult) {
-		String returnMsg = "Account created succesfully !";
+		MessageResponseDto response;
 		HttpStatus status = HttpStatus.OK;
 		
 		try {
-			this.service.createNewUser(accountViewModel, bindingResult);
+			response = this.service.createNewUser(accountViewModel, bindingResult);
 		} catch (BindingException | DataProcessingException e) {
 			log.warn("Exception creating new account", e);
-			returnMsg = e.getMessage();
+			response = new MessageResponseDto(e.getMessage());
 			status = e.getHttpStatus();
 		}
-		return new ResponseEntity<>(returnMsg, status);
+		
+		return new ResponseEntity<>(response, status);
 	}
 	
 	@GetMapping()
-	public ResponseEntity<AccountDetailsViewModel> retrieveAccount(Principal principal) {
-		AccountDetailsViewModel acc = null;
+	public ResponseEntity<AccountDetailsDto> retrieveAccount(Principal principal) {
+		AccountDetailsDto acc = null;
 		HttpStatus status = HttpStatus.OK;
 		
 			try {
@@ -78,57 +80,59 @@ public class AccountController {
 	}
 	
 	@PutMapping()
-	public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountDetailsViewModel accountDetailsViewModel,
+	public ResponseEntity<MessageResponseDto> updateAccount(@Valid @RequestBody AccountDetailsDto accountDetailsViewModel,
 												BindingResult bindingResult,
 												Principal principal) {
-		
-		String returnMsg = "Account details updated succesfully !";
+		MessageResponseDto response = new MessageResponseDto();
+		response.setMessage("Account details updated succesfully !");
 		HttpStatus status = HttpStatus.OK;
 		
 		try {
 			this.service.updateAccount(accountDetailsViewModel, bindingResult, principal);
 		} catch (BindingException | DataProcessingException e) {
 			log.warn("Exception updating account data", e);
-			returnMsg = e.getMessage();
+			response.setMessage(e.getMessage());
 			status = e.getHttpStatus();
 		}
 
-		return new ResponseEntity<>(returnMsg, status);
+		return new ResponseEntity<>(response, status);
 	}
 	
 	@PutMapping("/password")
-	public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeViewModel passwordChangeViewModel,
+	public ResponseEntity<MessageResponseDto> updatePassword(@Valid @RequestBody PasswordChangeDto passwordChangeViewModel,
 												 BindingResult bindingResult,
 												 Principal principal) {
 		
-		String returnMsg = "Password updated succesfully !";
+		MessageResponseDto response = new MessageResponseDto();
+		response.setMessage("Password updated succesfully !");
 		HttpStatus status = HttpStatus.OK;
 		
 		try {
 			this.service.updatePassword(passwordChangeViewModel, bindingResult, principal);
 		} catch (BindingException | DataProcessingException e) {
 			this.log.warn("Exception changing password", e);
-			returnMsg = e.getMessage();
+			response.setMessage(e.getMessage());
 			status = e.getHttpStatus();
 		}
 		
-		return new ResponseEntity<>(returnMsg, status);
+		return new ResponseEntity<>(response, status);
 	}
 	//@RequestParam("password")
 	@DeleteMapping()
-	public ResponseEntity<String> deleteAccount(@RequestBody String password,
+	public ResponseEntity<MessageResponseDto> deleteAccount(@RequestBody String password,
 												Principal principal) {
-		String message = "Account deleted succesfully !";
+		MessageResponseDto response = new MessageResponseDto();
+		response.setMessage("Account deleted succesfully !");
 		HttpStatus status =  HttpStatus.OK;
 			try {
 				this.service.deleteAccount(password, principal);
 			} catch (DataProcessingException | MappingException e) {
 				this.log.warn("Exception deleting account", e);
-				message = e.getMessage();
+				response.setMessage(e.getMessage());
 				status = e.getHttpStatus();
 			}
 
-		return new ResponseEntity<>(message, status);
+		return new ResponseEntity<>(response, status);
 	}
 	
 

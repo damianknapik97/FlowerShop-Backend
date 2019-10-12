@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.dknapik.flowershop.viewmodel.account.LoginViewModel;
+import com.dknapik.flowershop.dto.account.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -37,10 +37,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	 */
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
-		LoginViewModel credentials = null;
+		LoginDto credentials = null;
 		try {
 			//Map request to LoginViewModel, which contains credentials and data validation
-			credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
+			credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
 			
 			//Create login token
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword(), new ArrayList<>());

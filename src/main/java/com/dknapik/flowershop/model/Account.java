@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -30,24 +32,23 @@ public class Account {
 	private String email;
 	@Column
 	private String role;
+
 	
 	public Account() {}
 
 	public Account(String password, String email, String role) {
-		super();
 		this.password = password;
 		this.email = email;
 		this.role = role;
 	}
 
 	public Account(String name, String password, String email, String role) {
-		super();
 		this.name = name;
 		this.password = password;
 		this.email = email;
 		this.role = role;
 	}
-	
+
 	
 	public UUID getId() {
 		return id;
@@ -83,4 +84,5 @@ public class Account {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	
 }

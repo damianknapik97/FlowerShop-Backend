@@ -40,8 +40,9 @@ public class Bouquet {
 		this.name = name;
 		this.workCost = cost.toString();
 		this.flowersList = flowersList;
-		
 	}
+	
+	public Bouquet() {}
 
 	public UUID getId() {
 		return id;

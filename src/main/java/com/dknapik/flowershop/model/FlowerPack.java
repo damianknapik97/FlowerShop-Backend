@@ -28,6 +28,8 @@ public class FlowerPack {
 		this.numberOfFlowers = numberOfFlowers;
 	}
 	
+	public FlowerPack() { }
+	
 	public int getNumberOfFlowers() {
 		return numberOfFlowers;
 	}

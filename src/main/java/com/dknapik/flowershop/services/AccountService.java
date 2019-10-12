@@ -13,13 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import com.dknapik.flowershop.viewmodel.account.AccountDetailsViewModel;
-import com.dknapik.flowershop.viewmodel.account.AccountViewModel;
-import com.dknapik.flowershop.viewmodel.account.PasswordChangeViewModel;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dknapik.flowershop.database.AccountRepository;
+import com.dknapik.flowershop.dto.MessageResponseDto;
+import com.dknapik.flowershop.dto.account.AccountDetailsDto;
+import com.dknapik.flowershop.dto.account.AccountDto;
+import com.dknapik.flowershop.dto.account.PasswordChangeDto;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.exceptions.MappingException;
@@ -43,7 +44,10 @@ public class AccountService {
 		this.jsonMapper = new ObjectMapper();
 	}
 	
-	public void createNewUser(AccountViewModel accViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
+	public MessageResponseDto createNewUser(AccountDto accViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
+		
+		MessageResponseDto returnDto = new MessageResponseDto();
+		returnDto.setMessage("Account created succesfully !");
 		
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accViewModel.getClass());
@@ -51,21 +55,21 @@ public class AccountService {
 		if(!this.accountRepo.existsByName(accViewModel.getName())) {
 			this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
 		} else {
-			throw new DataProcessingException("User with provided username already exists, please pick different name");
+			returnDto.setMessage("User with provided username already exists, please pick different name");
 		}
 		
-		
+		return returnDto;
 	}
 	
-	public AccountDetailsViewModel retrieveAccountDetails(Principal principal) throws DataProcessingException {
+	public AccountDetailsDto retrieveAccountDetails(Principal principal) throws DataProcessingException {
 		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
 				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 			);
 		
-		return this.mapper.map(acc, AccountDetailsViewModel.class);
+		return this.mapper.map(acc, AccountDetailsDto.class);
 	}
 	
-	public void updateAccount(AccountDetailsViewModel accDetailsViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException  {
+	public void updateAccount(AccountDetailsDto accDetailsViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException  {
 		
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accDetailsViewModel.getClass());
@@ -80,7 +84,7 @@ public class AccountService {
 	}
 	
 	// Matching password is for some reasons broken and can't be used for now.
-	public void updatePassword(PasswordChangeViewModel passwordChangeViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException {
+	public void updatePassword(PasswordChangeDto passwordChangeViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException {
 	
 		if(bindingResult.hasErrors())
 			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), passwordChangeViewModel.getClass());
