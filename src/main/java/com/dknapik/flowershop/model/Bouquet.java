@@ -31,15 +31,19 @@ public class Bouquet {
 	private String name;
 	@Column
 	private String workCost;
+	@Column
+	private int totalPriceDiscountPercent;
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "bouquet_id", referencedColumnName = "id")
-	private Set<FlowerPack> flowersList;
+	private Set<FlowerPack> flowersSet;
 	
-	public Bouquet(String name, Money cost, Set<FlowerPack> flowersList) {
+	public Bouquet(String name, Money cost, int totalPriceDiscountPercent, Set<FlowerPack> flowersSet) {
 		super();
 		this.name = name;
 		this.workCost = cost.toString();
-		this.flowersList = flowersList;
+		this.totalPriceDiscountPercent = totalPriceDiscount;
+		this.flowersSet = flowersSet;
 	}
 	
 	public Bouquet() {}
@@ -68,12 +72,20 @@ public class Bouquet {
 		this.workCost = cost.toString();
 	}
 	
-	public Set<FlowerPack> getFlowersList() {
-		return flowersList;
+	public int getTotalPriceDiscount() {
+		return totalPriceDiscountPercent;
 	}
 
-	public void setFlowersList(Set<FlowerPack> flowersList) {
-		this.flowersList = flowersList;
+	public void setTotalPriceDiscount(int totalPriceDiscountPercent) {
+		this.totalPriceDiscountPercent = totalPriceDiscountPercent;
+	}
+
+	public Set<FlowerPack> getFlowersSet() {
+		return flowersSet;
+	}
+
+	public void setFlowersSet(Set<FlowerPack> flowersSet) {
+		this.flowersSet = flowersSet;
 	}
 	
 }

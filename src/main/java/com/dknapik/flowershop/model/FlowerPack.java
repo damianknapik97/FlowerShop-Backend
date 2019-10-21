@@ -30,6 +30,22 @@ public class FlowerPack {
 	
 	public FlowerPack() { }
 	
+	
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+	public Flower getFlower() {
+		return flower;
+	}
+
+	public void setFlower(Flower flower) {
+		this.flower = flower;
+	}
 	public int getNumberOfFlowers() {
 		return numberOfFlowers;
 	}

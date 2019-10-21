@@ -111,13 +111,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 		
 		flowerList = new HashSet<>();
 		flowerList.add(new FlowerPack(flowerRepository.findByName("Róża"), 5));
-		bouquet = new Bouquet("Basic", Money.of(10, currency), flowerList);
+		bouquet = new Bouquet("Basic", Money.of(10, currency), 10, flowerList);
 		bouquetRepository.saveAndFlush(bouquet);
 		
 		flowerList = new HashSet<>();
 		flowerList.add(new FlowerPack(flowerRepository.findByName("Róża"), 5));
 		flowerList.add(new FlowerPack(flowerRepository.findByName("Tulipan"), 3));
-		bouquet = new Bouquet("Expanded", Money.of(15, currency), flowerList);
+		bouquet = new Bouquet("Expanded", Money.of(15, currency), 15, flowerList);
 		bouquetRepository.saveAndFlush(bouquet);
 		
 	}
