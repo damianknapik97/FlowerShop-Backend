@@ -2,7 +2,6 @@ package com.dknapik.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.dknapik.flowershop.database.AccountRepository;
@@ -17,10 +16,8 @@ public class UserPrincipalDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String s) {
         Account account = this.accRepository.findByName(s).orElse(null);
-        UserPrincipal userPrincipal = new UserPrincipal(account);
-
-        return userPrincipal;
+        return new UserPrincipal(account);
     }
 }

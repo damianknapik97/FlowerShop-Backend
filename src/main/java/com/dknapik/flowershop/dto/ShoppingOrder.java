@@ -13,8 +13,13 @@ import com.dknapik.flowershop.model.Address;
 import com.dknapik.flowershop.model.Bouquet;
 import com.dknapik.flowershop.model.FlowerPack;
 
+/**
+ * Used for placing a new shopping order by user
+ * 
+ * @author Damian
+ *
+ */
 public class ShoppingOrder {
-	
 	private UUID id;
 	@NotNull
 	private Account account;
@@ -27,9 +32,6 @@ public class ShoppingOrder {
 	private String note;
 	private String totalPrice;
 	private boolean paid = false;
-	public UUID getId() {
-		return id;
-	}
 	
 	public ShoppingOrder(UUID id,
 				@NotNull Account account,
@@ -50,6 +52,7 @@ public class ShoppingOrder {
 		this.totalPrice = totalPrice;
 		this.paid = paid;
 	}
+	
 	public ShoppingOrder(@NotNull Account account,
 								  List<Bouquet> bouquetList,
 								  Set<FlowerPack> flowerList,
@@ -70,59 +73,76 @@ public class ShoppingOrder {
 	
 	public ShoppingOrder() {} 
 
+	public UUID getId() {
+		return id;
+	}
+	
 	public void setId(UUID id) {
 		this.id = id;
 	}
+	
 	public Account getAccount() {
 		return account;
 	}
+	
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+	
 	public List<Bouquet> getBouquetList() {
 		return bouquetList;
 	}
+	
 	public void setBouquetList(List<Bouquet> bouquetList) {
 		this.bouquetList = bouquetList;
 	}
+	
 	public Set<FlowerPack> getFlowerList() {
 		return flowerList;
 	}
+	
 	public void setFlowerList(Set<FlowerPack> flowerList) {
 		this.flowerList = flowerList;
 	}
+	
 	public Address getAddress() {
 		return address;
 	}
+	
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+	
 	public String getFrom() {
 		return from;
 	}
+	
 	public void setFrom(String from) {
 		this.from = from;
 	}
+	
 	public String getNote() {
 		return note;
 	}
+	
 	public void setNote(String note) {
 		this.note = note;
 	}
+	
 	public String getTotalPrice() {
 		return totalPrice;
 	}
+	
 	public void setTotalPrice(String totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	
 	public boolean isPaid() {
 		return paid;
 	}
+	
 	public void setPaid(boolean paid) {
 		this.paid = paid;
 	}
-	
-	
-
 
 }

@@ -2,11 +2,14 @@ package com.dknapik.flowershop.dto;
 
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
-
+/**
+ * Used for transportation of informations related to destination of placed order.
+ * 
+ * @author Damian
+ *
+ */
 public class AddressDto {
-
 	private UUID id;
-	
 	@NotBlank
 	private String firstName;
 	@NotBlank
@@ -18,8 +21,12 @@ public class AddressDto {
 	@NotBlank
 	private String postcode;
 	
-	public AddressDto(UUID id, @NotBlank String firstName, @NotBlank String secondName, @NotBlank String street,
-			@NotBlank String city, @NotBlank String postcode) {
+	public AddressDto(UUID id,
+			@NotBlank String firstName,
+			@NotBlank String secondName,
+			@NotBlank String street,
+			@NotBlank String city,
+			@NotBlank String postcode) {
 		this.id = id;
 		this.firstName = firstName;
 		this.secondName = secondName;
@@ -28,8 +35,11 @@ public class AddressDto {
 		this.postcode = postcode;
 	}
 	
-	public AddressDto(@NotBlank String firstName, @NotBlank String secondName, @NotBlank String street,
-			@NotBlank String city, @NotBlank String postcode) {
+	public AddressDto(@NotBlank String firstName,
+			@NotBlank String secondName,
+			@NotBlank String street,
+			@NotBlank String city,
+			@NotBlank String postcode) {
 		this.firstName = firstName;
 		this.secondName = secondName;
 		this.street = street;

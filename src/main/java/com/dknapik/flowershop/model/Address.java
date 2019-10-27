@@ -8,9 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Represents order delivery address
+ * 
+ * @author Damian
+ *
+ */
 @Entity
 public class Address {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
@@ -25,8 +30,12 @@ public class Address {
 	@Column
 	private String postcode;
 	
-	public Address(UUID id, String firstName, String secondName, String street, String city, String postcode) {
-		super();
+	public Address(UUID id,
+			String firstName,
+			String secondName,
+			String street,
+			String city,
+			String postcode) {
 		this.id = id;
 		this.firstName = firstName;
 		this.secondName = secondName;
@@ -40,39 +49,49 @@ public class Address {
 	public UUID getId() {
 		return id;
 	}
+	
 	public void setId(UUID id) {
 		this.id = id;
 	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
+	
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+	
 	public String getSecondName() {
 		return secondName;
 	}
+	
 	public void setSecondName(String secondName) {
 		this.secondName = secondName;
 	}
+	
 	public String getStreet() {
 		return street;
 	}
+	
 	public void setStreet(String street) {
 		this.street = street;
 	}
+	
 	public String getCity() {
 		return city;
 	}
+	
 	public void setCity(String city) {
 		this.city = city;
 	}
+	
 	public String getPostcode() {
 		return postcode;
 	}
+	
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
-	
 	
 }

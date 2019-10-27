@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.dknapik.flowershop.model.Account;
 
 public class UserPrincipal implements UserDetails{
-	
+	private static final long serialVersionUID = 1L;
 	private Account account;
 
 	public UserPrincipal(Account account) {
@@ -66,9 +66,5 @@ public class UserPrincipal implements UserDetails{
 	public String toString() {
 		return this.account.getRole();
 	}
-	
-	
-	
-	
 
 }

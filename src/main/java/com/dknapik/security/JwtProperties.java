@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import com.auth0.jwt.algorithms.Algorithm;
 
 /**
- * Constants used in JWT
+ * Constants used in JWT authentication and authorization
  * 
  * @author Damian
  *

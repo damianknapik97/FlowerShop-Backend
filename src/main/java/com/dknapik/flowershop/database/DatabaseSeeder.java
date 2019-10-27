@@ -34,17 +34,13 @@ import com.dknapik.security.UserRoles;
  */
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
-	
 	@Value("${app-debug-mode}")
 	private boolean debugMode;
-	
 	private final BouquetRepository bouquetRepository;
 	private final FlowerRepository flowerRepository;
 	private final AccountRepository accountRepository;
 	private final ApplicationContext context;
-	
 	private final CurrencyUnit currency;
-	
 	
 	@Autowired
 	public DatabaseSeeder(BouquetRepository bouquetRepository, FlowerRepository flowerRepository, AccountRepository accountRepository, Environment env, ApplicationContext context) {
@@ -52,17 +48,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 		this.flowerRepository = flowerRepository;
 		this.accountRepository = accountRepository;
 		this.context = context;
-		
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 	}
 	
-	
 	@Override
 	public void run(String... args) throws Exception {
-		
 		initializeAccounts();
-		
-		if(debugMode) {
+		if (debugMode) {
 			initializeFlowers();
 			initializeBouquets();	
 		}
@@ -77,11 +69,11 @@ public class DatabaseSeeder implements CommandLineRunner {
 		
 		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		
-		if(!accountRepository.findByName("root").isPresent()) {
+		if (!accountRepository.findByName("root").isPresent()) {
 			initialDataAccounts.add(new Account("root", encoder.encode("root"), "root@test.pl", UserRoles.ADMIN));
 		}
 		
-		if(debugMode) {
+		if (debugMode) {
 			initialDataAccounts.add(new Account("employee", encoder.encode("employee"), "employee@test.pl", UserRoles.EMPLOYEE));
 			initialDataAccounts.add(new Account("user", encoder.encode("user"), "user@test.pl", UserRoles.USER));	
 		}
@@ -119,7 +111,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 		flowerList.add(new FlowerPack(flowerRepository.findByName("Tulipan"), 3));
 		bouquet = new Bouquet("Expanded", Money.of(15, currency), 15, flowerList);
 		bouquetRepository.saveAndFlush(bouquet);
-		
 	}
 	
 }

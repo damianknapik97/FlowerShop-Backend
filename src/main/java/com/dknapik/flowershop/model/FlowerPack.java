@@ -10,9 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+/**
+ * Represents flower with qunatity.
+ * Used for bouquet construction.
+ * 
+ * @author Damian
+ *
+ */
 @Entity
 public class FlowerPack {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private UUID id;
@@ -58,6 +64,9 @@ public class FlowerPack {
 		return this.flower.getName() + " - " + this.numberOfFlowers;
 	}
 
+	/**
+	 * Ensuring that this class won't accidently double in set collection.
+	 */
 	@Override
 	public boolean equals(Object arg0) {
 		
@@ -70,6 +79,9 @@ public class FlowerPack {
 		return pack.flower.getName().contentEquals(flower.getName()) && pack.numberOfFlowers == numberOfFlowers;
 	}
 
+	/**
+	 * Ensuring that this class won't accidently double in set collection using hash code.
+	 */
 	@Override
 	public int hashCode() {
 			int result = 17;

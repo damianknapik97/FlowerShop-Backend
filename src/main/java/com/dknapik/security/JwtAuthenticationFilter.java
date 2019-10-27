@@ -17,20 +17,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.dknapik.flowershop.dto.account.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-	
 	protected final Logger log = LogManager.getLogger(getClass().getName());
 	private AuthenticationManager authenticationManager;
-
 
 	public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
-
 
 	/**
 	 * Triggered when issued post request to /login
@@ -43,19 +39,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
 			
 			//Create login token
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
+			UsernamePasswordAuthenticationToken authenticationToken = 
+					new UsernamePasswordAuthenticationToken(credentials.getUsername(),
+															credentials.getPassword(),
+															new ArrayList<>());
 			
 			//Authenticate user
 			return authenticationManager.authenticate(authenticationToken);
 		} catch(IOException e) {
-			e.printStackTrace();
 			log.warn("Couldn't map login credentials to LoginViewModel class");
 		}
 		return null;
 	}
 
 	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+	protected void successfulAuthentication(HttpServletRequest request,
+			HttpServletResponse response,
+			FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		//Grab pricinpal
 		UserPrincipal principal = (UserPrincipal) authResult.getPrincipal();
@@ -66,14 +66,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
 				.sign(JwtProperties.ENCODING_ALGORITHM);
 		
-		//Add JWT token in response
-		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
-		//Add Role in response
-		response.addHeader("Role", principal.toString());
-		//Add Account ID in response
-		response.addHeader("ID", principal.getID().toString());
-		//Add CORS policy header
-		response.addHeader("Access-Control-Expose-Headers", "Authorization, Role, ID");
+		
+		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);			// Add JWT token in response
+		response.addHeader("Role", principal.toString());												// Add Role in response
+		response.addHeader("ID", principal.getID().toString());											// Add Account ID in response
+		response.addHeader("Access-Control-Expose-Headers", "Authorization, Role, ID");					// Add CORS policy header
 		//response.addHeader("Access-Control-Allow-Origin", "*");
 	}
 	

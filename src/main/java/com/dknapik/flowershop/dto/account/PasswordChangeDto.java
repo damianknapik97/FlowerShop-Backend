@@ -7,25 +7,20 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class PasswordChangeDto {
-	
 	private UUID id;
-	
 	@NotBlank
 	@Size(min = 8)
 	@Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
 	private String currentPassword;
-	
 	@NotBlank
 	@Size(min = 8)
 	@Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
 	private String newPassword;
-	
 	@NotBlank
 	@Size(min = 8)
 	@Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
 	private String newPasswordConfirmation;
 
-	
 	public UUID getId() {
 		return id;
 	}
@@ -57,6 +52,5 @@ public class PasswordChangeDto {
 	public void setNewPasswordConfirmation(String newPasswordConfirmation) {
 		this.newPasswordConfirmation = newPasswordConfirmation;
 	}
-
 	
 }

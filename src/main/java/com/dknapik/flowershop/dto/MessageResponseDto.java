@@ -1,7 +1,13 @@
 package com.dknapik.flowershop.dto;
 
+/**
+ * Used to send simple string message that will be easily parsed
+ * and provide details about processed data status.
+ * 
+ * @author Damian
+ *
+ */
 public class MessageResponseDto {
-	
 	private String message;
 
 	public String getMessage() {

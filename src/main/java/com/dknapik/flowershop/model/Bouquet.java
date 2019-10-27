@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.dknapik.flowershop.model;
 
 import java.util.Set;
@@ -19,11 +16,11 @@ import javax.persistence.OneToMany;
 import org.javamoney.moneta.Money;
 
 /**
+ * 
  * @author Damian
  */
 @Entity
 public class Bouquet {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private UUID id;
@@ -33,16 +30,17 @@ public class Bouquet {
 	private String workCost;
 	@Column
 	private int totalPriceDiscountPercent;
-	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "bouquet_id", referencedColumnName = "id")
-	private Set<FlowerPack> flowersSet;
+	private Set<FlowerPack> flowersSet; // Used to define number of specific flowers inside this bouquet
 	
-	public Bouquet(String name, Money cost, int totalPriceDiscountPercent, Set<FlowerPack> flowersSet) {
-		super();
+	public Bouquet(String name,
+			Money cost,
+			int totalPriceDiscountPercent,
+			Set<FlowerPack> flowersSet) {
 		this.name = name;
 		this.workCost = cost.toString();
-		this.totalPriceDiscountPercent = totalPriceDiscount;
+		this.totalPriceDiscountPercent = totalPriceDiscountPercent;
 		this.flowersSet = flowersSet;
 	}
 	

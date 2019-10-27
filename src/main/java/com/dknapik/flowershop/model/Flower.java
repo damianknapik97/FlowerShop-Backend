@@ -11,9 +11,13 @@ import javax.persistence.Id;
 import org.javamoney.moneta.Money;
 
 
+/**
+ * 
+ * @author Damian
+ *
+ */
 @Entity
 public class Flower {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private UUID id;
@@ -23,10 +27,8 @@ public class Flower {
 	private String price;
 	
 	public Flower(String name, Money price) {
-		super();
 		this.name = name;
 		this.price = price.toString();
-		
 	}
 	
 	public Flower() {

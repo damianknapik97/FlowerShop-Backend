@@ -1,10 +1,8 @@
 package com.dknapik.flowershop;
 
-import java.util.Arrays;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,23 +13,31 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.security.JwtAuthenticationFilter;
 import com.dknapik.security.JwtAuthorizationFilter;
 import com.dknapik.security.UserPrincipalDetailsService;
-import com.dknapik.security.UserRoles;
 
+/**
+ * Standard Spring security config.
+ * Defines configuration for:
+ * -user Authentication
+ * -user Authorization
+ * -cors policy
+ * -password encryption method
+ * 
+ * @author Damian
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	private AccountRepository accRepository;
+	private AccountRepository accRepository; // Stores user login and passwords
 
+	@Autowired
 	public SecurityConfig(AccountRepository accRepository) {
 		this.accRepository = accRepository;
 	}
@@ -41,34 +47,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider());
     }
 	
+    /**
+     * Main overall spring security configuration method
+     */
     @Override
     protected void configure(HttpSecurity security) throws Exception {
-    	//JWT doesn't require session or csrf
-    	security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    	
+    	security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 			// JWT doesn't require session
     			.and()
-    			.csrf().disable()
-    			.cors()
-    			.and()
+    			.csrf().disable()																		// JWT doesn't require csrf
     			.logout()
     			.logoutUrl("/logout")
     			.and()
-    			.addFilter(new JwtAuthenticationFilter(authenticationManager()))
-    			.addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accRepository))
-    			.authorizeRequests()
-    			.antMatchers("/login").permitAll()
+    			.addFilter(new JwtAuthenticationFilter(authenticationManager()))						// Defining method of authentication
+    			.addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accRepository))		// Defining method of authorization
+    			.authorizeRequests()																	// Turning on the authorization
+    			.antMatchers("/login").permitAll()															
     			.antMatchers("/account").permitAll()
     			.antMatchers("/logout").permitAll()
-    			.anyRequest().authenticated();
+    			.anyRequest().authenticated();															// Restricting user access to api's besides ones defined above
     			
     }
     
     @Bean
 	protected UserDetailsService userDetailsService() {
-    	UserPrincipalDetailsService userPrincipalDetailsService = new UserPrincipalDetailsService(accRepository);
-    	
-    	return userPrincipalDetailsService;
+    	return new UserPrincipalDetailsService(accRepository);
     }
     
+    /**
+     * Configure custom Authentication Provider
+     * @return 
+     */
     @Bean
     DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -78,13 +87,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
 
+    /**
+     * Configuration of CORS policy filter that restricts from unwanted access to api's from other origins.
+     * @return configured filter allowing only data exchanges with front end application.
+     */
     @Bean
     public CorsFilter corsFilter() {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // you USUALLY want this
-        // likely you should limit this to specific origins
+        config.setAllowCredentials(true);
+        // TODO Will be limited to specific origins later
         config.addAllowedOrigin("*"); 
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");
@@ -96,6 +109,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CorsFilter(source);
     }
     
+    /**
+     * Configure bean that will be used to encrypt or compare user provided passwords
+     * @return
+     */
     @Bean(name = "PasswordEncoder")
     PasswordEncoder passwordEncoder() {
     	return new BCryptPasswordEncoder();

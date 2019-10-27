@@ -1,11 +1,9 @@
 package com.dknapik.flowershop.services;
 
-import java.io.IOException;
 import java.security.Principal;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -13,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.dto.MessageResponseDto;
@@ -23,45 +19,66 @@ import com.dknapik.flowershop.dto.account.AccountDto;
 import com.dknapik.flowershop.dto.account.PasswordChangeDto;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
-import com.dknapik.flowershop.exceptions.MappingException;
 import com.dknapik.flowershop.model.Account;
 
+/**
+ * This class deals with all the operations done on user account currently it is:
+ * -Creating account
+ * -Updating account informations
+ * -Retrieving current account informations
+ * -Deleting account
+ * 
+ * @author Damian
+ *
+ */
 @Service
 public class AccountService {
-	
 	protected final Logger log = LogManager.getLogger(getClass().getName()); 
-	private final ModelMapper mapper;
-	private final ObjectMapper jsonMapper;
-	private final AccountRepository accountRepo;
-	private final ApplicationContext context;
+	private final ModelMapper mapper;			 // less messy dto - model mapping
+	private final AccountRepository accountRepo; // database access
+	private final ApplicationContext context;    // retrieve existing beans
 	
 	@Autowired
 	public AccountService(AccountRepository accountRepo, ApplicationContext context) {
 		this.accountRepo = accountRepo;
 		this.context = context;
-		
 		this.mapper = new ModelMapper();
-		this.jsonMapper = new ObjectMapper();
 	}
 	
-	public MessageResponseDto createNewUser(AccountDto accViewModel, BindingResult bindingResult) throws BindingException, DataProcessingException {
-		
-		MessageResponseDto returnDto = new MessageResponseDto();
-		returnDto.setMessage("Account created succesfully !");
-		
-		if(bindingResult.hasErrors())
-			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accViewModel.getClass());
-		
-		if(!this.accountRepo.existsByName(accViewModel.getName())) {
-			this.accountRepo.saveAndFlush(mapper.map(accViewModel, Account.class));
-		} else {
-			returnDto.setMessage("User with provided username already exists, please pick different name");
+	/**
+	 * Create new user and save its credentials to database.
+	 * 
+	 * @param accountDto - dto containg basic user credentials.
+	 * @param bindingResult - request to dto mapping results.
+	 * @return - dto containing message about data processing results.
+	 * @throws BindingException - mapping request to dto failed.
+	 * @throws DataProcessingException - account already exists.
+	 */
+	public void createNewUser(AccountDto accountDto,
+			BindingResult bindingResult)
+			throws BindingException, DataProcessingException {
+		if (bindingResult.hasErrors()) {
+			log.error("Couldn't create new account because provided data isn't valid and properly binded");
+			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accountDto.getClass());
 		}
 		
-		return returnDto;
+		if (this.accountRepo.existsByName(accountDto.getName())) {
+			log.warn("Account already  exists");
+			throw new DataProcessingException("Account with provided login already exists");
+		}
+		
+		this.accountRepo.saveAndFlush(mapper.map(accountDto, Account.class));
 	}
 	
-	public AccountDetailsDto retrieveAccountDetails(Principal principal) throws DataProcessingException {
+	/**
+	 * Retrieves user details from database by retrieving currently logged user details from spring security context.
+	 * 
+	 * @param principal - handle used to access spring security context.
+	 * @return additional details about account sending request.
+	 * @throws DataProcessingException - couldn't find currently logged user details.
+	 */
+	public AccountDetailsDto retrieveAccountDetails(Principal principal)
+			throws DataProcessingException {
 		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
 				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 			);
@@ -69,67 +86,88 @@ public class AccountService {
 		return this.mapper.map(acc, AccountDetailsDto.class);
 	}
 	
-	public void updateAccount(AccountDetailsDto accDetailsViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException  {
-		
-		if(bindingResult.hasErrors())
-			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accDetailsViewModel.getClass());
+	/**
+	 * Update account side details - ones that doesn't change how provided account is accessed.
+	 * 
+	 * @param accDetailsDto
+	 * @param bindingResult - request to dto mapping results.
+	 * @param principal - handle used to access spring security context to retrieve account name sending request.
+	 * @throws BindingException - mapping request to dto failed.
+	 * @throws DataProcessingException - couldn't retrieve currently logged user from security context.
+	 */
+	public void updateAccount(AccountDetailsDto accDetailsDto,
+			BindingResult bindingResult,
+			Principal principal)
+			throws BindingException, DataProcessingException {
+		if (bindingResult.hasErrors()) {
+			log.error("Couldn't update account details because provided data couldn't be properly binded");
+			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(),
+									   accDetailsDto.getClass());
+		}
 		
 		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
 				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 			);
 		
-		this.mapper.map(accDetailsViewModel, acc);
+		this.mapper.map(accDetailsDto, acc);
+		this.accountRepo.saveAndFlush(acc);		
+	}
+	
+	/**
+	 * Checks if provided actual password matches the one in database and replaces it with new password.
+	 * 
+	 * @param passwordChangeDto - dto containing actual password, new password and confirmation password.
+	 * @param bindingResult - request to dto mapping results.
+	 * @param principal - handle used to access spring security context to retrieve account name sending request.
+	 * @throws BindingException - mapping request to dto failed.
+	 * @throws DataProcessingException - thrown when provided passwords doesn't match.
+	 */
+	public void updatePassword(PasswordChangeDto passwordChangeDto,
+			BindingResult bindingResult,
+			Principal principal) 
+			throws BindingException, DataProcessingException {
+		if (bindingResult.hasErrors()) {
+			log.error("Couldn't update account password because provided data wasn't properly binded");
+			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(),
+					   passwordChangeDto.getClass());	
+		}
+
+		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+				() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+			);
 		
+		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
+		if (!passwordChangeDto.getNewPassword().contentEquals(passwordChangeDto.getNewPasswordConfirmation())) {
+			log.warn("Couldn't update account password because provided new password doesn't match confirmation password");
+			throw new DataProcessingException("Provided password doesn't match actual password");
+		}
+		
+		acc.setPassword(encoder.encode(passwordChangeDto.getNewPassword()));
 		this.accountRepo.saveAndFlush(acc);
 	}
 	
-	// Matching password is for some reasons broken and can't be used for now.
-	public void updatePassword(PasswordChangeDto passwordChangeViewModel, BindingResult bindingResult, Principal principal) throws BindingException, DataProcessingException {
-	
-		if(bindingResult.hasErrors())
-			throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), passwordChangeViewModel.getClass());
-		
-		Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-					() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-				);
-		
-		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-		
-		if (passwordChangeViewModel.getNewPassword().contentEquals(passwordChangeViewModel.getNewPasswordConfirmation()) ) {
-			
-			acc.setPassword(encoder.encode(passwordChangeViewModel.getNewPassword()));
-			this.accountRepo.saveAndFlush(acc);
-			
-		} else {
-			throw new DataProcessingException("Provided password doesn't match actual password");
-		}
-	}
-	
-	public void deleteAccount(String password, Principal principal) throws DataProcessingException, MappingException {
-		String parsedPassword = null;
-		
-		try {
-			JsonNode jsonNode = this.jsonMapper.readTree(password);
-			parsedPassword = jsonNode.findValuesAsText("password").get(0);
-		} catch (IOException e) {
-			this.log.warn("Error parsing provided JSON string", e);
-			throw new MappingException("Couldn't parse provided details", String.class, String.class);
-		}
-		
-		if(parsedPassword != null) {
-			Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
+	/**
+	 * If provided password matches current users one, then delete current account from database.
+	 * 
+	 * @param password - user input.
+	 * @param principal - handle used to access spring security context to retrieve account name sending request.
+	 * @throws DataProcessingException - Either provided password doesn't match or currently logged user couldn't be found.
+	 */
+	public void deleteAccount(String password,
+			Principal principal)
+			throws DataProcessingException {
+		if (password != null) {
+			Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow (
 					() -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
 				);
 
-			
 			PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-			
-			// Password matching is broken and doesn't work for some reasons
-			//if(encoder.matches(parsedPassword, acc.getPassword())) {
+
+			if (encoder.matches(password, acc.getPassword())) {
 				this.accountRepo.delete(acc);
-			//} else {
-				//throw new DataProcessingException("Provided password doesn't match");
-			//}
+			} else {
+				throw new DataProcessingException("Provided password doesn't match");
+			}
 		}
 				
 	}
