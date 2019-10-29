@@ -10,6 +10,7 @@ import com.dknapik.flowershop.model.Flower;
 
 @Repository
 public interface FlowerRepository extends JpaRepository<Flower, UUID> {
+	
 	Flower findByName(String name);
 
 }
