@@ -14,9 +14,9 @@ import com.dknapik.flowershop.dto.BouquetDto;
 import com.dknapik.flowershop.services.BouquetService;
 
 
-@CrossOrigin
 @RestController
-@RequestMapping("/products/flower")
+@RequestMapping("/products/bouquets")
+@CrossOrigin
 public class BouquetController {
 	BouquetService bouquetService;
 

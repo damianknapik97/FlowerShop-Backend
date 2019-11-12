@@ -17,9 +17,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.security.JwtAuthenticationFilter;
-import com.dknapik.security.JwtAuthorizationFilter;
-import com.dknapik.security.UserPrincipalDetailsService;
+import com.dknapik.flowershop.security.JwtAuthenticationFilter;
+import com.dknapik.flowershop.security.JwtAuthorizationFilter;
+import com.dknapik.flowershop.security.UserPrincipalDetailsService;
 
 /**
  * Standard Spring security config.
@@ -56,7 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 			// JWT doesn't require session
     			.and()
     			.csrf().disable()																		// JWT doesn't require csrf
-    			.logout()
+    			.cors()
+                .and()
+                .logout()
     			.logoutUrl("/logout")
     			.and()
     			.addFilter(new JwtAuthenticationFilter(authenticationManager()))						// Defining method of authentication
@@ -65,8 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     			.antMatchers("/login").permitAll()															
     			.antMatchers("/account").permitAll()
     			.antMatchers("/logout").permitAll()
+                .antMatchers("/products/**").permitAll()
     			.anyRequest().authenticated();															// Restricting user access to api's besides ones defined above
-    			
+
     }
     
     @Bean

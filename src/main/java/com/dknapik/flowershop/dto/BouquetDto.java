@@ -15,12 +15,12 @@ public class BouquetDto {
 	@NotBlank
 	private String name;
 	@NotBlank
-	private String totalCost;
+	private String price;
 	
-	public BouquetDto(UUID id, String name, String totalCost) {
+	public BouquetDto(UUID id, String name, String price) {
 		this.id = id;
 		this.name = name;
-		this.totalCost = totalCost;
+		this.price = price;
 	}
 	
 	public BouquetDto() {}
@@ -41,12 +41,12 @@ public class BouquetDto {
 		this.name = name;
 	}
 	
-	public String getTotalCost() {
-		return totalCost;
+	public String getPrice() {
+		return price;
 	}
 	
-	public void setTotalCost(String totalCost) {
-		this.totalCost = totalCost;
+	public void setPrice(String price) {
+		this.price = price;
 	}
 	
 }

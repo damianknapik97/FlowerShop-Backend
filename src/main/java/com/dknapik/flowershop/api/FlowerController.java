@@ -14,19 +14,16 @@ import com.dknapik.flowershop.dto.FlowerDto;
 import com.dknapik.flowershop.services.FlowerService;
 
 @RestController
+@RequestMapping("/products/flowers")
 @CrossOrigin
-@RequestMapping("/products/bouquet")
 public class FlowerController {
-	
 	private FlowerService flowerService;
 
-	
 	@Autowired
 	public FlowerController(FlowerService flowerService) {
 		this.flowerService = flowerService;
 	}
-	
-	
+
 	@GetMapping("/all")
 	public ResponseEntity<List<FlowerDto>> getAllBouquet() {
 		return new ResponseEntity<>(flowerService.getAllFlowers(), HttpStatus.OK);

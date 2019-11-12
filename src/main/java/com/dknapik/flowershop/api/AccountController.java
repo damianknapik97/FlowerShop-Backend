@@ -39,7 +39,7 @@ import com.dknapik.flowershop.services.AccountService;
 @RequestMapping("/account")
 @CrossOrigin
 public class AccountController {
-	protected final Logger log = LogManager.getLogger(getClass().getName());
+	private final Logger log = LogManager.getLogger(getClass().getName());
 	private final AccountService service; // Processes account data 
 	
 	@Autowired

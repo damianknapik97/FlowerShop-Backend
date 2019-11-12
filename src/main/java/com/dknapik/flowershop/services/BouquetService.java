@@ -48,7 +48,7 @@ public class BouquetService {
 		List<BouquetDto> mappedBouquetList = new LinkedList<>();
 		List<Bouquet> bouquetList = this.bouquetRepo.findAll();
 		
-		for(Bouquet bouquet : bouquetList) {
+		for (Bouquet bouquet : bouquetList) {
 			mappedBouquetList.add(new BouquetDto(bouquet.getId(), bouquet.getName(), countTotalBouquetCost(bouquet).toString()));
 		}
 		

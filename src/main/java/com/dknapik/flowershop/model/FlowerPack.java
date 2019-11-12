@@ -29,13 +29,11 @@ public class FlowerPack {
 	private int numberOfFlowers;
 	
 	public FlowerPack(Flower flower, int numberOfFlowers) {
-		super();
 		this.flower = flower;
 		this.numberOfFlowers = numberOfFlowers;
 	}
 	
 	public FlowerPack() { }
-	
 	
 	public UUID getId() {
 		return id;

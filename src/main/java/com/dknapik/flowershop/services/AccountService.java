@@ -33,7 +33,7 @@ import com.dknapik.flowershop.model.Account;
  */
 @Service
 public class AccountService {
-	protected final Logger log = LogManager.getLogger(getClass().getName()); 
+	protected final Logger log = LogManager.getLogger(getClass().getName());
 	private final ModelMapper mapper;			 // less messy dto - model mapping
 	private final AccountRepository accountRepo; // database access
 	private final ApplicationContext context;    // retrieve existing beans

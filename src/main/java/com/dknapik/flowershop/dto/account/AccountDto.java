@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.dknapik.security.UserRoles;
+import com.dknapik.flowershop.security.UserRoles;
 
 /**
  * Used for new account creation
