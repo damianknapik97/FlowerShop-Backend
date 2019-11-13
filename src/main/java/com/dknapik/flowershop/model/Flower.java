@@ -19,7 +19,7 @@ import org.javamoney.moneta.Money;
 @Entity
 public class Flower {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 	@Column(unique = true)
 	private String name;

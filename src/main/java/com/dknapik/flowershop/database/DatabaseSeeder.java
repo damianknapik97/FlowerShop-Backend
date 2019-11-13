@@ -39,7 +39,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 	private final ShoppingCartRepository shoppingCartRepository;
 	private final ApplicationContext context;
 	private final CurrencyUnit currency;
-	
+
 	@Autowired
 	public DatabaseSeeder(BouquetRepository bouquetRepository,
 						  FlowerRepository flowerRepository,
