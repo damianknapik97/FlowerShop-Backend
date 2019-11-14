@@ -2,12 +2,16 @@ package com.dknapik.flowershop.exceptions;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Used when request couldn't be mapped to provided dto class
+ * 
+ * @author Damian
+ *
+ */
 public class BindingException extends Exception implements WebExceptionInt {
-
 	private static final long serialVersionUID = 1L;
-	
-	protected Class<?> bindingClass;
-	protected String userExceptionMsg;
+	protected Class<?> bindingClass;	// Retrieve target class informations for debugging
+	protected String userExceptionMsg;	
 	protected HttpStatus httpStatus;
 
 	public BindingException(String exceptionMsg, Class<?> bindingClass) {
@@ -15,7 +19,6 @@ public class BindingException extends Exception implements WebExceptionInt {
 		this.userExceptionMsg = exceptionMsg;
 		this.bindingClass = bindingClass.getClass();
 		this.httpStatus = HttpStatus.BAD_REQUEST;
-
 	}
 	
 	public BindingException(String exceptionMsg, Class<?> bindingClass, HttpStatus httpStatus) {
