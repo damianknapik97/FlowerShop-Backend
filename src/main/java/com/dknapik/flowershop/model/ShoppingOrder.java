@@ -28,12 +28,12 @@ public class ShoppingOrder {
 	@OneToOne()
 	@JoinColumn(name = "account_id", referencedColumnName = "id")
 	private Account account;
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "bouquet_id", referencedColumnName = "id")
 	private List<Bouquet> bouquetList;
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "flower_pack_id", referencedColumnName = "id")
-	private Set<FlowerPack> flowerList;
+	private List<FlowerPack> flowerList;
 	@OneToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
@@ -49,7 +49,7 @@ public class ShoppingOrder {
 	public ShoppingOrder(UUID id,
 			Account account,
 			List<Bouquet> bouquetList,
-			Set<FlowerPack> flowerList,
+			List<FlowerPack> flowerList,
 			Address address,
 			String from,
 			String note,
@@ -92,11 +92,11 @@ public class ShoppingOrder {
 		this.bouquetList = bouquetList;
 	}
 
-	public Set<FlowerPack> getFlowerList() {
+	public List<FlowerPack> getFlowerList() {
 		return flowerList;
 	}
 
-	public void setFlowerList(Set<FlowerPack> flowerList) {
+	public void setFlowerList(List<FlowerPack> flowerList) {
 		this.flowerList = flowerList;
 	}
 

@@ -2,13 +2,7 @@ package com.dknapik.flowershop.model;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Represents flower with qunatity.
@@ -17,6 +11,12 @@ import javax.persistence.OneToOne;
  * @author Damian
  *
  */
+// TODO - This constraint doesn't allow for updating Bouquets with the same FlowerPack.
+// TODO - Currently only such class is allowed for one bouquet in the whole database - fix this !
+@Table(
+	uniqueConstraints =
+		@UniqueConstraint(columnNames = {"flower_id", "numberOfFlowers"})
+)
 @Entity
 public class FlowerPack {
 	@Id

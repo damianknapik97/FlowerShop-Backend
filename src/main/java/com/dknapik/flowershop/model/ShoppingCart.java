@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,23 +12,24 @@ public class ShoppingCart {
     private UUID id;
     @Column
     private String name;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne()
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "bouquet_id", referencedColumnName = "id")
-    private Set<Bouquet> bouquetSet;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<Bouquet> bouquetList;
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "flower_pack_id", referencedColumnName = "id")
-    private Set<FlowerPack> flowerPackSet;
+    private List<FlowerPack> flowerPackList;
 
-    public ShoppingCart(String name, Set<Bouquet> bouquetSet, Set<FlowerPack> flowerPackSet) {
+    public ShoppingCart(String name, Account account, List<Bouquet> bouquetList, List<FlowerPack> flowerPackList) {
         this.name = name;
-        this.bouquetSet = bouquetSet;
-        this.flowerPackSet = flowerPackSet;
+        this.account = account;
+        this.bouquetList = bouquetList;
+        this.flowerPackList = flowerPackList;
     }
 
-    public ShoppingCart() { }
+    public ShoppingCart() {}
 
     public UUID getId() {
         return id;
@@ -35,6 +37,14 @@ public class ShoppingCart {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public String getName() {
@@ -45,19 +55,19 @@ public class ShoppingCart {
         this.name = name;
     }
 
-    public Set<Bouquet> getBouquetSet() {
-        return bouquetSet;
+    public List<Bouquet> getBouquetList() {
+        return bouquetList;
     }
 
-    public void setBouquetSet(Set<Bouquet> bouquetSet) {
-        this.bouquetSet = bouquetSet;
+    public void setBouquetList(List<Bouquet> bouquetList) {
+        this.bouquetList = bouquetList;
     }
 
-    public Set<FlowerPack> getFlowerPackSet() {
-        return flowerPackSet;
+    public List<FlowerPack> getFlowerPackList() {
+        return flowerPackList;
     }
 
-    public void setFlowerPackSet(Set<FlowerPack> flowerPackSet) {
-        this.flowerPackSet = flowerPackSet;
+    public void setFlowerPackList(List<FlowerPack> flowerPackList) {
+        this.flowerPackList = flowerPackList;
     }
 }

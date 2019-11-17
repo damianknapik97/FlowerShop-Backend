@@ -39,7 +39,7 @@ public class BouquetService {
 			totalCost.add(flowerPrice);
 		}
 		
-		Money discount = totalCost.divide(bouquet.getTotalPriceDiscount());
+		Money discount = totalCost.divide(bouquet.getTotalPriceDiscountPercent());
 		
 	 	totalCost = totalCost.subtract(discount);
 		return totalCost.abs();

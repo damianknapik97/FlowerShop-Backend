@@ -6,6 +6,7 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 import com.dknapik.flowershop.model.*;
+import com.dknapik.flowershop.services.FlowerPackService;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.dknapik.flowershop.security.UserRoles;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -36,9 +38,16 @@ public class DatabaseSeeder implements CommandLineRunner {
 	private final FlowerRepository flowerRepository;
 	private final FlowerPackRepository flowerPackRepository;
 	private final AccountRepository accountRepository;
+
 	private final ShoppingCartRepository shoppingCartRepository;
 	private final ApplicationContext context;
 	private final CurrencyUnit currency;
+
+	private final FlowerPackService flowerPackService;
+
+	private final String flowerNameRose = "Róża";
+	private final String flowerNameTulip = "Tulipan";
+	private final String flowerNameFreesia = "Frezja";
 
 	@Autowired
 	public DatabaseSeeder(BouquetRepository bouquetRepository,
@@ -47,14 +56,16 @@ public class DatabaseSeeder implements CommandLineRunner {
 						  AccountRepository accountRepository,
 						  ShoppingCartRepository shoppingCartRepository,
 						  Environment env,
-						  ApplicationContext context) {
+						  ApplicationContext context,
+						  FlowerPackService flowerPackService) {
 		this.bouquetRepository = bouquetRepository;
 		this.flowerRepository = flowerRepository;
 		this.flowerPackRepository = flowerPackRepository;
 		this.accountRepository = accountRepository;
 		this.shoppingCartRepository = shoppingCartRepository;
-		this.context = context;
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
+		this.context = context;
+		this.flowerPackService = flowerPackService;
 	}
 	
 	@Override
@@ -62,9 +73,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 		this.initializeAccounts();
 		if (debugMode) {
 			this.initializeFlowers();
-			//this.initializeFlowerPacks();
+			this.initializeFlowerPacks();
 			this.initializeBouquets();
-			//this.initializeShoppingCart();
+			this.initializeShoppingCart();
 		}
 	}
 	
@@ -77,8 +88,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 		
 		PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
 		
-		if (!this.accountRepository.findByName("root").isPresent()) {
-			initialDataAccounts.add(new Account("root", encoder.encode("root"), "root@test.pl", UserRoles.ADMIN));
+		if (!this.accountRepository.existsByName("root")) {
+			Account rootAcc = new Account("root", encoder.encode("root"), "root@test.pl", UserRoles.ADMIN);
+			initialDataAccounts.add(rootAcc);
 		}
 		
 		if (debugMode) {
@@ -87,6 +99,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 		}
 
 		this.accountRepository.saveAll(initialDataAccounts);
+		this.accountRepository.flush();
 	}
 
 	/**
@@ -95,69 +108,96 @@ public class DatabaseSeeder implements CommandLineRunner {
 	private void initializeFlowers() {
 		List<Flower> initialDataFlowers = new ArrayList<>();
 
-		initialDataFlowers.add(new Flower("Róża", Money.of(5.00, currency)));
-		initialDataFlowers.add(new Flower("Tulipan", Money.of(4.00, currency)));
-		initialDataFlowers.add(new Flower("Frezja", Money.of(6.00, currency)));
+		initialDataFlowers.add(new Flower(this.flowerNameRose, Money.of(5.00, currency)));
+		initialDataFlowers.add(new Flower(this.flowerNameTulip, Money.of(4.00, currency)));
+		initialDataFlowers.add(new Flower(this.flowerNameFreesia, Money.of(6.00, currency)));
 
-		for(int i = 0; i < 15; i++) {
+		for (int i = 0; i < 30; i++) {
 			initialDataFlowers.add(new Flower("TestFlower" + i, Money.of(5.00, currency)));
 		}
 
 		flowerRepository.saveAll(initialDataFlowers);
+		flowerRepository.flush();
 	}
 
+	/**
+	 * Initialize database with FlowerPacks consisting of flowers and number of flowers in the pack, used for debugging/testing purposes
+	 */
 	private void initializeFlowerPacks() {
-		String flowerName = "Tulipan";
-		Flower flower = this.flowerRepository.findByName(flowerName)
-				.orElseThrow(() -> new DataRetrievalFailureException("Flower with name " + flowerName + " not found !"));
-		this.flowerPackRepository.saveAndFlush(new FlowerPack(flower, 5));
+		/* Retrieve flowers for FlowerPack construct */
+		Flower flowerTulip = this.flowerRepository.findByName(flowerNameTulip)
+				.orElseThrow(() -> new DataRetrievalFailureException("Flower with name " + flowerNameTulip + " not found !"));
+		Flower flowerFressia = this.flowerRepository.findByName(flowerNameFreesia)
+				.orElseThrow(() -> new DataRetrievalFailureException("Flower with name " + flowerNameFreesia + " not found !"));
+
+		/* Convert to list and save only non existing */
+		List<FlowerPack> toSave = Arrays.asList(
+				new FlowerPack(flowerTulip, 8),
+				new FlowerPack(flowerFressia, 8)
+		);
+		this.flowerPackService.saveNonExistingFlowerPacks(toSave);
 	}
 
 	/**
 	 * Initialize database with Bouquets consisting of initialized flowers, used for debugging/testing purposes
 	 */
 	private void initializeBouquets() {
-		String flowerNameRose = "Róża";
-		String flowerNameTulip = "Tulipan";
 		Set<FlowerPack> flowerPackList = new HashSet<>();
-		List<Bouquet> bouquetList = new LinkedList<>();
+
+		/* Retrieve flowers to constructor bouquets from */
 		Flower flowerRose = this.flowerRepository.findByName(flowerNameRose)
 				.orElseThrow(() -> new DataRetrievalFailureException("Flower with name " + flowerNameRose + " not found !"));
 		Flower flowerTulip = flowerRepository.findByName(flowerNameTulip)
 				.orElseThrow(() -> new DataRetrievalFailureException("Flower with name " + flowerNameTulip + " not found !"));
 
+		/* New bouquet from FlowerPack */
 		flowerPackList.add(new FlowerPack(flowerRose, 5));
-		bouquetList.add(new Bouquet("Basic", Money.of(10, currency), 10, new HashSet<>(flowerPackList)));
+		this.bouquetRepository.saveAndFlush(new Bouquet("Basic", Money.of(10, currency), 10, flowerPackList));
+		this.flowerPackService.saveNonExistingFlowerPacks(flowerPackList);
 
+		/* New bouquet from two FlowerPacks */
+		flowerPackList = new HashSet<>();
+		flowerPackList.add(new FlowerPack(flowerRose, 5));
 		flowerPackList.add(new FlowerPack(flowerTulip, 3));
-		bouquetList.add(new Bouquet("Expanded", Money.of(15, currency), 15, flowerPackList));
+		this.bouquetRepository.saveAndFlush(new Bouquet("Expanded", Money.of(15, currency), 15, flowerPackList));
 
-		bouquetRepository.saveAll(bouquetList);
-		bouquetRepository.flush();
-
+		/* Save only non existing FlowerPacks because of existing constraints */
+		this.flowerPackService.saveNonExistingFlowerPacks(flowerPackList);
 	}
-
-	//TODO What if there are two FlowerPacks with the same flower but different quantities ???
+	/**
+	 * Initialize database with shopping cart assigned to root, used for debugging/testing purposes
+	 */
 	private void initializeShoppingCart() {
-		String shoppingCartName = "TestCart";
-		String userName = "root";
-		String bouquetName = "Basic";
-		String flowerName = "Tulipan";
+		String shoppingCartName = "TestCart";						// New entity name
+		String userName = "root";									// User to assign shopping cart to
+		String bouquetName = "Basic";								// For retrieving shopping cart product - Bouquet
+		int numberOfFlowers = 5;									// For retrieving shopping cart product - FlowerPack
+		List<Bouquet> bouquetList = null;							// New entity bouquet list
+		List<FlowerPack> flowerPackList = new LinkedList<>();		// New entity flower list
+
+		/* Retrieve account for entity constructor */
 		Account account = this.accountRepository.findByName(userName)
 				.orElseThrow(() -> new UsernameNotFoundException(
 						"User with name " + userName + " not found"));
-		Bouquet bouquet = this.bouquetRepository.findByName(bouquetName)
+
+		/* Retrieve bouquet list for entity constructor */
+		bouquetList = this.bouquetRepository.findByNameAndFetchFlowerPacksEagerly(bouquetName)
 				.orElseThrow(() -> new DataRetrievalFailureException(
 						"Bouquet with name " + bouquetName + " not found !"));
-		Flower flower = this.flowerRepository.findByName(flowerName)
-				.orElseThrow(() -> new DataRetrievalFailureException(
-						"Flower with name " + flowerName + " not found !"));
-		FlowerPack flowerPack = this.flowerPackRepository.findByFlower(flower)
-				.orElseThrow(() -> new DataRetrievalFailureException(
-						"FlowerPack containing Flower with name " + flower.getName() + " not found !"));
 
-		// TODO finish...
+		/* Retrieve FlowerPack and create list from it for entity constructor */
+		FlowerPack flowerPack = this.flowerPackRepository.findByFlower_NameAndNumberOfFlowers(
+				flowerNameTulip,
+				numberOfFlowers ).orElseGet(() ->{
+					FlowerPack toReturn = new FlowerPack(this.flowerRepository.findByName(this.flowerNameTulip).get(), numberOfFlowers);
+					this.flowerPackRepository.saveAndFlush(toReturn);
+					return toReturn;
+		});
+		flowerPackList.add(flowerPack);
 
+		/* Create and save new shopping cart */
+		ShoppingCart shoppingCart = new ShoppingCart(
+				shoppingCartName, account, bouquetList, flowerPackList);
+		this.shoppingCartRepository.saveAndFlush(shoppingCart);
 	}
-	
 }

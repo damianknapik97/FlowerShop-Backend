@@ -67,10 +67,6 @@ public class Account {
 		this.password = password;
 	}
 	
-	public void setPasswordNoEncoding(String password) {
-		this.password = password;
-	}
-	
 	public String getEmail() {
 		return email;
 	}

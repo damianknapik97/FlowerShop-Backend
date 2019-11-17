@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class Bouquet {
 	private int totalPriceDiscountPercent;
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "bouquet_id", referencedColumnName = "id")
-	private Set<FlowerPack> flowersSet; // Used to define number of specific flowers inside this bouquet
+	private Set<FlowerPack> flowersSet;  // Used to define number of specific flowers inside this bouquet
 	
 	public Bouquet(String name,
 			Money cost,
@@ -69,12 +70,16 @@ public class Bouquet {
 	public void setWorkPrice(Money cost) {
 		this.workCost = cost.toString();
 	}
-	
-	public int getTotalPriceDiscount() {
+
+	public void setWorkCost(String workCost) {
+		this.workCost = workCost;
+	}
+
+	public int getTotalPriceDiscountPercent() {
 		return totalPriceDiscountPercent;
 	}
 
-	public void setTotalPriceDiscount(int totalPriceDiscountPercent) {
+	public void setTotalPriceDiscountPercent(int totalPriceDiscountPercent) {
 		this.totalPriceDiscountPercent = totalPriceDiscountPercent;
 	}
 
