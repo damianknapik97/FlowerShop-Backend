@@ -20,7 +20,7 @@ import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.model.Account;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-	private AccountRepository accountRepository;
+	private final AccountRepository accountRepository;
 	protected final Logger log = LogManager.getLogger(getClass().getName()); 
 	
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
@@ -29,6 +29,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		this.accountRepository = accountRepository;
 	}
 
+	/**
+	 * Filter user request for existing JWT Token
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -48,7 +51,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		
 		chain.doFilter(request, response);
 	}
-	
+
+	/**
+	 * Check provided JWT Token validity
+	 */
 	private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
 		String token = request.getHeader(JwtProperties.HEADER_STRING);
 		String userName = null;

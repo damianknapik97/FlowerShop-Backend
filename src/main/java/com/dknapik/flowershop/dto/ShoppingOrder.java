@@ -144,5 +144,4 @@ public class ShoppingOrder {
 	public void setPaid(boolean paid) {
 		this.paid = paid;
 	}
-
 }

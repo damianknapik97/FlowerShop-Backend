@@ -21,8 +21,8 @@ import com.dknapik.flowershop.dto.account.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-	protected final Logger log = LogManager.getLogger(getClass().getName());
-	private AuthenticationManager authenticationManager;
+	private final Logger log = LogManager.getLogger(getClass().getName());
+	private final AuthenticationManager authenticationManager;
 
 	public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
@@ -52,11 +52,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		return null;
 	}
 
+	/**
+	 *  Authentication was successful, generate JWT token and prepare response
+	 */
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request,
 			HttpServletResponse response,
 			FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
+
 		//Grab pricinpal
 		UserPrincipal principal = (UserPrincipal) authResult.getPrincipal();
 		
@@ -71,10 +75,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		response.addHeader("Role", principal.toString());												// Add Role in response
 		response.addHeader("ID", principal.getID().toString());											// Add Account ID in response
 		response.addHeader("Access-Control-Expose-Headers", "Authorization, Role, ID");					// Add CORS policy header
-		//response.addHeader("Access-Control-Allow-Origin", "*");
 	}
-	
-	
-	
-
 }

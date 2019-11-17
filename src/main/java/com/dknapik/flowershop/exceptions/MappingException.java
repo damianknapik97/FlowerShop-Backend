@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.exceptions;
 
 import org.springframework.http.HttpStatus;
+
 /**
  * Used when unexpected data prevented correct mapping from one class to another class.
  * 
@@ -33,8 +34,4 @@ public class MappingException extends BindingException {
 				.append(this.userExceptionMsg)
 				.toString();
 	}
-	
-	
-	
-	
 }

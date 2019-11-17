@@ -1,9 +1,11 @@
 package com.dknapik.flowershop.services;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.dknapik.flowershop.database.FlowerRepository;
@@ -12,9 +14,8 @@ import com.dknapik.flowershop.model.Flower;
 
 @Service
 public class FlowerService {
-	
-	private FlowerRepository flowerRepo;
-	
+	private final Logger log = LogManager.getLogger(getClass().getName());
+	private final FlowerRepository flowerRepo;
 	
 	public FlowerService(FlowerRepository flowerRepository) {
 		this.flowerRepo = flowerRepository;
@@ -30,5 +31,4 @@ public class FlowerService {
 		
 		return mappedFlowerList;
 	}
-
 }

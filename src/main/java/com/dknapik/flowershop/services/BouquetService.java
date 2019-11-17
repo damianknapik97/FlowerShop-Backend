@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,8 @@ import com.dknapik.flowershop.model.FlowerPack;
 
 @Service
 public class BouquetService {
-	
-	private BouquetRepository bouquetRepo;
+	private final Logger log = LogManager.getLogger(getClass().getName());
+	private final BouquetRepository bouquetRepo;
 	
 	@Autowired
 	public BouquetService(BouquetRepository bouquetRepo) {
@@ -26,7 +28,6 @@ public class BouquetService {
 	
 	public Money countTotalBouquetCost(Bouquet bouquet) {
 		Money totalCost = bouquet.getWorkCost();
-		
 		Set<FlowerPack> flowerList = bouquet.getFlowersSet();
 		
 		for (FlowerPack pack : flowerList) {

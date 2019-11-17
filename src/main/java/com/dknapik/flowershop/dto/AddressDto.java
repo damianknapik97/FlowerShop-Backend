@@ -2,6 +2,7 @@ package com.dknapik.flowershop.dto;
 
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
+
 /**
  * Used for transportation of informations related to destination of placed order.
  * 
@@ -55,36 +56,44 @@ public class AddressDto {
 	public void setId(UUID id) {
 		this.id = id;
 	}
+
 	public String getFirstName() {
 		return firstName;
 	}
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
 	public String getSecondName() {
 		return secondName;
 	}
+
 	public void setSecondName(String secondName) {
 		this.secondName = secondName;
 	}
+
 	public String getStreet() {
 		return street;
 	}
+
 	public void setStreet(String street) {
 		this.street = street;
 	}
+
 	public String getCity() {
 		return city;
 	}
+
 	public void setCity(String city) {
 		this.city = city;
 	}
+
 	public String getPostcode() {
 		return postcode;
 	}
+
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
-	
-	
 }

@@ -13,7 +13,7 @@ import com.dknapik.flowershop.model.Account;
 
 public class UserPrincipal implements UserDetails{
 	private static final long serialVersionUID = 1L;
-	private Account account;
+	private final Account account;
 
 	public UserPrincipal(Account account) {
 		this.account = account;
@@ -66,5 +66,4 @@ public class UserPrincipal implements UserDetails{
 	public String toString() {
 		return this.account.getRole();
 	}
-
 }

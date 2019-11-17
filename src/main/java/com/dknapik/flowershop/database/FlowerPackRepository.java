@@ -11,5 +11,4 @@ import com.dknapik.flowershop.model.Flower;
 public interface FlowerPackRepository extends JpaRepository<FlowerPack, UUID> {
 
     Optional<FlowerPack> findByFlower(Flower flower);
-
 }

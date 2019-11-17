@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.dknapik.flowershop.model.Bouquet;
 
-
 @Repository
 public interface BouquetRepository extends JpaRepository<Bouquet, UUID> {
 
     Optional<Bouquet> findByName(String name);
-
 }

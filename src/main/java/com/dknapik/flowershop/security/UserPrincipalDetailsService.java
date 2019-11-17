@@ -9,7 +9,7 @@ import com.dknapik.flowershop.model.Account;
 
 @Service
 public class UserPrincipalDetailsService implements UserDetailsService {
-    private AccountRepository accRepository;
+    private final AccountRepository accRepository;
 
     public UserPrincipalDetailsService(AccountRepository accRepository) {
         this.accRepository = accRepository;

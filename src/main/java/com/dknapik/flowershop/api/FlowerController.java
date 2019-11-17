@@ -17,16 +17,16 @@ import com.dknapik.flowershop.services.FlowerService;
 @RequestMapping("/products/flowers")
 @CrossOrigin
 public class FlowerController {
-	private FlowerService flowerService;
+	private final FlowerService flowerService;
 
 	@Autowired
 	public FlowerController(FlowerService flowerService) {
 		this.flowerService = flowerService;
 	}
 
+	// TODO Add Pagination
 	@GetMapping("/all")
 	public ResponseEntity<List<FlowerDto>> getAllBouquet() {
 		return new ResponseEntity<>(flowerService.getAllFlowers(), HttpStatus.OK);
 	}
-	
 }

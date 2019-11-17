@@ -48,5 +48,4 @@ public class FlowerDto {
 	public void setPrice(String price) {
 		this.price = price;
 	}
-	
 }

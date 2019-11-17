@@ -91,7 +91,7 @@ public class AccountService {
 	 * Update account side details - ones that doesn't change how provided account is accessed.
 	 * 
 	 * @param accDetailsDto
-	 * @param bindingResult - request to dto mapping results.
+	 * @param bindingResult - request to dto mapping results.`
 	 * @param principal - handle used to access spring security context to retrieve account name sending request.
 	 * @throws BindingException - mapping request to dto failed.
 	 * @throws DataProcessingException - couldn't retrieve currently logged user from security context.

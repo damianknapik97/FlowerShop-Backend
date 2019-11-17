@@ -52,11 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity security) throws Exception {
-    	
     	security.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 			// JWT doesn't require session
     			.and()
     			.csrf().disable()																		// JWT doesn't require csrf
-    			.cors()
+    			.cors()                                                                                 // Needed to use CORS bean
                 .and()
                 .logout()
     			.logoutUrl("/logout")

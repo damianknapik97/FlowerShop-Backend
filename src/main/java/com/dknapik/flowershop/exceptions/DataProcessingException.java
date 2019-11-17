@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
  *
  */
 public class DataProcessingException extends Exception implements WebExceptionInt {
-	private static final long serialVersionUID = 1L;
 	private HttpStatus status;
 
 	public DataProcessingException(String message, HttpStatus status) {
@@ -31,5 +30,4 @@ public class DataProcessingException extends Exception implements WebExceptionIn
 	public void setHttpStatus(HttpStatus status) {
 		this.status = status;
 	}
-	
 }

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 import org.javamoney.moneta.Money;
 
-
 /**
  * 
  * @author Damian
@@ -37,20 +36,24 @@ public class Flower {
 	public UUID getId() {
 		return id;
 	}
+
 	public void setId(UUID id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Money getPrice() {
 		return Money.parse(this.price);
 	}
+
 	public void setPrice(Money price) {
 		this.price = price.toString();
 	}
-	
 }

@@ -20,7 +20,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class FlowerPack {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 	@OneToOne()
 	@JoinColumn(name = "flower_id", referencedColumnName = "id")
@@ -87,6 +87,4 @@ public class FlowerPack {
 			result = 31 * result + numberOfFlowers;
 		return result;
 	}
-	
-	
 }

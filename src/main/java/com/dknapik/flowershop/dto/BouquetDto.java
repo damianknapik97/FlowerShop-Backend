@@ -48,5 +48,4 @@ public class BouquetDto {
 	public void setPrice(String price) {
 		this.price = price;
 	}
-	
 }

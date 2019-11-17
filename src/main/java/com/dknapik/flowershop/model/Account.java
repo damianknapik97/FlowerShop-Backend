@@ -86,5 +86,4 @@ public class Account {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
 }

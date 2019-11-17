@@ -52,5 +52,4 @@ public class PasswordChangeDto {
 	public void setNewPasswordConfirmation(String newPasswordConfirmation) {
 		this.newPasswordConfirmation = newPasswordConfirmation;
 	}
-	
 }

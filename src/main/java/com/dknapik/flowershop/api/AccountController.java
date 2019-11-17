@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.api;
 
-
 import java.security.Principal;
 
 import javax.validation.Valid;
@@ -173,6 +172,4 @@ public class AccountController {
 
 		return new ResponseEntity<>(response, status);
 	}
-	
-
 }

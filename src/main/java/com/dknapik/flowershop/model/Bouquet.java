@@ -85,5 +85,4 @@ public class Bouquet {
 	public void setFlowersSet(Set<FlowerPack> flowersSet) {
 		this.flowersSet = flowersSet;
 	}
-	
 }
