@@ -1,6 +1,9 @@
 package com.dknapik.flowershop.model;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +24,8 @@ public class ShoppingCart {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "flower_pack_id", referencedColumnName = "id")
     private List<FlowerPack> flowerPackList;
+    @CreatedDate
+    private Date createdDate;
 
     public ShoppingCart(String name, Account account, List<Bouquet> bouquetList, List<FlowerPack> flowerPackList) {
         this.name = name;
@@ -69,5 +74,9 @@ public class ShoppingCart {
 
     public void setFlowerPackList(List<FlowerPack> flowerPackList) {
         this.flowerPackList = flowerPackList;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
     }
 }
