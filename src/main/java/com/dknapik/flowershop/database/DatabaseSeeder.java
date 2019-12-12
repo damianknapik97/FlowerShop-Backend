@@ -121,7 +121,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 	}
 
 	/**
-	 * Initialize database with FlowerPacks consisting of flowers and number of flowers in the pack, used for debugging/testing purposes
+	 * Initialize database with FlowerPacks consisting of flowers and number of flowers in the pack, used for
+	 * debugging/testing purposes
+	 *
 	 */
 	private void initializeFlowerPacks() {
 		/* Retrieve flowers for FlowerPack construct */

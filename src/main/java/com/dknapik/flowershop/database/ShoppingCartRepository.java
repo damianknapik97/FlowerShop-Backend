@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public interface ShoppingCartRepository  extends JpaRepository<ShoppingCart, UUID> {
 
-    List<ShoppingCart> findByAccount_ID(UUID accountID);
+    List<ShoppingCart> findByAccount_id(UUID accountID);
 
-    Optional<ShoppingCart> findFirstOrderByCreationDateDesc();
+    Optional<ShoppingCart> findFirstByOrderByCreationDateDesc();
 
 }

@@ -25,7 +25,7 @@ public class ShoppingCart {
     @JoinColumn(name = "flower_pack_id", referencedColumnName = "id")
     private List<FlowerPack> flowerPackList;
     @CreatedDate
-    private Date createdDate;
+    private Date creationDate;
 
     public ShoppingCart(String name, Account account, List<Bouquet> bouquetList, List<FlowerPack> flowerPackList) {
         this.name = name;
@@ -77,6 +77,6 @@ public class ShoppingCart {
     }
 
     public Date getCreatedDate() {
-        return createdDate;
+        return creationDate;
     }
 }
