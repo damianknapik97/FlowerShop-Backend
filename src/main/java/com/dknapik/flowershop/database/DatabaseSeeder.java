@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Component
-public class DatabaseSeeder implements CommandLineRunner {
+public class DatabaseSeeder { //implements CommandLineRunner {
 	@Value("${app-debug-mode}")
 	private boolean debugMode;
 	private final BouquetRepository bouquetRepository;
@@ -68,7 +68,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 		this.flowerPackService = flowerPackService;
 	}
 	
-	@Override
+	//@Override
 	public void run(String... args) throws Exception {
 		this.initializeAccounts();
 		if (debugMode) {

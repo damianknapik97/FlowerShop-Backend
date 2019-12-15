@@ -25,9 +25,14 @@ configurations {
 
 
 task runDocker(type: Exec) {
-	commandLine "cmd", "/c", 'RunPowerShellScript.bat'
+	commandLine 'cmd', '/c', 'RunPowerShellScript.bat'
 }
 bootRun.dependsOn(runDocker)
+
+task runTestDocker(type: Exec) {
+	commandLine 'cmd', '/c', 'RunPowerShellScript.bat', '"true"'
+}
+cleanTest.dependsOn(runTestDocker)
 
 repositories {
 	mavenCentral()
@@ -63,24 +68,13 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 
 	//Testing application
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
 	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.0.RELEASE'
-
-	// https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-	compile group: 'org.testcontainers', name: 'testcontainers', version: '1.12.4'
-	// https://mvnrepository.com/artifact/org.testcontainers/postgresql
-	testCompile group: 'org.testcontainers', name: 'postgresql', version: '1.12.4'
-
-	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	//testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
-	// https://mvnrepository.com/artifact/com.h2database/h2
-	testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
-
+	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 }
 
 test {
