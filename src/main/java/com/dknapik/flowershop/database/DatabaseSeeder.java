@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Component
-public class DatabaseSeeder { //implements CommandLineRunner {
+public class DatabaseSeeder implements CommandLineRunner {
 	@Value("${app-debug-mode}")
 	private boolean debugMode;
 	private final BouquetRepository bouquetRepository;
@@ -43,7 +43,6 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 	private final ApplicationContext context;
 	private final CurrencyUnit currency;
 
-	private final FlowerPackService flowerPackService;
 
 	private final String flowerNameRose = "Róża";
 	private final String flowerNameTulip = "Tulipan";
@@ -56,8 +55,7 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 						  AccountRepository accountRepository,
 						  ShoppingCartRepository shoppingCartRepository,
 						  Environment env,
-						  ApplicationContext context,
-						  FlowerPackService flowerPackService) {
+						  ApplicationContext context) {
 		this.bouquetRepository = bouquetRepository;
 		this.flowerRepository = flowerRepository;
 		this.flowerPackRepository = flowerPackRepository;
@@ -65,10 +63,9 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 		this.shoppingCartRepository = shoppingCartRepository;
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 		this.context = context;
-		this.flowerPackService = flowerPackService;
 	}
 	
-	//@Override
+	@Override
 	public void run(String... args) throws Exception {
 		this.initializeAccounts();
 		if (debugMode) {
@@ -137,7 +134,10 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 				new FlowerPack(flowerTulip, 8),
 				new FlowerPack(flowerFressia, 8)
 		);
-		this.flowerPackService.saveNonExistingFlowerPacks(toSave);
+
+		/* Save entities */
+		this.flowerPackRepository.saveAll(toSave);
+		this.flowerPackRepository.flush();
 	}
 
 	/**
@@ -154,33 +154,29 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 
 		/* New bouquet from FlowerPack */
 		flowerPackList.add(new FlowerPack(flowerRose, 5));
+		this.flowerPackRepository.saveAll(flowerPackList);
+		this.flowerPackRepository.flush();
 		this.bouquetRepository.saveAndFlush(new Bouquet("Basic", Money.of(10, currency), 10, flowerPackList));
-		this.flowerPackService.saveNonExistingFlowerPacks(flowerPackList);
 
 		/* New bouquet from two FlowerPacks */
 		flowerPackList = new HashSet<>();
 		flowerPackList.add(new FlowerPack(flowerRose, 5));
 		flowerPackList.add(new FlowerPack(flowerTulip, 3));
+		/* Save only non existing FlowerPacks because of existing constraints */
+		this.flowerPackRepository.saveAll(flowerPackList);
+		//this.flowerPackRepository.flush();
 		this.bouquetRepository.saveAndFlush(new Bouquet("Expanded", Money.of(15, currency), 15, flowerPackList));
 
-		/* Save only non existing FlowerPacks because of existing constraints */
-		this.flowerPackService.saveNonExistingFlowerPacks(flowerPackList);
 	}
 	/**
 	 * Initialize database with shopping cart assigned to root, used for debugging/testing purposes
 	 */
 	private void initializeShoppingCart() {
 		String shoppingCartName = "TestCart";						// New entity name
-		String userName = "root";									// User to assign shopping cart to
 		String bouquetName = "Basic";								// For retrieving shopping cart product - Bouquet
 		int numberOfFlowers = 5;									// For retrieving shopping cart product - FlowerPack
-		List<Bouquet> bouquetList = null;							// New entity bouquet list
+		List<Bouquet> bouquetList;									// New entity bouquet list
 		List<FlowerPack> flowerPackList = new LinkedList<>();		// New entity flower list
-
-		/* Retrieve account for entity constructor */
-		Account account = this.accountRepository.findByName(userName)
-				.orElseThrow(() -> new UsernameNotFoundException(
-						"User with name " + userName + " not found"));
 
 		/* Retrieve bouquet list for entity constructor */
 		bouquetList = this.bouquetRepository.findByNameAndFetchFlowerPacksEagerly(bouquetName)
@@ -197,9 +193,19 @@ public class DatabaseSeeder { //implements CommandLineRunner {
 		});
 		flowerPackList.add(flowerPack);
 
+		this.bouquetRepository.saveAll(bouquetList);
+		this.bouquetRepository.flush();
+
 		/* Create and save new shopping cart */
 		ShoppingCart shoppingCart = new ShoppingCart(
-				shoppingCartName, account, bouquetList, flowerPackList);
+				shoppingCartName, bouquetList, flowerPackList);
+
+		this.flowerPackRepository.saveAll(flowerPackList);
+		this.flowerPackRepository.flush();
+
+		this.bouquetRepository.saveAll(bouquetList);
+		this.bouquetRepository.flush();
+
 		this.shoppingCartRepository.saveAndFlush(shoppingCart);
 	}
 }

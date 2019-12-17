@@ -15,7 +15,7 @@ import javax.persistence.*;
 // TODO - Currently only such class is allowed for one bouquet in the whole database - fix this !
 @Table(
 	uniqueConstraints =
-		@UniqueConstraint(columnNames = {"flower_id", "numberOfFlowers"})
+		@UniqueConstraint(columnNames = {"bouquet_id", "numberOfFlowers"})
 )
 @Entity
 public class FlowerPack {

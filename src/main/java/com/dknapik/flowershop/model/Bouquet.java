@@ -31,7 +31,7 @@ public class Bouquet {
 	private String workCost;
 	@Column
 	private int totalPriceDiscountPercent;
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn(name = "bouquet_id", referencedColumnName = "id")
 	private Set<FlowerPack> flowersSet;  // Used to define number of specific flowers inside this bouquet
 	

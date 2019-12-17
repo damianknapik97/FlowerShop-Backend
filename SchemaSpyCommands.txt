@@ -1,0 +1,1 @@
+java -jar schemaspy-6.1.0.jar -t pgsql11 -db postgres -host localhost:5434 -u admin -p admin -o ./schemaspy -dp .\postgresql-42.2.9.jar -s public -vizjs

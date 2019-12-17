@@ -5,7 +5,6 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -15,21 +14,17 @@ public class ShoppingCart {
     private UUID id;
     @Column
     private String name;
-    @OneToOne()
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account account;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "bouquet_id", referencedColumnName = "id")
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
     private List<Bouquet> bouquetList;
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flower_pack_id", referencedColumnName = "id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
     private List<FlowerPack> flowerPackList;
     @CreatedDate
     private Date creationDate;
 
-    public ShoppingCart(String name, Account account, List<Bouquet> bouquetList, List<FlowerPack> flowerPackList) {
+    public ShoppingCart(String name, List<Bouquet> bouquetList, List<FlowerPack> flowerPackList) {
         this.name = name;
-        this.account = account;
         this.bouquetList = bouquetList;
         this.flowerPackList = flowerPackList;
     }
@@ -42,14 +37,6 @@ public class ShoppingCart {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public String getName() {

@@ -16,7 +16,7 @@ public class FlowerPackService {
         this.flowerPackRepository = flowerPackRepository;
     }
 
-    public void saveNonExistingFlowerPacks(Iterable<FlowerPack> iterable) {
+    public void saveNonExistingFlowerPacks(Collection<FlowerPack> iterable) {
         for (FlowerPack fp : iterable) {
             if (!this.flowerPackRepository.findByFlower_NameAndNumberOfFlowers(
                     fp.getFlower().getName(),
