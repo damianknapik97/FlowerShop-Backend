@@ -6,7 +6,6 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 import com.dknapik.flowershop.model.*;
-import com.dknapik.flowershop.services.FlowerPackService;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseSeeder implements CommandLineRunner {
 	@Value("${app-debug-mode}")
 	private boolean debugMode;
-	private final BouquetRepository bouquetRepository;
-	private final FlowerRepository flowerRepository;
-	private final FlowerPackRepository flowerPackRepository;
 	private final AccountRepository accountRepository;
 
-	private final ShoppingCartRepository shoppingCartRepository;
 	private final ApplicationContext context;
 	private final CurrencyUnit currency;
 
@@ -48,18 +43,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 	private final String flowerNameFreesia = "Frezja";
 
 	@Autowired
-	public DatabaseSeeder(BouquetRepository bouquetRepository,
-						  FlowerRepository flowerRepository,
-						  FlowerPackRepository flowerPackRepository,
-						  AccountRepository accountRepository,
-						  ShoppingCartRepository shoppingCartRepository,
+	public DatabaseSeeder(AccountRepository accountRepository,
 						  Environment env,
 						  ApplicationContext context) {
-		this.bouquetRepository = bouquetRepository;
-		this.flowerRepository = flowerRepository;
-		this.flowerPackRepository = flowerPackRepository;
 		this.accountRepository = accountRepository;
-		this.shoppingCartRepository = shoppingCartRepository;
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 		this.context = context;
 	}

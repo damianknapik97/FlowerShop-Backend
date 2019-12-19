@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest
 @ContextConfiguration
 public class FlowerRepositoryTest {
-    private FlowerRepository flowerRepository;
     private Environment env;
     @Value("${app-monetary-currency}")
     private CurrencyUnit currency;
