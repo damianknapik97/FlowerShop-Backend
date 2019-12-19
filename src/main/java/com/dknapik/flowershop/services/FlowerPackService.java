@@ -1,7 +1,6 @@
 package com.dknapik.flowershop.services;
 
 import com.dknapik.flowershop.database.FlowerPackRepository;
-import com.dknapik.flowershop.model.FlowerPack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
