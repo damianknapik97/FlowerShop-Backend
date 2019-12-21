@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.product;
 
 import com.dknapik.flowershop.model.product.Flower;
 import org.springframework.data.jpa.repository.JpaRepository;

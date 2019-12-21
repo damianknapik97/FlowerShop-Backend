@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.database.product;
 
-import com.dknapik.flowershop.database.FlowerRepository;
 import com.dknapik.flowershop.model.product.Flower;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -10,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import java.util.NoSuchElementException;
 
@@ -27,13 +24,8 @@ public class FlowerRepositoryTest {
     @Autowired
     private Environment env;
 
-
-    @BeforeTestClass
-    public void beforeTestClass() {
-    }
-
     @Test
-    public void saveToDatabase() {
+    public void saveToDatabaseTest() {
         /* Create new Flower object */
         String flowerName = "Save Flower Test";
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
@@ -51,7 +43,7 @@ public class FlowerRepositoryTest {
 
 
     @Test
-    public void findByName() throws NoSuchElementException {
+    public void findByNameTest() throws NoSuchElementException {
         /* Create Flower object */
         String flowerName = "Test Flower";
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
