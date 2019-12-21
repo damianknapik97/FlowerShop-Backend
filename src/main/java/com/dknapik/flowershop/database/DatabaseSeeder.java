@@ -6,6 +6,7 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 import com.dknapik.flowershop.model.*;
+import com.dknapik.flowershop.model.product.Flower;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,28 +34,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseSeeder implements CommandLineRunner {
 	@Value("${app-debug-mode}")
 	private boolean debugMode;
-	private final AccountRepository accountRepository;
-
 	private final ApplicationContext context;
 	private final CurrencyUnit currency;
 
-	private final String flowerNameRose = "Róża";
-	private final String flowerNameTulip = "Tulipan";
-	private final String flowerNameFreesia = "Frezja";
+	private final AccountRepository accountRepository;
+	private final FlowerRepository flowerRepository;
+
 
 	@Autowired
-	public DatabaseSeeder(AccountRepository accountRepository,
-						  Environment env,
-						  ApplicationContext context) {
-		this.accountRepository = accountRepository;
+	public DatabaseSeeder(Environment env,
+						  ApplicationContext context,
+						  AccountRepository accountRepository,
+						  FlowerRepository flowerRepository) {
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 		this.context = context;
+		this.accountRepository = accountRepository;
+		this.flowerRepository = flowerRepository;
 	}
 	
 	@Override
 	public void run(String... args) throws Exception {
 		this.initializeAccounts();
 		if (debugMode) {
+			initializeFlowers(30);
 		}
 	}
 	
@@ -79,6 +81,25 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 		this.accountRepository.saveAll(initialDataAccounts);
 		this.accountRepository.flush();
+	}
+
+	private void initializeFlowers(int numberOfObjects) {
+		String flowerName = "Rose" ;
+		Money price = Money.of(5, currency);
+		String description = "Long a symbol of love and passion, the ancient Greeks and Romans associated roses with" +
+				" Aphrodite and Venus, goddess of love. Used for hundreds of years to convey messages without words," +
+				" they also represent confidentiality. In fact, the Latin expression \"sub rosa\"(literally," +
+				" \"under the rose\") means something told in secret, and in ancient Rome, a wild rose was placed" +
+				" on the door to a room where confidential matters were being discussed.";
+		int height = 5;
+		Flower newFlower;
+
+
+		for (int i = 0; i < numberOfObjects; i++) {
+			newFlower = new Flower(flowerName + i, price, description, height);
+			flowerRepository.save(newFlower);
+		}
+		flowerRepository.flush();
 	}
 
 
