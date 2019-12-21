@@ -5,7 +5,10 @@ import java.util.*;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
+import com.dknapik.flowershop.database.product.AddonRepository;
+import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.model.*;
+import com.dknapik.flowershop.model.product.Addon;
 import com.dknapik.flowershop.model.product.Flower;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.dknapik.flowershop.security.UserRoles;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -39,24 +39,29 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 	private final AccountRepository accountRepository;
 	private final FlowerRepository flowerRepository;
+	private final AddonRepository addonRepository;
 
 
 	@Autowired
 	public DatabaseSeeder(Environment env,
 						  ApplicationContext context,
 						  AccountRepository accountRepository,
-						  FlowerRepository flowerRepository) {
+						  FlowerRepository flowerRepository,
+						  AddonRepository addonRepository) {
 		this.currency = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
 		this.context = context;
 		this.accountRepository = accountRepository;
 		this.flowerRepository = flowerRepository;
+		this.addonRepository = addonRepository;
 	}
 	
 	@Override
 	public void run(String... args) throws Exception {
+		int numberOfObjects = 30;
+
 		this.initializeAccounts();
 		if (debugMode) {
-			initializeFlowers(30);
+			initializeFlowers(numberOfObjects);
 		}
 	}
 	
@@ -100,6 +105,19 @@ public class DatabaseSeeder implements CommandLineRunner {
 			flowerRepository.save(newFlower);
 		}
 		flowerRepository.flush();
+	}
+
+	private void initializeAddons() {
+		Money price = Money.of(2, currency);
+		String description = "The blue ribbon is a symbol of high quality.";
+		Addon[] addonArray = {
+				new Addon("Ribbon", "Blue", price, description),
+				new Addon("Ribbon", "Red", price, description),
+				new Addon("Bow", "Blue", price, description),
+		};
+
+		addonRepository.saveAll(Arrays.asList(addonArray));
+		addonRepository.flush();
 	}
 
 
