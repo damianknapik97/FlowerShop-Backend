@@ -8,14 +8,23 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class for seeding database accounts containing certain privileges.
+ *
+ * @author Damian
+ */
 @Component
 public class AccountSeeder implements SeederInt {
-    @Autowired
-    private ApplicationContext applicationContext;  // To retrieve application password encoder
-    @Autowired
-    private AccountRepository accountRepository;    // To save/retrieve entities from database
-    private static final boolean onlyForDebug = false;    // To check if class should be always instantiated and used
+    private ApplicationContext applicationContext;      // To retrieve application password encoder
+    private AccountRepository accountRepository;        // To save/retrieve entities from database
+    private static final boolean onlyForDebug = false;  // To check if class should be always instantiated and used
 
+
+    @Autowired
+    public AccountSeeder(ApplicationContext applicationContext, AccountRepository accountRepository) {
+        this.applicationContext = applicationContext;
+        this.accountRepository = accountRepository;
+    }
 
     @Override
     public void seed() {

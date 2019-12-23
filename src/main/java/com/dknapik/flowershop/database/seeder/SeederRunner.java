@@ -31,7 +31,7 @@ public class SeederRunner implements CommandLineRunner {
 		seederList = Arrays.asList(
 				accountSeeder,
 				addonSeeder,
-				flowerSeeder
+				flowerSeeder.setNumberOfEntities(30)
 		);
 	}
 

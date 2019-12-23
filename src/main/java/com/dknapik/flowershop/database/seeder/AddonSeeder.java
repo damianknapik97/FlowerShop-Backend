@@ -7,28 +7,23 @@ import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 
 /**
  * Class for seeding database with some debug/test values
  *
- * TODO - Figure out if there is a better way than variable dependency injection
- * Current observations:
- *  1) Annotating this class with @Component annotation will cause Spring to support this class life even thought
- *     it is used only at the start of application.
- *  2) Passing handles to objects manually through constructor would create a very large constructor
- *     in the parent class. This would decrease code readability.
- *  3) Currently used variable dependency injection forces variables without final keyword, which can cause
- *     some troubles in code readability.
+ * @author Damian
  */
 @Component
 public class AddonSeeder implements SeederInt  {
-    @Autowired
-    private MoneyUtils moneyUtils;                     // Money currency retrieved from application context
-    @Autowired
-    private AddonRepository addonRepository;           // Repository for database retrieving/saving entities
+    private final MoneyUtils moneyUtils;               // Money currency retrieved from application context
+    private final AddonRepository addonRepository;           // Repository for database retrieving/saving entities
     private static final boolean onlyForDebug = true;  // To check if class should be always instantiated and used
 
+    @Autowired
+    public AddonSeeder(MoneyUtils moneyUtils, AddonRepository addonRepository) {
+        this.moneyUtils = moneyUtils;
+        this.addonRepository = addonRepository;
+    }
 
     @Override
     public void seed() {

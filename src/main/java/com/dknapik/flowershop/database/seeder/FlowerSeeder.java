@@ -10,24 +10,21 @@ import org.springframework.stereotype.Component;
 /**
  * Class for seeding database with some debug/test values
  *
- * TODO - Figure out if there is a better way than variable dependency injection
- * Current observations:
- *  1) Annotating this class with @Component annotation will cause Spring to support this class life even thought
- *     it is used only at the start of application.
- *  2) Passing handles to objects manually through constructor would create a very large constructor
- *     in the parent class. This would decrease code readability.
- *  3) Currently used variable dependency injection forces variables without final keyword, which can cause
- *     some troubles in code readability.
+ * @author Damian
  */
 @Component
 public class FlowerSeeder implements SeederInt {
-    @Autowired
     private MoneyUtils moneyUtils;                     // Money currency retrieved from application context
-    @Autowired
     private FlowerRepository flowerRepository;         // Repository for database retrieving/saving entities
     private static final boolean onlyForDebug = true;  // To check if class should be always instantiated and used
     private int numberOfEntities = 1;                  // How many entities should be inserted into database (OPTIONAL)
 
+
+    @Autowired
+    public FlowerSeeder(MoneyUtils moneyUtils, FlowerRepository flowerRepository) {
+        this.moneyUtils = moneyUtils;
+        this.flowerRepository = flowerRepository;
+    }
 
     @Override
     public void seed() {
@@ -62,8 +59,9 @@ public class FlowerSeeder implements SeederInt {
         return numberOfEntities;
     }
 
-    public void setNumberOfEntities(int numberOfEntities) {
+    public FlowerSeeder setNumberOfEntities(int numberOfEntities) {
         this.numberOfEntities = numberOfEntities;
+        return this;
     }
 
     private boolean checkExistence(Flower flower) {

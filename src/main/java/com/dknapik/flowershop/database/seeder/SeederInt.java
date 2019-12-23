@@ -1,12 +1,14 @@
 package com.dknapik.flowershop.database.seeder;
 
 /**
- * Used to populated database with examplary data to assits in debbuging and development.
+ * Used to populated database with exemplary data to assist in debugging and development.
+ *
+ * @author Damian
  */
 public interface SeederInt {
 
     /**
-     * Main method where objects are instantiated and saved throught repository into database.
+     * Main method where objects are instantiated and saved through repository into database.
      */
     public void seed();
 
