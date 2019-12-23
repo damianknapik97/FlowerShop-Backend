@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.money.Monetary;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@TestPropertySource(properties = {"app-monetary-currency=PLN"})
 public class AddonRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;

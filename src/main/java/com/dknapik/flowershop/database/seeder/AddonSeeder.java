@@ -27,6 +27,7 @@ public class AddonSeeder implements SeederInt  {
 
     @Override
     public void seed() {
+        /* Create array with entities to save */
         Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
         String description = "The ribbon is a symbol of high quality.";
 
@@ -36,12 +37,14 @@ public class AddonSeeder implements SeederInt  {
                 new Addon("Bow", "Blue", price, description),
         };
 
+        /* Check if entity already exists and save it if not */
         for (Addon addon : addonArray) {
             if (!checkIfExists(addon)) {
                 addonRepository.save(addon);
             }
         }
 
+        /* Flush all changes */
         addonRepository.flush();
     }
 
@@ -50,6 +53,7 @@ public class AddonSeeder implements SeederInt  {
         return onlyForDebug;
     }
 
+    /* Check if value already exists in database */
     private boolean checkIfExists(Addon addon) {
         return addonRepository.findByNameAndColour(addon.getName(), addon.getColour()) != null;
     }

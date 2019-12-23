@@ -64,6 +64,7 @@ public class FlowerSeeder implements SeederInt {
         return this;
     }
 
+    /* Check if value already exists in database */
     private boolean checkExistence(Flower flower) {
         return flowerRepository.findByName(flower.getName()).isPresent();
     }

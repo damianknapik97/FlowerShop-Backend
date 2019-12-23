@@ -23,7 +23,9 @@ public class SeederRunner implements CommandLineRunner {
 	private boolean debugMode;
 	private List<SeederInt> seederList;
 
-
+	/**
+	 *  Initialize all sub seeder classes
+	 */
 	public SeederRunner(AccountSeeder accountSeeder,
 						AddonSeeder addonSeeder,
 						FlowerSeeder flowerSeeder) {
@@ -35,6 +37,9 @@ public class SeederRunner implements CommandLineRunner {
 		);
 	}
 
+	/**
+	 *  Seed database with data
+	 */
 	@Override
 	public void run(String... args) {
 		for (SeederInt seeder : seederList) {

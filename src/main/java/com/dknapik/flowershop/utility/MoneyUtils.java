@@ -8,15 +8,15 @@ import javax.money.Monetary;
 
 @Service
 public class MoneyUtils {
-    private final String applicationCurrency;
+    private final CurrencyUnit currencyUnit;
 
 
     public MoneyUtils(Environment env) {
-        applicationCurrency = env.getProperty("app-monetary-currency");
+        this.currencyUnit = Monetary.getCurrency(env.getProperty("app-monetary-currency"));
     }
 
     public CurrencyUnit getApplicationCurrencyUnit() {
-        return Monetary.getCurrency(applicationCurrency);
+        return currencyUnit;
     }
 
 }
