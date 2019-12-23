@@ -26,6 +26,10 @@ public class AddonRepositoryTest {
     @Autowired
     private AddonRepository addonRepository;
 
+
+    /**
+     * Check if entity can be saved to database without any undesired changes or errors
+     */
     @Test
     public void saveToDatabaseTest() {
         String name = "Test Addon";

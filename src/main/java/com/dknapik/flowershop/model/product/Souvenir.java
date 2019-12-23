@@ -17,6 +17,7 @@ public class Souvenir {
     @Column
     private String description;
 
+    public Souvenir() {}
 
     public Souvenir(String name, Money price, String description) {
         this.name = name;

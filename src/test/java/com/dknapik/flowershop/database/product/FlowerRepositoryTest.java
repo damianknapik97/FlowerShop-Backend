@@ -26,6 +26,10 @@ public class FlowerRepositoryTest {
     @Autowired
     private Environment env;
 
+
+    /**
+     * Check if entity can be saved to database without any undesired changes or errors
+     */
     @Test
     public void saveToDatabaseTest() {
         /* Create new Flower object */

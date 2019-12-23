@@ -28,12 +28,17 @@ public class SeederRunner implements CommandLineRunner {
 	 */
 	public SeederRunner(AccountSeeder accountSeeder,
 						AddonSeeder addonSeeder,
-						FlowerSeeder flowerSeeder) {
+						FlowerSeeder flowerSeeder,
+						SouvenirSeeder souvenirSeeder,
+						OccasionalArticleSeeder occasionalArticle) {
 
 		seederList = Arrays.asList(
 				accountSeeder,
 				addonSeeder,
-				flowerSeeder.setNumberOfEntities(30)
+				souvenirSeeder,
+				flowerSeeder.setNumberOfEntities(30),
+				occasionalArticle
+
 		);
 	}
 
