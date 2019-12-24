@@ -30,14 +30,16 @@ public class SeederRunner implements CommandLineRunner {
 						AddonSeeder addonSeeder,
 						FlowerSeeder flowerSeeder,
 						SouvenirSeeder souvenirSeeder,
-						OccasionalArticleSeeder occasionalArticle) {
+						OccasionalArticleSeeder occasionalArticle,
+						OccasionalArticleOrderSeeder occasionalArticleOrderSeeder) {
 
 		seederList = Arrays.asList(
 				accountSeeder,
 				addonSeeder,
 				souvenirSeeder,
 				flowerSeeder.setNumberOfEntities(30),
-				occasionalArticle
+				occasionalArticle,
+				occasionalArticleOrderSeeder
 
 		);
 	}
