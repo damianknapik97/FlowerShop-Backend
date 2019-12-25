@@ -78,6 +78,11 @@ public class OccasionalArticleOrderRepositoryTest {
     }
 
 
+    /**
+     * Check if product entities are eagerly extracted from order entity
+     *
+     * @throws NoSuchElementException
+     */
     @Test
     public void occasionalArticleEagerFetchTypeTest() throws NoSuchElementException {
         /* Retrieve OccasionalArticle that will be part of the new entity from database */

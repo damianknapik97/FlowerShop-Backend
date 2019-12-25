@@ -13,7 +13,7 @@ public class OccasionalArticleOrder {
     @Column
     private int itemCount;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn()
+    @JoinColumn(nullable = false)
     private OccasionalArticle occasionalArticle;
 
 

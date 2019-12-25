@@ -7,10 +7,15 @@ import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utility.MoneyUtils;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ *  TODO: This seeder is probably useless as it doesn't interact with user in any way and is only part of other entities
+ *
+ */
 @Component
 public class OccasionalArticleOrderSeeder implements SeederInt {
     private final MoneyUtils moneyUtils;                  // Money currency retrieved from application context
@@ -30,29 +35,47 @@ public class OccasionalArticleOrderSeeder implements SeederInt {
 
     @Override
     public void seed() {
-        /* Create array with entities to save */
-        String name = "Card";
+        /* Retrieve Occasional Article from database */
         Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
-        String description = "This item is great for specific occasion.";
-        String theme = "New Year";
+        OccasionalArticle occasionalArticle =
+                retrieveOccasionalArticle("Card",
+                                           price,
+                                          "This item is great for specific occasion.",
+                                          "New Year");
+
+
+        /* Create new order entity, check if it already exists and save it to database if not */
+        OccasionalArticleOrder occasionalArticleOrder = new OccasionalArticleOrder(1, occasionalArticle);
+        Optional<OccasionalArticleOrder> searchResult = orderRepository.findOne(Example.of(occasionalArticleOrder));
+        if (!searchResult.isPresent()) {
+            orderRepository.saveAndFlush(occasionalArticleOrder);
+        }
+    }
+
+    /**
+     *
+     *  Search for OccasionalArticle with provided values in database, and create and save new if search failed.
+     *
+     * @param name
+     * @param price
+     * @param description
+     * @param theme
+     * @return Occasional Article entity saved in database.
+     */
+    private OccasionalArticle retrieveOccasionalArticle(String name, Money price, String description, String theme) {
         Optional<OccasionalArticle> occasionalArticle =
                 occasionalArticleRepository.findByNameAndDescriptionAndTheme(name, description, theme);
-
 
         if (!occasionalArticle.isPresent()) {
             occasionalArticle = Optional.of(new OccasionalArticle(name, price, description, theme));
             occasionalArticleRepository.saveAndFlush(occasionalArticle.get());
         }
 
-        OccasionalArticleOrder occasionalArticleOrder =
-                new OccasionalArticleOrder(1, occasionalArticle.get());
-
-        orderRepository.saveAndFlush(occasionalArticleOrder);
+        return occasionalArticle.get();
     }
 
     @Override
     public boolean isOnlyForDebug() {
         return onlyForDebug;
     }
-
 }
