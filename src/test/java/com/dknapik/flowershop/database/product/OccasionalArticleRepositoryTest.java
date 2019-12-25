@@ -1,7 +1,6 @@
 package com.dknapik.flowershop.database.product;
 
 import com.dknapik.flowershop.model.product.OccasionalArticle;
-import com.dknapik.flowershop.model.product.Souvenir;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
