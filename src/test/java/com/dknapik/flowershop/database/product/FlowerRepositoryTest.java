@@ -63,6 +63,6 @@ public class FlowerRepositoryTest {
 
         /* Retrieve it using repository with find by name method and compare the two objects */
         Flower searchResult = flowerRepository.findByName(flowerName).get();
-        Assertions.assertThat(searchResult).isEqualTo(searchResult);
+        Assertions.assertThat(searchResult).isEqualToComparingFieldByField(flower);
     }
 }
