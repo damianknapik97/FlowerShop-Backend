@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.database;
 
 import com.dknapik.flowershop.model.Payment;
+import com.dknapik.flowershop.model.PaymentType;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class PaymentRepositoryTest {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create entity */
-        Payment payment = new Payment(money, "Online bank transfer");
+        Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
 
         /* Save entity to database using repository */
         paymentRepository.saveAndFlush(payment);
@@ -51,7 +52,7 @@ public class PaymentRepositoryTest {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create  entity */
-        Payment payment = new Payment(money, "Online bank transfer");
+        Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
 
         /* Save entity to database */
         entityManager.persistAndFlush(payment);

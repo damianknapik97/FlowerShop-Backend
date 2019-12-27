@@ -3,7 +3,6 @@ package com.dknapik.flowershop.model.product;
 import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity

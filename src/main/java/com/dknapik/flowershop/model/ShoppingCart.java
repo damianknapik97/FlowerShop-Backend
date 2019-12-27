@@ -3,7 +3,7 @@ package com.dknapik.flowershop.model;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public class ShoppingCart {
     private String name;
     @CreatedDate
     @Column
-    private Date creationDate;
+    private LocalDateTime creationDate;
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<OccasionalArticleOrder> occasionalArticleOrderList;
@@ -49,11 +49,11 @@ public class ShoppingCart {
         this.name = name;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

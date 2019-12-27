@@ -31,8 +31,8 @@ public class SeederRunner implements CommandLineRunner {
 						FlowerSeeder flowerSeeder,
 						SouvenirSeeder souvenirSeeder,
 						OccasionalArticleSeeder occasionalArticle,
-						OccasionalArticleOrderSeeder occasionalArticleOrderSeeder,
-						ShoppingCartSeeder shoppingCartSeeder) {
+						ShoppingCartSeeder shoppingCartSeeder,
+						OccasionalArticleSeeder occasionalArticleSeeder) {
 
 		seederList = Arrays.asList(
 				accountSeeder,
@@ -40,8 +40,8 @@ public class SeederRunner implements CommandLineRunner {
 				souvenirSeeder,
 				flowerSeeder.setNumberOfEntities(30),
 				occasionalArticle,
-				occasionalArticleOrderSeeder,
-				shoppingCartSeeder
+				shoppingCartSeeder,
+				occasionalArticleSeeder
 		);
 	}
 

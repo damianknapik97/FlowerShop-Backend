@@ -12,20 +12,21 @@ public class Payment {
     private UUID id;
     @Column(nullable = false)
     private String totalPrice;
-    @Column(nullable = false)
-    private String paymentType;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private PaymentType paymentType;
     @Column
     private boolean wasPaid;
 
 
     public Payment() { }
 
-    public Payment(Money totalPrice, String paymentType) {
+    public Payment(Money totalPrice, PaymentType paymentType) {
         this.totalPrice = totalPrice.toString();
         this.paymentType = paymentType;
     }
 
-    public Payment(Money totalPrice, String paymentType, boolean wasPaid) {
+    public Payment(Money totalPrice, PaymentType paymentType, boolean wasPaid) {
         this.totalPrice = totalPrice.toString();
         this.paymentType = paymentType;
         this.wasPaid = wasPaid;
@@ -45,14 +46,6 @@ public class Payment {
 
     public void setTotalPrice(Money totalPrice) {
         this.totalPrice = totalPrice.toString();
-    }
-
-    public String getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
     }
 
     public boolean isWasPaid() {

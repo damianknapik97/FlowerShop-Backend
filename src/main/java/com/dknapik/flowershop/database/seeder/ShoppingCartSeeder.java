@@ -26,7 +26,7 @@ public class ShoppingCartSeeder implements SeederInt {
 
 
     @Autowired
-    public ShoppingCartSeeder (MoneyUtils moneyUtils,
+    public ShoppingCartSeeder(MoneyUtils moneyUtils,
                                OccasionalArticleRepository occasionalArticleRepository,
                                OccasionalArticleOrderRepository occasionalArticleOrderRepository,
                                ShoppingCartRepository shoppingCartRepository) {
