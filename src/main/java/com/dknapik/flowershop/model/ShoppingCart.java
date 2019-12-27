@@ -64,4 +64,26 @@ public class ShoppingCart {
     public void setOccasionalArticleOrderList(List<OccasionalArticleOrder> occasionalArticleOrderList) {
         this.occasionalArticleOrderList = occasionalArticleOrderList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ShoppingCart that = (ShoppingCart) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        return occasionalArticleOrderList != null ? occasionalArticleOrderList.equals(that.occasionalArticleOrderList) : that.occasionalArticleOrderList == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (occasionalArticleOrderList != null ? occasionalArticleOrderList.hashCode() : 0);
+        return result;
+    }
 }

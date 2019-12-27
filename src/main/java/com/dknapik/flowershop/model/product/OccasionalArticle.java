@@ -72,4 +72,28 @@ public class OccasionalArticle {
     public void setTheme(String theme) {
         this.theme = theme;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OccasionalArticle that = (OccasionalArticle) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (price != null ? !price.equals(that.price) : that.price != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return theme != null ? theme.equals(that.theme) : that.theme == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (theme != null ? theme.hashCode() : 0);
+        return result;
+    }
 }

@@ -91,4 +91,30 @@ public class DeliveryAddress {
     public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DeliveryAddress address = (DeliveryAddress) o;
+
+        if (id != null ? !id.equals(address.id) : address.id != null) return false;
+        if (cityName != null ? !cityName.equals(address.cityName) : address.cityName != null) return false;
+        if (zipCode != null ? !zipCode.equals(address.zipCode) : address.zipCode != null) return false;
+        if (streetName != null ? !streetName.equals(address.streetName) : address.streetName != null) return false;
+        if (houseNumber != null ? !houseNumber.equals(address.houseNumber) : address.houseNumber != null) return false;
+        return apartmentNumber != null ? apartmentNumber.equals(address.apartmentNumber) : address.apartmentNumber == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (cityName != null ? cityName.hashCode() : 0);
+        result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
+        result = 31 * result + (streetName != null ? streetName.hashCode() : 0);
+        result = 31 * result + (houseNumber != null ? houseNumber.hashCode() : 0);
+        result = 31 * result + (apartmentNumber != null ? apartmentNumber.hashCode() : 0);
+        return result;
+    }
 }

@@ -82,4 +82,28 @@ public class Account {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Account account = (Account) o;
+
+		if (id != null ? !id.equals(account.id) : account.id != null) return false;
+		if (name != null ? !name.equals(account.name) : account.name != null) return false;
+		if (password != null ? !password.equals(account.password) : account.password != null) return false;
+		if (email != null ? !email.equals(account.email) : account.email != null) return false;
+		return role != null ? role.equals(account.role) : account.role == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		result = 31 * result + (password != null ? password.hashCode() : 0);
+		result = 31 * result + (email != null ? email.hashCode() : 0);
+		result = 31 * result + (role != null ? role.hashCode() : 0);
+		return result;
+	}
 }

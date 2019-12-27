@@ -47,4 +47,24 @@ public class OccasionalArticleOrder {
     public void setOccasionalArticle(OccasionalArticle occasionalArticle) {
         this.occasionalArticle = occasionalArticle;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OccasionalArticleOrder that = (OccasionalArticleOrder) o;
+
+        if (itemCount != that.itemCount) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return occasionalArticle != null ? occasionalArticle.equals(that.occasionalArticle) : that.occasionalArticle == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + itemCount;
+        result = 31 * result + (occasionalArticle != null ? occasionalArticle.hashCode() : 0);
+        return result;
+    }
 }

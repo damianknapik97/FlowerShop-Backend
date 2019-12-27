@@ -71,21 +71,25 @@ public class Flower {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Flower flower = (Flower) o;
-        return height == flower.height &&
-                name.equals(flower.name) &&
-                description.equals(flower.description) &&
-                price.equals(flower.price);
+
+        if (height != flower.height) return false;
+        if (id != null ? !id.equals(flower.id) : flower.id != null) return false;
+        if (name != null ? !name.equals(flower.name) : flower.name != null) return false;
+        if (price != null ? !price.equals(flower.price) : flower.price != null) return false;
+        return description != null ? description.equals(flower.description) : flower.description == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, description, height);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + height;
+        return result;
     }
 }

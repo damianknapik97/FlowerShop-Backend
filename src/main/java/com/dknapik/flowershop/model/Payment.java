@@ -62,4 +62,26 @@ public class Payment {
     public void setWasPaid(boolean wasPaid) {
         this.wasPaid = wasPaid;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Payment payment = (Payment) o;
+
+        if (wasPaid != payment.wasPaid) return false;
+        if (id != null ? !id.equals(payment.id) : payment.id != null) return false;
+        if (totalPrice != null ? !totalPrice.equals(payment.totalPrice) : payment.totalPrice != null) return false;
+        return paymentType != null ? paymentType.equals(payment.paymentType) : payment.paymentType == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (totalPrice != null ? totalPrice.hashCode() : 0);
+        result = 31 * result + (paymentType != null ? paymentType.hashCode() : 0);
+        result = 31 * result + (wasPaid ? 1 : 0);
+        return result;
+    }
 }
