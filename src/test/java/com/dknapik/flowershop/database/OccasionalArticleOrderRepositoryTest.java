@@ -84,7 +84,7 @@ public class OccasionalArticleOrderRepositoryTest {
      * @throws NoSuchElementException
      */
     @Test
-    public void occasionalArticleEagerFetchTypeTest() throws NoSuchElementException {
+    public void fetchOccasionalArticleTest() throws NoSuchElementException {
         /* Retrieve OccasionalArticle that will be part of the new entity from database */
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         OccasionalArticle occasionalArticle =

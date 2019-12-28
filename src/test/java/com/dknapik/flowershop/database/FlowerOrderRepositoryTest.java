@@ -50,7 +50,7 @@ public class FlowerOrderRepositoryTest {
     }
 
     /**
-     * Check if
+     * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
     public void retrieveFromDatabaseTest() {
@@ -69,7 +69,7 @@ public class FlowerOrderRepositoryTest {
      * Check if product entities are eagerly extracted from order entity
      */
     @Test
-    public void fetchOccasionalArticleTest() throws NoSuchElementException {
+    public void fetchProductTest() throws NoSuchElementException {
         /* Create order entity using product entity */
         Flower product = createFlowerEntity();
         FlowerOrder order = new FlowerOrder(5, product);
