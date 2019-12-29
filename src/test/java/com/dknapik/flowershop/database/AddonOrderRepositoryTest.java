@@ -41,7 +41,7 @@ public class AddonOrderRepositoryTest {
         Addon product = createAddonEntity();
         AddonOrder order = new AddonOrder(product);
 
-        /* Save to database */
+        /* Save to database using repository */
         orderRepository.saveAndFlush(order);
 
         /* Retrieve entity and check if field match the one that was saved */
@@ -56,9 +56,11 @@ public class AddonOrderRepositoryTest {
     public void retrieveFromDatabaseTest() {
         Addon product = createAddonEntity();
         AddonOrder order = new AddonOrder(product);
+
         /* Save order to database */
         entityManager.persistAndFlush(order);
 
+        /* Retrieve entity using repository and check if field match the one that was saved */
         Optional<AddonOrder> retrievedEntity = orderRepository.findById(order.getId());
         Assertions.assertThat(retrievedEntity.get()).isEqualToComparingFieldByField(order);
     }
@@ -109,6 +111,9 @@ public class AddonOrderRepositoryTest {
                 .containsExactlyInAnyOrderElementsOf(Arrays.asList(orderArray));
     }
 
+    /**
+     * Create, save to database and retrieve from database product entity
+     */
     private Addon createAddonEntity() {
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon newAddon =
