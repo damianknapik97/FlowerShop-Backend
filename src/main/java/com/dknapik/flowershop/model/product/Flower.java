@@ -3,7 +3,6 @@ package com.dknapik.flowershop.model.product;
 import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.UUID;
 
 
@@ -16,7 +15,7 @@ public class Flower {
     private String name;
     @Column
     private String price;
-    @Column
+    @Column(length = 1024)
     private String description;
     @Column
     private int height;
@@ -26,6 +25,7 @@ public class Flower {
     public Flower(String name, Money price, String description, int height) {
         this.name = name;
         this.price = price.toString();
+        this.description = description;
         this.height = height;
     }
 

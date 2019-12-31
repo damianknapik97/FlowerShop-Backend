@@ -20,6 +20,12 @@ public class ShoppingCart {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<OccasionalArticleOrder> occasionalArticleOrderList;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn()
+    private List<SouvenirOrder> souvenirOrderList;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn()
+    private List<FlowerOrder> flowerOrderList;
 
 
     public ShoppingCart() {}
@@ -31,6 +37,18 @@ public class ShoppingCart {
     public ShoppingCart(String name, List<OccasionalArticleOrder> occasionalArticleOrderList) {
         this.name = name;
         this.occasionalArticleOrderList = occasionalArticleOrderList;
+    }
+
+    public ShoppingCart(String name,
+                        LocalDateTime creationDate,
+                        List<OccasionalArticleOrder> occasionalArticleOrderList,
+                        List<SouvenirOrder> souvenirOrderList,
+                        List<FlowerOrder> flowerOrderList) {
+        this.name = name;
+        this.creationDate = creationDate;
+        this.occasionalArticleOrderList = occasionalArticleOrderList;
+        this.souvenirOrderList = souvenirOrderList;
+        this.flowerOrderList = flowerOrderList;
     }
 
     public UUID getId() {
@@ -65,6 +83,34 @@ public class ShoppingCart {
         this.occasionalArticleOrderList = occasionalArticleOrderList;
     }
 
+    public List<SouvenirOrder> getSouvenirOrderList() {
+        return souvenirOrderList;
+    }
+
+    public void setSouvenirOrderList(List<SouvenirOrder> souvenirOrderList) {
+        this.souvenirOrderList = souvenirOrderList;
+    }
+
+    public List<FlowerOrder> getFlowerOrderList() {
+        return flowerOrderList;
+    }
+
+    public void setFlowerOrderList(List<FlowerOrder> flowerOrderList) {
+        this.flowerOrderList = flowerOrderList;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingCart{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", creationDate=" + creationDate +
+                ", occasionalArticleOrderList=" + occasionalArticleOrderList +
+                ", souvenirOrderList=" + souvenirOrderList +
+                ", flowerOrderList=" + flowerOrderList +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,7 +121,11 @@ public class ShoppingCart {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        return occasionalArticleOrderList != null ? occasionalArticleOrderList.equals(that.occasionalArticleOrderList) : that.occasionalArticleOrderList == null;
+        if (occasionalArticleOrderList != null ? !occasionalArticleOrderList.equals(that.occasionalArticleOrderList) : that.occasionalArticleOrderList != null)
+            return false;
+        if (souvenirOrderList != null ? !souvenirOrderList.equals(that.souvenirOrderList) : that.souvenirOrderList != null)
+            return false;
+        return flowerOrderList != null ? flowerOrderList.equals(that.flowerOrderList) : that.flowerOrderList == null;
     }
 
     @Override
@@ -84,6 +134,8 @@ public class ShoppingCart {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (occasionalArticleOrderList != null ? occasionalArticleOrderList.hashCode() : 0);
+        result = 31 * result + (souvenirOrderList != null ? souvenirOrderList.hashCode() : 0);
+        result = 31 * result + (flowerOrderList != null ? flowerOrderList.hashCode() : 0);
         return result;
     }
 }

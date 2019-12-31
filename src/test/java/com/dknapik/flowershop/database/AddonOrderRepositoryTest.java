@@ -3,6 +3,7 @@ package com.dknapik.flowershop.database;
 import com.dknapik.flowershop.database.product.AddonRepository;
 import com.dknapik.flowershop.model.AddonOrder;
 import com.dknapik.flowershop.model.product.Addon;
+import com.dknapik.flowershop.model.product.AddonColour;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
@@ -117,7 +118,7 @@ public class AddonOrderRepositoryTest {
     private Addon createAddonEntity() {
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon newAddon =
-                new Addon("Test Addon Entity", "Blue", price, "Example addon description");
+                new Addon("Test Addon Entity", AddonColour.BLUE, price, "Example addon description");
         productRepository.saveAndFlush(newAddon);
         return productRepository.findById(newAddon.getId()).get();
     }

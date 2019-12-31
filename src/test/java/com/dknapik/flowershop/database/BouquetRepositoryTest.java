@@ -4,6 +4,7 @@ import com.dknapik.flowershop.model.AddonOrder;
 import com.dknapik.flowershop.model.Bouquet;
 import com.dknapik.flowershop.model.FlowerOrder;
 import com.dknapik.flowershop.model.product.Addon;
+import com.dknapik.flowershop.model.product.AddonColour;
 import com.dknapik.flowershop.model.product.Flower;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -170,7 +171,7 @@ public class BouquetRepositoryTest {
         List<Addon> addonEntityList = new LinkedList<>();
 
         for (int i = 0; i < numberOfEntities; i++) {
-            addonEntityList.add(new Addon(name + i, "Blue", price, "Exemplary description"));
+            addonEntityList.add(new Addon(name + i, AddonColour.BLUE, price, "Exemplary description"));
             entityManager.persist(addonEntityList.get(i));
         }
         entityManager.flush();

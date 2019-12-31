@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Component
 public class ShoppingCartSeeder implements SeederInt {
-    private static final boolean onlyForDebug = true;     // To check if class should be always instantiated and used
+    private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
     private final MoneyUtils moneyUtils;
     private final OccasionalArticleRepository occasionalArticleRepository;
     private final OccasionalArticleOrderRepository occasionalArticleOrderRepository;
@@ -85,6 +85,6 @@ public class ShoppingCartSeeder implements SeederInt {
 
     @Override
     public boolean isOnlyForDebug() {
-        return onlyForDebug;
+        return ONLY_FOR_DEBUG;
     }
 }

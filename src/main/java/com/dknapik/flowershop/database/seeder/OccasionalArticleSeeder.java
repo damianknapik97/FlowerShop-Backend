@@ -1,9 +1,7 @@
 package com.dknapik.flowershop.database.seeder;
 
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
-import com.dknapik.flowershop.database.product.SouvenirRepository;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
-import com.dknapik.flowershop.model.product.Souvenir;
 import com.dknapik.flowershop.utility.MoneyUtils;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class OccasionalArticleSeeder implements SeederInt {
     private final MoneyUtils moneyUtils;                  // Money currency retrieved from application context
     private final OccasionalArticleRepository occasionalArticleRepository;  // Repository for retrieving/saving entities
-    private static final boolean onlyForDebug = true;     // To check if class should be always instantiated and used
+    private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
 
 
     @Autowired
@@ -46,7 +44,7 @@ public class OccasionalArticleSeeder implements SeederInt {
 
         @Override
         public boolean isOnlyForDebug() {
-            return onlyForDebug;
+            return ONLY_FOR_DEBUG;
         }
 
         /* Check if value already exists in database */

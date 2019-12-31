@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class FlowerSeeder implements SeederInt {
     private MoneyUtils moneyUtils;                     // Money currency retrieved from application context
     private FlowerRepository flowerRepository;         // Repository for database retrieving/saving entities
-    private static final boolean onlyForDebug = true;  // To check if class should be always instantiated and used
+    private static final boolean ONLY_FOR_DEBUG = true;  // To check if class should be always instantiated and used
     private int numberOfEntities = 1;                  // How many entities should be inserted into database (OPTIONAL)
 
 
@@ -52,7 +52,7 @@ public class FlowerSeeder implements SeederInt {
 
     @Override
     public boolean isOnlyForDebug() {
-        return onlyForDebug;
+        return ONLY_FOR_DEBUG;
     }
 
     public int getNumberOfEntities() {

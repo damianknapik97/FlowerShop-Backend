@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class AccountSeeder implements SeederInt {
     private ApplicationContext applicationContext;      // To retrieve application password encoder
     private AccountRepository accountRepository;        // To save/retrieve entities from database
-    private static final boolean onlyForDebug = false;  // To check if class should be always instantiated and used
+    private static final boolean ONLY_FOR_DEBUG = false;  // To check if class should be always instantiated and used
 
 
     @Autowired
@@ -56,6 +56,6 @@ public class AccountSeeder implements SeederInt {
 
     @Override
     public boolean isOnlyForDebug() {
-        return onlyForDebug;
+        return ONLY_FOR_DEBUG;
     }
 }

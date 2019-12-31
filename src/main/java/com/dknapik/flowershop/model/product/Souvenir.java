@@ -14,8 +14,9 @@ public class Souvenir {
     private String name;
     @Column
     private String price;
-    @Column
+    @Column(length = 1024)
     private String description;
+
 
     public Souvenir() {}
 

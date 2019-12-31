@@ -13,16 +13,16 @@ public class Addon {
     @Column(nullable = false)
     private String name;
     @Column
-    private String colour;
+    private AddonColour colour;
     @Column
     private String price;
-    @Column
+    @Column(length = 1024)
     private String description;
 
 
     public Addon() { }
 
-    public Addon(String name, String colour, Money price, String description) {
+    public Addon(String name, AddonColour colour, Money price, String description) {
         this.name = name;
         this.colour = colour;
         this.price = price.toString();
@@ -45,11 +45,11 @@ public class Addon {
         this.name = name;
     }
 
-    public String getColour() {
+    public AddonColour getColour() {
         return colour;
     }
 
-    public void setColour(String colour) {
+    public void setColour(AddonColour colour) {
         this.colour = colour;
     }
 

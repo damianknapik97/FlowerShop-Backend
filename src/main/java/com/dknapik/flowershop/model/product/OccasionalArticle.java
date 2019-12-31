@@ -18,7 +18,7 @@ public class OccasionalArticle {
     private String name;
     @Column
     private String price;
-    @Column
+    @Column(length = 1024)
     private String description;
     @Column
     private String theme;

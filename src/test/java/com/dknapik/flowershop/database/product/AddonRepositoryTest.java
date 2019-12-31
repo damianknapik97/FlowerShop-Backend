@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.database.product;
 
 import com.dknapik.flowershop.model.product.Addon;
+import com.dknapik.flowershop.model.product.AddonColour;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class AddonRepositoryTest {
     @Test
     public void saveToDatabaseTest() {
         String name = "Test Addon";
-        String colour = "Blue";
+        AddonColour colour = AddonColour.BLUE;
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         String description = "Test Description";
 
@@ -51,11 +52,11 @@ public class AddonRepositoryTest {
         String name = "Test1";
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon[] addonArray = {
-                new Addon(name, "Blue", price, "TestDescription"),
-                new Addon(name, "Red", price, "TestDescription"),
-                new Addon(name, "Yellow", price, "TestDescription"),
-                new Addon("Test2", "Blue", price, "TestDescription"),
-                new Addon("Test3", "Green", price, "TestDescription"),
+                new Addon(name, AddonColour.BLUE, price, "TestDescription"),
+                new Addon(name, AddonColour.RED, price, "TestDescription"),
+                new Addon(name, AddonColour.YELLOW, price, "TestDescription"),
+                new Addon("Test2", AddonColour.BLUE, price, "TestDescription"),
+                new Addon("Test3", AddonColour.GREEN, price, "TestDescription"),
         };
 
         /* Create control group that will be used as base for comparison */
@@ -79,14 +80,14 @@ public class AddonRepositoryTest {
     @Test
     public void findByNameAndColourTest() {
         String name = "Test1";
-        String colour = "Blue";
+        AddonColour colour = AddonColour.BLUE;
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon[] addonArray = {
                 new Addon(name, colour, price, "Test Description"),
                 new Addon(name, colour, price, "Test Description"),
-                new Addon(name, "Red", price, "Test Description"),
+                new Addon(name, AddonColour.RED, price, "Test Description"),
                 new Addon("Test2", colour, price, "Test Description"),
-                new Addon("Test3", "Yellow", price, "Test Description"),
+                new Addon("Test3", AddonColour.YELLOW, price, "Test Description"),
         };
 
         /* Create control group that will be used as base for comparison */
