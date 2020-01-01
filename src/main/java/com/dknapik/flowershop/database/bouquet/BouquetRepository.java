@@ -1,11 +1,9 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.bouquet;
 
-import com.dknapik.flowershop.model.Bouquet;
+import com.dknapik.flowershop.model.bouquet.Bouquet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.awt.print.Pageable;
-import java.util.List;
 import java.util.UUID;
 
 @Repository

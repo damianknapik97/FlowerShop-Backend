@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.bouquet;
 
 import org.javamoney.moneta.Money;
 
@@ -21,10 +21,10 @@ public class Bouquet {
     private int discountPercentage;  // Is counted based on the whole price (productionCost + products costs)
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
-    private List<FlowerOrder> flowerOrderList;
+    private List<BouquetFlower> bouquetFlowerList;
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
-    private List<AddonOrder> addonOrderList;
+    private List<BouquetAddon> bouquetAddonList;
     @Column
     private boolean userCreated;
 
@@ -34,14 +34,14 @@ public class Bouquet {
     public Bouquet(String name,
                    Money productionCost,
                    int discountPercentage,
-                   List<FlowerOrder> flowerOrderList,
-                   List<AddonOrder> addonOrderList,
+                   List<BouquetFlower> bouquetFlowerList,
+                   List<BouquetAddon> bouquetAddonList,
                    boolean userCreated) {
         this.name = name;
         this.productionCost = productionCost.toString();
         this.discountPercentage = discountPercentage;
-        this.flowerOrderList = flowerOrderList;
-        this.addonOrderList = addonOrderList;
+        this.bouquetFlowerList = bouquetFlowerList;
+        this.bouquetAddonList = bouquetAddonList;
         this.userCreated = userCreated;
     }
 
@@ -77,20 +77,20 @@ public class Bouquet {
         this.discountPercentage = discountPercentage;
     }
 
-    public List<FlowerOrder> getFlowerOrderList() {
-        return flowerOrderList;
+    public List<BouquetFlower> getFlowerOrderList() {
+        return bouquetFlowerList;
     }
 
-    public void setFlowerOrderList(List<FlowerOrder> flowerOrderList) {
-        this.flowerOrderList = flowerOrderList;
+    public void setFlowerOrderList(List<BouquetFlower> bouquetFlowerList) {
+        this.bouquetFlowerList = bouquetFlowerList;
     }
 
-    public List<AddonOrder> getAddonOrderList() {
-        return addonOrderList;
+    public List<BouquetAddon> getBouquetAddonList() {
+        return bouquetAddonList;
     }
 
-    public void setAddonOrderList(List<AddonOrder> addonOrderList) {
-        this.addonOrderList = addonOrderList;
+    public void setBouquetAddonList(List<BouquetAddon> bouquetAddonList) {
+        this.bouquetAddonList = bouquetAddonList;
     }
 
     public boolean isUserCreated() {
@@ -108,8 +108,8 @@ public class Bouquet {
                 ", name='" + name + '\'' +
                 ", productionCost='" + productionCost + '\'' +
                 ", discountPercentage=" + discountPercentage +
-                ", flowerOrderList=" + flowerOrderList +
-                ", addonOrderList=" + addonOrderList +
+                ", bouquetFlowerList=" + bouquetFlowerList +
+                ", bouquetAddonList=" + bouquetAddonList +
                 ", userCreated=" + userCreated +
                 '}';
     }
@@ -127,9 +127,9 @@ public class Bouquet {
         if (name != null ? !name.equals(bouquet.name) : bouquet.name != null) return false;
         if (productionCost != null ? !productionCost.equals(bouquet.productionCost) : bouquet.productionCost != null)
             return false;
-        if (flowerOrderList != null ? !flowerOrderList.equals(bouquet.flowerOrderList) : bouquet.flowerOrderList != null)
+        if (bouquetFlowerList != null ? !bouquetFlowerList.equals(bouquet.bouquetFlowerList) : bouquet.bouquetFlowerList != null)
             return false;
-        return addonOrderList != null ? addonOrderList.equals(bouquet.addonOrderList) : bouquet.addonOrderList == null;
+        return bouquetAddonList != null ? bouquetAddonList.equals(bouquet.bouquetAddonList) : bouquet.bouquetAddonList == null;
     }
 
     @Override
@@ -138,8 +138,8 @@ public class Bouquet {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (productionCost != null ? productionCost.hashCode() : 0);
         result = 31 * result + discountPercentage;
-        result = 31 * result + (flowerOrderList != null ? flowerOrderList.hashCode() : 0);
-        result = 31 * result + (addonOrderList != null ? addonOrderList.hashCode() : 0);
+        result = 31 * result + (bouquetFlowerList != null ? bouquetFlowerList.hashCode() : 0);
+        result = 31 * result + (bouquetAddonList != null ? bouquetAddonList.hashCode() : 0);
         result = 31 * result + (userCreated ? 1 : 0);
         return result;
     }

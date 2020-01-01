@@ -1,7 +1,7 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.bouquet;
 
 import com.dknapik.flowershop.database.product.AddonRepository;
-import com.dknapik.flowershop.model.AddonOrder;
+import com.dknapik.flowershop.model.bouquet.BouquetAddon;
 import com.dknapik.flowershop.model.product.Addon;
 import com.dknapik.flowershop.model.product.AddonColour;
 import org.assertj.core.api.Assertions;
@@ -23,13 +23,13 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class AddonOrderRepositoryTest {
+public class BouquetAddonRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
     private AddonRepository productRepository;
     @Autowired
-    private AddonOrderRepository orderRepository;
+    private BouquetAddonRepository orderRepository;
     @Autowired
     private Environment env;
 
@@ -40,13 +40,13 @@ public class AddonOrderRepositoryTest {
     public void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Addon product = createAddonEntity();
-        AddonOrder order = new AddonOrder(product);
+        BouquetAddon order = new BouquetAddon(product);
 
         /* Save to database using repository */
         orderRepository.saveAndFlush(order);
 
         /* Retrieve entity and check if field match the one that was saved */
-        AddonOrder retrievedEntity = entityManager.find(AddonOrder.class, order.getId());
+        BouquetAddon retrievedEntity = entityManager.find(BouquetAddon.class, order.getId());
         Assertions.assertThat(retrievedEntity).isEqualToComparingFieldByField(order);
     }
 
@@ -56,13 +56,13 @@ public class AddonOrderRepositoryTest {
     @Test
     public void retrieveFromDatabaseTest() {
         Addon product = createAddonEntity();
-        AddonOrder order = new AddonOrder(product);
+        BouquetAddon order = new BouquetAddon(product);
 
         /* Save order to database */
         entityManager.persistAndFlush(order);
 
         /* Retrieve entity using repository and check if field match the one that was saved */
-        Optional<AddonOrder> retrievedEntity = orderRepository.findById(order.getId());
+        Optional<BouquetAddon> retrievedEntity = orderRepository.findById(order.getId());
         Assertions.assertThat(retrievedEntity.get()).isEqualToComparingFieldByField(order);
     }
 
@@ -72,7 +72,7 @@ public class AddonOrderRepositoryTest {
     @Test
     public void fetchProductTest() throws NoSuchElementException {
         Addon product = createAddonEntity();
-        AddonOrder order = new AddonOrder(product);
+        BouquetAddon order = new BouquetAddon(product);
 
         /* Save order to database */
         entityManager.persistAndFlush(order);
@@ -83,17 +83,17 @@ public class AddonOrderRepositoryTest {
     }
 
     /**
-     * Check if no errors will be invoked if multiple AddonOrder instance will be created and saved using the same
+     * Check if no errors will be invoked if multiple BouquetAddon instance will be created and saved using the same
      * product entity.
      */
     @Test
     public void saveMultipleEntitiesUsingOneProduct() {
         /* Create multiple entities */
         Addon product = createAddonEntity();
-        AddonOrder[] orderArray = {
-                new AddonOrder(product),
-                new AddonOrder(product),
-                new AddonOrder(product),
+        BouquetAddon[] orderArray = {
+                new BouquetAddon(product),
+                new BouquetAddon(product),
+                new BouquetAddon(product),
         };
 
         /* Save multiple entities to database */
@@ -101,8 +101,8 @@ public class AddonOrderRepositoryTest {
         orderRepository.flush();
 
         /* Retrieve all entities */
-        AddonOrder[] retrievedEntitiesArray = new AddonOrder[orderArray.length];
-        Optional<AddonOrder> retrivedEntity;
+        BouquetAddon[] retrievedEntitiesArray = new BouquetAddon[orderArray.length];
+        Optional<BouquetAddon> retrivedEntity;
         for (int i = 0; i < orderArray.length; i++) {
             retrivedEntity = orderRepository.findById(orderArray[i].getId());
             retrievedEntitiesArray[i] = retrivedEntity.get();

@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.bouquet;
 
 import com.dknapik.flowershop.model.product.Addon;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-public class AddonOrder {
+public class BouquetAddon {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -15,9 +15,9 @@ public class AddonOrder {
     private Addon addon;
 
 
-    public AddonOrder() { }
+    public BouquetAddon() { }
 
-    public AddonOrder(Addon addon) {
+    public BouquetAddon(Addon addon) {
         this.addon = addon;
     }
 
@@ -39,7 +39,7 @@ public class AddonOrder {
 
     @Override
     public String toString() {
-        return "AddonOrder{" +
+        return "BouquetAddon{" +
                 "id=" + id +
                 ", addon=" + addon +
                 '}';
@@ -50,7 +50,7 @@ public class AddonOrder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AddonOrder that = (AddonOrder) o;
+        BouquetAddon that = (BouquetAddon) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         return addon != null ? addon.equals(that.addon) : that.addon == null;

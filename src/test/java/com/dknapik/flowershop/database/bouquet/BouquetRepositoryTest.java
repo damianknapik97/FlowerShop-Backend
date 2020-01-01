@@ -1,8 +1,8 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.bouquet;
 
-import com.dknapik.flowershop.model.AddonOrder;
-import com.dknapik.flowershop.model.Bouquet;
-import com.dknapik.flowershop.model.FlowerOrder;
+import com.dknapik.flowershop.model.bouquet.BouquetAddon;
+import com.dknapik.flowershop.model.bouquet.Bouquet;
+import com.dknapik.flowershop.model.bouquet.BouquetFlower;
 import com.dknapik.flowershop.model.product.Addon;
 import com.dknapik.flowershop.model.product.AddonColour;
 import com.dknapik.flowershop.model.product.Flower;
@@ -72,15 +72,15 @@ public class BouquetRepositoryTest {
     @Test
     public void deleteTest() {
         /* Initialize entities that will be part of this entity */
-        List<FlowerOrder> flowerOrderList =
+        List<BouquetFlower> bouquetFlowerList =
                 createFlowerOrderEntities(createFlowerEntities("Test Flower", 10), 5);
-        List<AddonOrder> addonOrderList =
-                createAddonOrderEntities(createAddonEntities("Test Addon", 2));
+        List<BouquetAddon> bouquetAddonList =
+                createBouquetAddonEntities(createAddonEntities("Test Addon", 2));
         Money price = Money.of(3.25, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create new bouquet entity */
         Bouquet bouquet =
-                new Bouquet("My Testing Bouquet", price, 5, flowerOrderList, addonOrderList, false);
+                new Bouquet("My Testing Bouquet", price, 5, bouquetFlowerList, bouquetAddonList, false);
 
         /* Save new bouquet entity together with associated entities  */
         bouquetRepository.saveAndFlush(bouquet);
@@ -89,10 +89,10 @@ public class BouquetRepositoryTest {
         bouquetRepository.deleteById(bouquet.getId());
 
         /* Search for associated entities and add them if they are retrievable (not null) */
-        List<FlowerOrder> controlGroup = new LinkedList<>();
-        FlowerOrder retrievedEntity;
-        for (FlowerOrder flowerOrder : flowerOrderList) {
-            retrievedEntity = entityManager.find(FlowerOrder.class, flowerOrder.getId());
+        List<BouquetFlower> controlGroup = new LinkedList<>();
+        BouquetFlower retrievedEntity;
+        for (BouquetFlower flowerOrder : bouquetFlowerList) {
+            retrievedEntity = entityManager.find(BouquetFlower.class, flowerOrder.getId());
             if (retrievedEntity != null ){
                 controlGroup.add(retrievedEntity);
             }
@@ -109,32 +109,32 @@ public class BouquetRepositoryTest {
      * @param itemCount - how many products in one order
      * @return - List with database unsaved Flower Orders
      */
-    private List<FlowerOrder> createFlowerOrderEntities(@NotNull List<Flower> flowers, int itemCount) {
+    private List<BouquetFlower> createFlowerOrderEntities(@NotNull List<Flower> flowers, int itemCount) {
         Objects.requireNonNull(flowers, "Flower list must be initialized!");
-        List<FlowerOrder> flowerOrderList = new LinkedList<>();
+        List<BouquetFlower> bouquetFlowerList = new LinkedList<>();
 
         for (Flower flower : flowers) {
-            flowerOrderList.add(new FlowerOrder(itemCount, flower));
+            bouquetFlowerList.add(new BouquetFlower(itemCount, flower));
         }
 
-        return flowerOrderList;
+        return bouquetFlowerList;
     }
 
     /**
-     * Create AddonOrder entities WITHOUT saving them to database.
+     * Create BouquetAddon entities WITHOUT saving them to database.
      *
      * @param addons - list with addons on which Order entities will be created
      * @return - List with database unsaved Addon Orders
      */
-    private List<AddonOrder> createAddonOrderEntities(@NotNull List<Addon> addons) {
+    private List<BouquetAddon> createBouquetAddonEntities(@NotNull List<Addon> addons) {
         Objects.requireNonNull(addons, "Addon list must be initialized!");
-        List<AddonOrder> addonOrderList = new LinkedList<>();
+        List<BouquetAddon> bouquetAddonList = new LinkedList<>();
 
         for (Addon addon : addons) {
-            addonOrderList.add(new AddonOrder(addon));
+            bouquetAddonList.add(new BouquetAddon(addon));
         }
 
-        return addonOrderList;
+        return bouquetAddonList;
     }
 
     /**
