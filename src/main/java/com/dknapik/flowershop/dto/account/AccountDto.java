@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.dknapik.flowershop.security.UserRoles;
+import com.dknapik.flowershop.model.AccountRole;
 
 /**
  * Used for new account creation
@@ -27,7 +27,7 @@ public class AccountDto {
 	@Size(min = 8)
 	@Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
 	private String password;
-	private String role = UserRoles.USER;
+	private AccountRole role = AccountRole.USER;
 
 	public UUID getId() {
 		return id;
@@ -61,11 +61,11 @@ public class AccountDto {
 		this.email = email;
 	}
 
-	public String getRole() {
+	public AccountRole getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(AccountRole role) {
 		this.role = role;
 	}
 }

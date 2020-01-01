@@ -2,7 +2,7 @@ package com.dknapik.flowershop.database.seeder;
 
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.model.Account;
-import com.dknapik.flowershop.security.UserRoles;
+import com.dknapik.flowershop.model.AccountRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,21 +35,21 @@ public class AccountSeeder implements SeederInt {
             accountRepository.save(new Account("root",
                                                 encoder.encode("root"),
                                                 "root@test.pl",
-                                                UserRoles.ADMIN));
+                                                AccountRole.ADMIN));
         }
 
         if (!this.accountRepository.existsByName("employee")) {
             accountRepository.save(new Account("employee",
                                                 encoder.encode("employee"),
                                                 "employee@test.pl",
-                                                UserRoles.EMPLOYEE));
+                                                AccountRole.EMPLOYEE));
         }
 
         if (!this.accountRepository.existsByName("user")) {
             accountRepository.save(new Account("user",
                                                 encoder.encode("user"),
                                                 "user@test.pl",
-                                                UserRoles.USER));
+                                                AccountRole.USER));
         }
         this.accountRepository.flush();
     }

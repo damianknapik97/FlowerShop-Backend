@@ -26,17 +26,17 @@ public class Account {
 	@Column
 	private String email;
 	@Column
-	private String role;
+	private AccountRole role = AccountRole.USER;
 
 	public Account() {}
 
-	public Account(String password, String email, String role) {
+	public Account(String password, String email, AccountRole role) {
 		this.password = password;
 		this.email = email;
 		this.role = role;
 	}
 
-	public Account(String name, String password, String email, String role) {
+	public Account(String name, String password, String email, AccountRole role) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -75,12 +75,23 @@ public class Account {
 		this.email = email;
 	}
 	
-	public String getRole() {
+	public AccountRole getRole() {
 		return role;
 	}
 	
-	public void setRole(String role) {
+	public void setRole(AccountRole role) {
 		this.role = role;
+	}
+
+	@Override
+	public String toString() {
+		return "Account{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				", role=" + role +
+				'}';
 	}
 
 	@Override
@@ -94,7 +105,7 @@ public class Account {
 		if (name != null ? !name.equals(account.name) : account.name != null) return false;
 		if (password != null ? !password.equals(account.password) : account.password != null) return false;
 		if (email != null ? !email.equals(account.email) : account.email != null) return false;
-		return role != null ? role.equals(account.role) : account.role == null;
+		return role == account.role;
 	}
 
 	@Override
