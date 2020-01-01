@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.order;
 
 /**
  * Allows to track which payment type was chosen by the user.

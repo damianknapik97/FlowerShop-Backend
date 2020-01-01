@@ -1,7 +1,6 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.order;
 
-import com.dknapik.flowershop.model.DeliveryAddress;
-import com.dknapik.flowershop.model.ShoppingCart;
+import com.dknapik.flowershop.model.order.DeliveryAddress;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

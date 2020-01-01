@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.order;
 
 import com.dknapik.flowershop.model.product.Flower;
 
@@ -12,7 +12,7 @@ public class FlowerOrder {
     private UUID id;
     @Column
     private int itemCount;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn
     private Flower flower;
 

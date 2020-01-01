@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.database.seeder;
 
-import com.dknapik.flowershop.database.OrderRepository;
-import com.dknapik.flowershop.model.*;
+import com.dknapik.flowershop.database.order.OrderRepository;
+import com.dknapik.flowershop.model.order.*;
 import com.dknapik.flowershop.utility.MoneyUtils;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;

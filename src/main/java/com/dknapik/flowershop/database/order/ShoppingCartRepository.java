@@ -1,6 +1,6 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.order;
 
-import com.dknapik.flowershop.model.ShoppingCart;
+import com.dknapik.flowershop.model.order.ShoppingCart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

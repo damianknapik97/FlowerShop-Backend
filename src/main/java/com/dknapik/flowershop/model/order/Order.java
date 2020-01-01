@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.order;
 
 import org.springframework.data.annotation.CreatedDate;
 

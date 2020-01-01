@@ -1,6 +1,6 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.order;
 
-import com.dknapik.flowershop.model.*;
+import com.dknapik.flowershop.model.order.*;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Example;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 

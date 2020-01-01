@@ -1,10 +1,10 @@
 package com.dknapik.flowershop.database.seeder;
 
-import com.dknapik.flowershop.database.OccasionalArticleOrderRepository;
-import com.dknapik.flowershop.database.ShoppingCartRepository;
+import com.dknapik.flowershop.database.order.OccasionalArticleOrderRepository;
+import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
-import com.dknapik.flowershop.model.OccasionalArticleOrder;
-import com.dknapik.flowershop.model.ShoppingCart;
+import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utility.MoneyUtils;
 import org.javamoney.moneta.Money;

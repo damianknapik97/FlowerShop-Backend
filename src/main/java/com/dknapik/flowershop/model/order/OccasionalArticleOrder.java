@@ -1,27 +1,27 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.order;
 
-import com.dknapik.flowershop.model.product.Souvenir;
+import com.dknapik.flowershop.model.product.OccasionalArticle;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-public class SouvenirOrder {
+public class OccasionalArticleOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column
     private int itemCount;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn
-    private Souvenir souvenir;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @JoinColumn(nullable = false)
+    private OccasionalArticle occasionalArticle;
 
 
-    public SouvenirOrder() { }
+    OccasionalArticleOrder() {}
 
-    public SouvenirOrder(int itemCount, Souvenir souvenir) {
+    public OccasionalArticleOrder(int itemCount, OccasionalArticle occasionalArticle) {
         this.itemCount = itemCount;
-        this.souvenir = souvenir;
+        this.occasionalArticle = occasionalArticle;
     }
 
     public UUID getId() {
@@ -40,21 +40,12 @@ public class SouvenirOrder {
         this.itemCount = itemCount;
     }
 
-    public Souvenir getSouvenir() {
-        return souvenir;
+    public OccasionalArticle getOccasionalArticle() {
+        return occasionalArticle;
     }
 
-    public void setSouvenir(Souvenir souvenir) {
-        this.souvenir = souvenir;
-    }
-
-    @Override
-    public String toString() {
-        return "SouvenirOrder{" +
-                "id=" + id +
-                ", itemCount=" + itemCount +
-                ", souvenir=" + souvenir +
-                '}';
+    public void setOccasionalArticle(OccasionalArticle occasionalArticle) {
+        this.occasionalArticle = occasionalArticle;
     }
 
     @Override
@@ -62,18 +53,18 @@ public class SouvenirOrder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SouvenirOrder that = (SouvenirOrder) o;
+        OccasionalArticleOrder that = (OccasionalArticleOrder) o;
 
         if (itemCount != that.itemCount) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return souvenir != null ? souvenir.equals(that.souvenir) : that.souvenir == null;
+        return occasionalArticle != null ? occasionalArticle.equals(that.occasionalArticle) : that.occasionalArticle == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + itemCount;
-        result = 31 * result + (souvenir != null ? souvenir.hashCode() : 0);
+        result = 31 * result + (occasionalArticle != null ? occasionalArticle.hashCode() : 0);
         return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model;
+package com.dknapik.flowershop.model.order;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -17,13 +17,13 @@ public class ShoppingCart {
     @CreatedDate
     @Column
     private LocalDateTime creationDate;
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<OccasionalArticleOrder> occasionalArticleOrderList;
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<SouvenirOrder> souvenirOrderList;
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<FlowerOrder> flowerOrderList;
 

@@ -1,7 +1,7 @@
-package com.dknapik.flowershop.database;
+package com.dknapik.flowershop.database.order;
 
 import com.dknapik.flowershop.database.product.FlowerRepository;
-import com.dknapik.flowershop.model.FlowerOrder;
+import com.dknapik.flowershop.model.order.FlowerOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
