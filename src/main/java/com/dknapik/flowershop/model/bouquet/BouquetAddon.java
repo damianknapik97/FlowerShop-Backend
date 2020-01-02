@@ -10,7 +10,7 @@ public class BouquetAddon {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn
     private Addon addon;
 

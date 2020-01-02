@@ -12,6 +12,7 @@ public class Addon {
     private UUID id;
     @Column(nullable = false)
     private String name;
+    @Enumerated(EnumType.STRING)
     @Column
     private AddonColour colour;
     @Column

@@ -1,12 +1,12 @@
 package com.dknapik.flowershop.model;
 
+import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.ShoppingCart;
+
+import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Represents accounts in application
@@ -25,8 +25,15 @@ public class Account {
 	private String password;
 	@Column
 	private String email;
+	@Enumerated(EnumType.STRING)
 	@Column
 	private AccountRole role = AccountRole.USER;
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	@JoinColumn
+	private List<ShoppingCart> shoppingCartList;
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+	@JoinColumn
+	private List<Order> orderList;
 
 	public Account() {}
 
@@ -41,6 +48,20 @@ public class Account {
 		this.password = password;
 		this.email = email;
 		this.role = role;
+	}
+
+	public Account(String name,
+				   String password,
+				   String email,
+				   AccountRole role,
+				   List<ShoppingCart> shoppingCartList,
+				   List<Order> orderList) {
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.role = role;
+		this.shoppingCartList = shoppingCartList;
+		this.orderList = orderList;
 	}
 
 	public UUID getId() {
@@ -83,6 +104,22 @@ public class Account {
 		this.role = role;
 	}
 
+	public List<ShoppingCart> getShoppingCartList() {
+		return shoppingCartList;
+	}
+
+	public void setShoppingCartList(List<ShoppingCart> shoppingCartList) {
+		this.shoppingCartList = shoppingCartList;
+	}
+
+	public List<Order> getOrderList() {
+		return orderList;
+	}
+
+	public void setOrderList(List<Order> orderList) {
+		this.orderList = orderList;
+	}
+
 	@Override
 	public String toString() {
 		return "Account{" +
@@ -91,6 +128,8 @@ public class Account {
 				", password='" + password + '\'' +
 				", email='" + email + '\'' +
 				", role=" + role +
+				", shoppingCartList=" + shoppingCartList +
+				", orderList=" + orderList +
 				'}';
 	}
 
@@ -105,7 +144,10 @@ public class Account {
 		if (name != null ? !name.equals(account.name) : account.name != null) return false;
 		if (password != null ? !password.equals(account.password) : account.password != null) return false;
 		if (email != null ? !email.equals(account.email) : account.email != null) return false;
-		return role == account.role;
+		if (role != account.role) return false;
+		if (shoppingCartList != null ? !shoppingCartList.equals(account.shoppingCartList) : account.shoppingCartList != null)
+			return false;
+		return orderList != null ? orderList.equals(account.orderList) : account.orderList == null;
 	}
 
 	@Override
@@ -115,6 +157,8 @@ public class Account {
 		result = 31 * result + (password != null ? password.hashCode() : 0);
 		result = 31 * result + (email != null ? email.hashCode() : 0);
 		result = 31 * result + (role != null ? role.hashCode() : 0);
+		result = 31 * result + (shoppingCartList != null ? shoppingCartList.hashCode() : 0);
+		result = 31 * result + (orderList != null ? orderList.hashCode() : 0);
 		return result;
 	}
 }

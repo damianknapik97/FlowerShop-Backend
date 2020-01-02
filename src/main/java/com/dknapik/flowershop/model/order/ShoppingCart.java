@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.bouquet.Bouquet;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -26,6 +27,9 @@ public class ShoppingCart {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<FlowerOrder> flowerOrderList;
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn()
+    private List<Bouquet> bouquetList;
 
 
     public ShoppingCart() {}
@@ -37,6 +41,20 @@ public class ShoppingCart {
     public ShoppingCart(String name, List<OccasionalArticleOrder> occasionalArticleOrderList) {
         this.name = name;
         this.occasionalArticleOrderList = occasionalArticleOrderList;
+    }
+
+    public ShoppingCart(String name,
+                        LocalDateTime creationDate,
+                        List<OccasionalArticleOrder> occasionalArticleOrderList,
+                        List<SouvenirOrder> souvenirOrderList,
+                        List<FlowerOrder> flowerOrderList,
+                        List<Bouquet> bouquetList) {
+        this.name = name;
+        this.creationDate = creationDate;
+        this.occasionalArticleOrderList = occasionalArticleOrderList;
+        this.souvenirOrderList = souvenirOrderList;
+        this.flowerOrderList = flowerOrderList;
+        this.bouquetList = bouquetList;
     }
 
     public ShoppingCart(String name,
@@ -99,6 +117,14 @@ public class ShoppingCart {
         this.flowerOrderList = flowerOrderList;
     }
 
+    public List<Bouquet> getBouquetList() {
+        return bouquetList;
+    }
+
+    public void setBouquetList(List<Bouquet> bouquetList) {
+        this.bouquetList = bouquetList;
+    }
+
     @Override
     public String toString() {
         return "ShoppingCart{" +
@@ -108,6 +134,7 @@ public class ShoppingCart {
                 ", occasionalArticleOrderList=" + occasionalArticleOrderList +
                 ", souvenirOrderList=" + souvenirOrderList +
                 ", flowerOrderList=" + flowerOrderList +
+                ", bouquetList=" + bouquetList +
                 '}';
     }
 
@@ -125,7 +152,9 @@ public class ShoppingCart {
             return false;
         if (souvenirOrderList != null ? !souvenirOrderList.equals(that.souvenirOrderList) : that.souvenirOrderList != null)
             return false;
-        return flowerOrderList != null ? flowerOrderList.equals(that.flowerOrderList) : that.flowerOrderList == null;
+        if (flowerOrderList != null ? !flowerOrderList.equals(that.flowerOrderList) : that.flowerOrderList != null)
+            return false;
+        return bouquetList != null ? bouquetList.equals(that.bouquetList) : that.bouquetList == null;
     }
 
     @Override
@@ -136,6 +165,7 @@ public class ShoppingCart {
         result = 31 * result + (occasionalArticleOrderList != null ? occasionalArticleOrderList.hashCode() : 0);
         result = 31 * result + (souvenirOrderList != null ? souvenirOrderList.hashCode() : 0);
         result = 31 * result + (flowerOrderList != null ? flowerOrderList.hashCode() : 0);
+        result = 31 * result + (bouquetList != null ? bouquetList.hashCode() : 0);
         return result;
     }
 }

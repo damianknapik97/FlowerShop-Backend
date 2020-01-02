@@ -12,7 +12,7 @@ public class SouvenirOrder {
     private UUID id;
     @Column
     private int itemCount;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn
     private Souvenir souvenir;
 
