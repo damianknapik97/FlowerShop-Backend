@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import java.security.SecureRandom;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,5 +28,10 @@ public class MoneyUtilsTest {
         CurrencyUnit retrievedCurrencyUnit = moneyUtils.getApplicationCurrencyUnit();
         CurrencyUnit expectedCurrencyUnit = Monetary.getCurrency(environment.getProperty("app-monetary-currency"));
         Assertions.assertThat(retrievedCurrencyUnit).isEqualTo(expectedCurrencyUnit);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(SecureRandom.getSeed(16) );
     }
 }

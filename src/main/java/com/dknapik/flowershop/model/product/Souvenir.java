@@ -18,7 +18,8 @@ public class Souvenir {
     private String description;
 
 
-    public Souvenir() {}
+    public Souvenir() {
+    }
 
     public Souvenir(String name, Money price, String description) {
         this.name = name;
@@ -56,6 +57,16 @@ public class Souvenir {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Souvenir{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 
     @Override

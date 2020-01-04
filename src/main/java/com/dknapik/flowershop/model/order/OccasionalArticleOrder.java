@@ -17,7 +17,8 @@ public class OccasionalArticleOrder {
     private OccasionalArticle occasionalArticle;
 
 
-    OccasionalArticleOrder() {}
+    OccasionalArticleOrder() {
+    }
 
     public OccasionalArticleOrder(int itemCount, OccasionalArticle occasionalArticle) {
         this.itemCount = itemCount;
@@ -46,6 +47,15 @@ public class OccasionalArticleOrder {
 
     public void setOccasionalArticle(OccasionalArticle occasionalArticle) {
         this.occasionalArticle = occasionalArticle;
+    }
+
+    @Override
+    public String toString() {
+        return "OccasionalArticleOrder{" +
+                "id=" + id +
+                ", itemCount=" + itemCount +
+                ", occasionalArticle=" + occasionalArticle +
+                '}';
     }
 
     @Override

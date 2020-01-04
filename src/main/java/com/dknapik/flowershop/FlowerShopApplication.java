@@ -1,23 +1,15 @@
 package com.dknapik.flowershop;
 
 
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication()
 public class FlowerShopApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FlowerShopApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FlowerShopApplication.class, args);
+    }
 	
 	/*
 	 * Disable SSL because of Heroku default SSL configuration

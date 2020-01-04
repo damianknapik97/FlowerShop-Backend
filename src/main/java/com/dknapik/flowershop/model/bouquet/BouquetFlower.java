@@ -17,7 +17,8 @@ public class BouquetFlower {
     private Flower flower;
 
 
-    public BouquetFlower() { }
+    public BouquetFlower() {
+    }
 
     public BouquetFlower(int itemCount, Flower flower) {
         this.itemCount = itemCount;

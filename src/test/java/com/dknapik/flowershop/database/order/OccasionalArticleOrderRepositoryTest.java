@@ -60,9 +60,9 @@ public class OccasionalArticleOrderRepositoryTest {
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         OccasionalArticle occasionalArticle =
                 retrieveOccasionalArticle("Occasional Article",
-                                           price,
-                                          "Example description",
-                                          "Birthday");
+                        price,
+                        "Example description",
+                        "Birthday");
 
 
         /* Create new article order and save it to database */
@@ -89,9 +89,9 @@ public class OccasionalArticleOrderRepositoryTest {
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         OccasionalArticle occasionalArticle =
                 retrieveOccasionalArticle("Occasional Article",
-                                                 price,
-                                                "Example description",
-                                                "Birthday");
+                        price,
+                        "Example description",
+                        "Birthday");
 
         /* Create new article order and save it to database */
         OccasionalArticleOrder occasionalArticleOrder =

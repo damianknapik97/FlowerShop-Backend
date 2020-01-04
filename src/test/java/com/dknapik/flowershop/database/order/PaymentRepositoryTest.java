@@ -26,6 +26,7 @@ public class PaymentRepositoryTest {
     private PaymentRepository paymentRepository;
     @Autowired
     private Environment env;
+
     /**
      * Check if entity can be saved to database without any undesired changes or errors
      */
@@ -45,7 +46,7 @@ public class PaymentRepositoryTest {
     }
 
     /**
-     *  Check if entity can be extracted from database using repository.
+     * Check if entity can be extracted from database using repository.
      */
     @Test
     public void retrieveFromDatabase() {

@@ -1,11 +1,10 @@
 package com.dknapik.flowershop.security;
 
+import com.dknapik.flowershop.database.AccountRepository;
+import com.dknapik.flowershop.model.Account;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-
-import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.flowershop.model.Account;
 
 @Service
 public class UserPrincipalDetailsService implements UserDetailsService {

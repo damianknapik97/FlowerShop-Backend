@@ -25,7 +25,7 @@ public class OrderSeeder implements SeederInt {
     @Override
     public void seed() {
         Money totalPrice = Money.of(5, moneyUtils.getApplicationCurrencyUnit());
-        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15,16,30 );
+        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
         Payment payment = new Payment(totalPrice, PaymentType.BANK_PAYMENT);
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Katowice", "42-500", "Test Street", "328");

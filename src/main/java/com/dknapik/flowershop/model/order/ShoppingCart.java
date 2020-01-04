@@ -32,7 +32,8 @@ public class ShoppingCart {
     private List<Bouquet> bouquetList;
 
 
-    public ShoppingCart() {}
+    public ShoppingCart() {
+    }
 
     public ShoppingCart(String name) {
         this.name = name;

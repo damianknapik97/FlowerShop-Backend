@@ -93,7 +93,7 @@ public class BouquetRepositoryTest {
         BouquetFlower retrievedEntity;
         for (BouquetFlower flowerOrder : bouquetFlowerList) {
             retrievedEntity = entityManager.find(BouquetFlower.class, flowerOrder.getId());
-            if (retrievedEntity != null ){
+            if (retrievedEntity != null) {
                 controlGroup.add(retrievedEntity);
             }
         }
@@ -103,9 +103,9 @@ public class BouquetRepositoryTest {
     }
 
     /**
-     *  Create FlowerOrder entities, WITHOUT saving them to database.
+     * Create FlowerOrder entities, WITHOUT saving them to database.
      *
-     * @param flowers - list with flowers on which Order entities will be created
+     * @param flowers   - list with flowers on which Order entities will be created
      * @param itemCount - how many products in one order
      * @return - List with database unsaved Flower Orders
      */
@@ -140,7 +140,7 @@ public class BouquetRepositoryTest {
     /**
      * Create multiple Flower entities and save them into database
      *
-     * @param name - prefix to the full name which is created from combination of name String and entity number
+     * @param name             - prefix to the full name which is created from combination of name String and entity number
      * @param numberOfEntities - how many entities should be created
      * @return - list with created entities
      */
@@ -161,7 +161,7 @@ public class BouquetRepositoryTest {
     /**
      * Create multiple Addon entities and save them to database
      *
-     * @param name - prefix to the full name which is created from combination of name String and entity number
+     * @param name             - prefix to the full name which is created from combination of name String and entity number
      * @param numberOfEntities - how many entities should be created
      * @return - list with created entities
      */
@@ -178,7 +178,6 @@ public class BouquetRepositoryTest {
 
         return addonEntityList;
     }
-
 
 
 }

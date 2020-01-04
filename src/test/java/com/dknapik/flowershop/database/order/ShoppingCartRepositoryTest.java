@@ -54,7 +54,7 @@ public class ShoppingCartRepositoryTest {
     }
 
     /**
-     *  Check if entity can be extracted from database using repository.
+     * Check if entity can be extracted from database using repository.
      */
     @Test
     public void retrieveFromDatabase() {
@@ -71,8 +71,8 @@ public class ShoppingCartRepositoryTest {
     }
 
     /**
-     *  Check if order entities that are part of shopping cart entity, will be saved into database with shopping cart,
-     *  and can be retrieved later separately.
+     * Check if order entities that are part of shopping cart entity, will be saved into database with shopping cart,
+     * and can be retrieved later separately.
      */
     @Test
     public void occasionalArticleOrderCascadePersistTest() {
@@ -80,9 +80,9 @@ public class ShoppingCartRepositoryTest {
 
         /* Get product entity */
         OccasionalArticle product = retrieveOccasionalArticleEntity("Occasional Article",
-                                                                     money,
-                                                                    "Test Description",
-                                                                    "Test Theme");
+                money,
+                "Test Description",
+                "Test Theme");
 
         /* Create order entity by using product entity */
         OccasionalArticleOrder order = new OccasionalArticleOrder(2, product);
@@ -99,7 +99,7 @@ public class ShoppingCartRepositoryTest {
     }
 
     /**
-     *  Check if associated order entities will also be deleted when shopping cart entity is deleted.
+     * Check if associated order entities will also be deleted when shopping cart entity is deleted.
      */
     @Test
     public void occasionalArticleOrderCascadeRemoveTest() {
@@ -107,9 +107,9 @@ public class ShoppingCartRepositoryTest {
 
         /* Get product entity */
         OccasionalArticle product = retrieveOccasionalArticleEntity("Occasional Article",
-                                                                     money,
-                                                                    "Test Description",
-                                                                    "Test Theme");
+                money,
+                "Test Description",
+                "Test Theme");
 
         /* Create order entity by using product entity */
         OccasionalArticleOrder order = new OccasionalArticleOrder(2, product);

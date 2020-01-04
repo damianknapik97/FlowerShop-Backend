@@ -17,7 +17,8 @@ public class FlowerOrder {
     private Flower flower;
 
 
-    public FlowerOrder() { }
+    public FlowerOrder() {
+    }
 
     public FlowerOrder(int itemCount, Flower flower) {
         this.itemCount = itemCount;
@@ -46,6 +47,15 @@ public class FlowerOrder {
 
     public void setFlower(Flower flower) {
         this.flower = flower;
+    }
+
+    @Override
+    public String toString() {
+        return "FlowerOrder{" +
+                "id=" + id +
+                ", itemCount=" + itemCount +
+                ", flower=" + flower +
+                '}';
     }
 
     @Override

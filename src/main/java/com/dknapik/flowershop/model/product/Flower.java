@@ -20,7 +20,8 @@ public class Flower {
     @Column
     private int height;
 
-    public Flower() { }
+    public Flower() {
+    }
 
     public Flower(String name, Money price, String description, int height) {
         this.name = name;
@@ -67,6 +68,17 @@ public class Flower {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    @Override
+    public String toString() {
+        return "Flower{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                ", height=" + height +
+                '}';
     }
 
     @Override

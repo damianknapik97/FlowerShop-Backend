@@ -29,7 +29,8 @@ public class Bouquet {
     private boolean userCreated;
 
 
-    public Bouquet() { }
+    public Bouquet() {
+    }
 
     public Bouquet(String name,
                    Money productionCost,

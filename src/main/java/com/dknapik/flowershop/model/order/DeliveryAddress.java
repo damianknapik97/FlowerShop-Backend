@@ -20,7 +20,8 @@ public class DeliveryAddress {
     private String apartmentNumber;
 
 
-    public DeliveryAddress() {}
+    public DeliveryAddress() {
+    }
 
     public DeliveryAddress(String cityName,
                            String zipCode,
@@ -90,6 +91,18 @@ public class DeliveryAddress {
 
     public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "DeliveryAddress{" +
+                "id=" + id +
+                ", cityName='" + cityName + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", apartmentNumber='" + apartmentNumber + '\'' +
+                '}';
     }
 
     @Override

@@ -15,7 +15,8 @@ public class BouquetAddon {
     private Addon addon;
 
 
-    public BouquetAddon() { }
+    public BouquetAddon() {
+    }
 
     public BouquetAddon(Addon addon) {
         this.addon = addon;

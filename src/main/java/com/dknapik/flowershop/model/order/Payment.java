@@ -19,7 +19,8 @@ public class Payment {
     private boolean wasPaid;
 
 
-    public Payment() { }
+    public Payment() {
+    }
 
     public Payment(Money totalPrice, PaymentType paymentType) {
         this.totalPrice = totalPrice.toString();
@@ -54,6 +55,16 @@ public class Payment {
 
     public void setWasPaid(boolean wasPaid) {
         this.wasPaid = wasPaid;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", totalPrice='" + totalPrice + '\'' +
+                ", paymentType=" + paymentType +
+                ", wasPaid=" + wasPaid +
+                '}';
     }
 
     @Override

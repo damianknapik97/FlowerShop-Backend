@@ -38,7 +38,7 @@ public class DeliveryAddressRepositoryTest {
     }
 
     /**
-     *  Check if entity can be extracted from database using repository.
+     * Check if entity can be extracted from database using repository.
      */
     @Test
     public void retrieveFromDatabase() {
@@ -51,7 +51,7 @@ public class DeliveryAddressRepositoryTest {
         entityManager.persistAndFlush(address);
 
         /* Retrieve entity using repository and check if it is the same as the one saved */
-        Optional<DeliveryAddress> searchResult =deliveryAddressRepository.findOne(Example.of(address));
+        Optional<DeliveryAddress> searchResult = deliveryAddressRepository.findOne(Example.of(address));
         Assertions.assertThat(searchResult.get()).isEqualToComparingFieldByField(address);
     }
 

@@ -85,7 +85,7 @@ public class FlowerOrderRepositoryTest {
 
     private Flower createFlowerEntity() {
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
-        Flower newFlower = new Flower("Testing Flower", price, "Test Description",5);
+        Flower newFlower = new Flower("Testing Flower", price, "Test Description", 5);
         flowerRepository.saveAndFlush(newFlower);
         return flowerRepository.findById(newFlower.getId()).get();
     }

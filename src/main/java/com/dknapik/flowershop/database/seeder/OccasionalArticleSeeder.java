@@ -42,16 +42,16 @@ public class OccasionalArticleSeeder implements SeederInt {
         occasionalArticleRepository.flush();
     }
 
-        @Override
-        public boolean isOnlyForDebug() {
-            return ONLY_FOR_DEBUG;
-        }
+    @Override
+    public boolean isOnlyForDebug() {
+        return ONLY_FOR_DEBUG;
+    }
 
-        /* Check if value already exists in database */
-        private boolean checkIfExists(OccasionalArticle occasionalArticle) {
-            return occasionalArticleRepository.findByNameAndDescriptionAndTheme(occasionalArticle.getName(),
-                                                                                occasionalArticle.getDescription(),
-                                                                                occasionalArticle.getTheme())
-                                                                                .isPresent();
-        }
+    /* Check if value already exists in database */
+    private boolean checkIfExists(OccasionalArticle occasionalArticle) {
+        return occasionalArticleRepository.findByNameAndDescriptionAndTheme(occasionalArticle.getName(),
+                occasionalArticle.getDescription(),
+                occasionalArticle.getTheme())
+                .isPresent();
+    }
 }

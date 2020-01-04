@@ -30,7 +30,8 @@ public class Order {
     private LocalDateTime placementDate;
 
 
-    public Order() { }
+    public Order() {
+    }
 
     public Order(String message,
                  LocalDateTime deliveryDate,
@@ -98,6 +99,19 @@ public class Order {
 
     public void setPlacementDate(LocalDateTime placementDate) {
         this.placementDate = placementDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", message='" + message + '\'' +
+                ", deliveryDate=" + deliveryDate +
+                ", payment=" + payment +
+                ", deliveryAddress=" + deliveryAddress +
+                ", shoppingCart=" + shoppingCart +
+                ", placementDate=" + placementDate +
+                '}';
     }
 
     @Override

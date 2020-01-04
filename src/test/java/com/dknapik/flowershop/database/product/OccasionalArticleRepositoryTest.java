@@ -64,8 +64,8 @@ public class OccasionalArticleRepositoryTest {
         /* Retrieve it using repository with find by name method and compare the two objects */
         OccasionalArticle searchResult = occasionalArticleRepository
                 .findByNameAndDescriptionAndTheme(occasionalArticle.getName(),
-                                                  occasionalArticle.getDescription(),
-                                                  occasionalArticle.getTheme())
+                        occasionalArticle.getDescription(),
+                        occasionalArticle.getTheme())
                 .get();
 
         Assertions.assertThat(searchResult).isEqualTo(searchResult);

@@ -29,7 +29,7 @@ public class FlowerSeeder implements SeederInt {
     @Override
     public void seed() {
         /* Create overall entity configuration  */
-        String flowerName = "Rose" ;
+        String flowerName = "Rose";
         Money price = Money.of(5, moneyUtils.getApplicationCurrencyUnit());
         String description = "Long a symbol of love and passion, the ancient Greeks and Romans associated roses with" +
                 " Aphrodite and Venus, goddess of love. Used for hundreds of years to convey messages without words," +

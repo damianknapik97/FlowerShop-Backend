@@ -9,54 +9,49 @@ import java.util.List;
 
 
 /**
- * 
  * Class used for initializing some values inside database used by application.
  * Regardless of debug mode, this application creates root users with admin privileges
  * that allows later client to configure application on its own.
- * 
- * @author Damian
  *
+ * @author Damian
  */
 @Component
 public class SeederRunner implements CommandLineRunner {
-	@Value("${app-debug-mode}")
-	private boolean debugMode;
-	private List<SeederInt> seederList;
+    @Value("${app-debug-mode}")
+    private boolean debugMode;
+    private List<SeederInt> seederList;
 
-	/**
-	 *  Initialize all sub seeder classes
-	 */
-	public SeederRunner(AccountSeeder accountSeeder,
-						AddonSeeder addonSeeder,
-						FlowerSeeder flowerSeeder,
-						SouvenirSeeder souvenirSeeder,
-						OccasionalArticleSeeder occasionalArticle,
-						ShoppingCartSeeder shoppingCartSeeder,
-						OccasionalArticleSeeder occasionalArticleSeeder) {
+    /**
+     * Initialize all sub seeder classes
+     */
+    public SeederRunner(AccountSeeder accountSeeder,
+                        AddonSeeder addonSeeder,
+                        FlowerSeeder flowerSeeder,
+                        SouvenirSeeder souvenirSeeder,
+                        OccasionalArticleSeeder occasionalArticle,
+                        ShoppingCartSeeder shoppingCartSeeder,
+                        OccasionalArticleSeeder occasionalArticleSeeder) {
 
-		seederList = Arrays.asList(
-				accountSeeder,
-				addonSeeder,
-				souvenirSeeder,
-				flowerSeeder.setNumberOfEntities(30),
-				occasionalArticle,
-				shoppingCartSeeder,
-				occasionalArticleSeeder
-		);
-	}
+        seederList = Arrays.asList(
+                accountSeeder,
+                addonSeeder,
+                souvenirSeeder,
+                flowerSeeder.setNumberOfEntities(30),
+                occasionalArticle,
+                shoppingCartSeeder,
+                occasionalArticleSeeder
+        );
+    }
 
-	/**
-	 *  Seed database with data
-	 */
-	@Override
-	public void run(String... args) {
-		for (SeederInt seeder : seederList) {
-			if (seeder.isOnlyForDebug() || debugMode) {
-				seeder.seed();
-			}
-		}
-	}
-
-
-
+    /**
+     * Seed database with data
+     */
+    @Override
+    public void run(String... args) {
+        for (SeederInt seeder : seederList) {
+            if (seeder.isOnlyForDebug() || debugMode) {
+                seeder.seed();
+            }
+        }
+    }
 }

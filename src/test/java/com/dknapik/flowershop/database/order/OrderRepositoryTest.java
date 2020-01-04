@@ -35,7 +35,7 @@ public class OrderRepositoryTest {
 
     private Order createOrderEntity() {
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
-        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15,16,30 );
+        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
         Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Katowice", "42-500", "Test Street", "328");
@@ -61,7 +61,7 @@ public class OrderRepositoryTest {
     }
 
     /**
-     *  Check if entity can be extracted from database using repository.
+     * Check if entity can be extracted from database using repository.
      */
     @Test
     public void retrieveFromDatabase() {

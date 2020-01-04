@@ -27,9 +27,9 @@ public class ShoppingCartSeeder implements SeederInt {
 
     @Autowired
     public ShoppingCartSeeder(MoneyUtils moneyUtils,
-                               OccasionalArticleRepository occasionalArticleRepository,
-                               OccasionalArticleOrderRepository occasionalArticleOrderRepository,
-                               ShoppingCartRepository shoppingCartRepository) {
+                              OccasionalArticleRepository occasionalArticleRepository,
+                              OccasionalArticleOrderRepository occasionalArticleOrderRepository,
+                              ShoppingCartRepository shoppingCartRepository) {
         this.moneyUtils = moneyUtils;
         this.occasionalArticleRepository = occasionalArticleRepository;
         this.occasionalArticleOrderRepository = occasionalArticleOrderRepository;
@@ -62,8 +62,7 @@ public class ShoppingCartSeeder implements SeederInt {
     }
 
     /**
-     *
-     *  Search for OccasionalArticle with provided values in database, and create and save new if search failed.
+     * Search for OccasionalArticle with provided values in database, and create and save new if search failed.
      *
      * @param name
      * @param price

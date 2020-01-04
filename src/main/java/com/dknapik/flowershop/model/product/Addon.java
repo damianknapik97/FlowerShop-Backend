@@ -21,7 +21,8 @@ public class Addon {
     private String description;
 
 
-    public Addon() { }
+    public Addon() {
+    }
 
     public Addon(String name, AddonColour colour, Money price, String description) {
         this.name = name;
@@ -68,6 +69,17 @@ public class Addon {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Addon{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", colour=" + colour +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 
     @Override

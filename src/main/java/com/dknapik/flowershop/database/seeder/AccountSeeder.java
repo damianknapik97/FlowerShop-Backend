@@ -33,23 +33,23 @@ public class AccountSeeder implements SeederInt {
         /* Check if basic accounts are already in database, and initialize if not */
         if (!this.accountRepository.existsByName("root")) {
             accountRepository.save(new Account("root",
-                                                encoder.encode("root"),
-                                                "root@test.pl",
-                                                AccountRole.ADMIN));
+                    encoder.encode("root"),
+                    "root@test.pl",
+                    AccountRole.ADMIN));
         }
 
         if (!this.accountRepository.existsByName("employee")) {
             accountRepository.save(new Account("employee",
-                                                encoder.encode("employee"),
-                                                "employee@test.pl",
-                                                AccountRole.EMPLOYEE));
+                    encoder.encode("employee"),
+                    "employee@test.pl",
+                    AccountRole.EMPLOYEE));
         }
 
         if (!this.accountRepository.existsByName("user")) {
             accountRepository.save(new Account("user",
-                                                encoder.encode("user"),
-                                                "user@test.pl",
-                                                AccountRole.USER));
+                    encoder.encode("user"),
+                    "user@test.pl",
+                    AccountRole.USER));
         }
         this.accountRepository.flush();
     }

@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * This test uses DatabaseSeeder with Debug Mode set in ApplicationContext, to check if
  * physical PostgreSQL database will be seeded without any errors.
- *
+ * <p>
  * Queries are checked on H2 Database in other test classes.
  */
 @RunWith(SpringRunner.class)
@@ -18,5 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SeederRunnerTest {
 
     @Test
-    public void seedPostgreSQLDatabase() { }
+    public void seedPostgreSQLDatabase() {
+    }
 }

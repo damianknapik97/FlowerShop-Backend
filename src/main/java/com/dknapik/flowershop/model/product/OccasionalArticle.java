@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Table(
         uniqueConstraints =
-                @UniqueConstraint(columnNames = {"name", "description", "theme"})
+        @UniqueConstraint(columnNames = {"name", "description", "theme"})
 )
 @Entity
 public class OccasionalArticle {
@@ -24,7 +24,8 @@ public class OccasionalArticle {
     private String theme;
 
 
-    public OccasionalArticle() { }
+    public OccasionalArticle() {
+    }
 
     public OccasionalArticle(String name, Money price, String description, String theme) {
         this.name = name;
@@ -71,6 +72,17 @@ public class OccasionalArticle {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    @Override
+    public String toString() {
+        return "OccasionalArticle{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                ", theme='" + theme + '\'' +
+                '}';
     }
 
     @Override

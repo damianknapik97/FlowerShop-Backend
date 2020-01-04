@@ -17,7 +17,8 @@ public class SouvenirOrder {
     private Souvenir souvenir;
 
 
-    public SouvenirOrder() { }
+    public SouvenirOrder() {
+    }
 
     public SouvenirOrder(int itemCount, Souvenir souvenir) {
         this.itemCount = itemCount;
