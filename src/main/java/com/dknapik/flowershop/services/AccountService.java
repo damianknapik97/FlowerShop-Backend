@@ -7,6 +7,7 @@ import com.dknapik.flowershop.dto.account.PasswordChangeDto;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.model.Account;
+import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -28,6 +29,7 @@ import java.security.Principal;
  * @author Damian
  */
 @Service
+@ToString
 public class AccountService {
     private final Logger log = LogManager.getLogger(getClass().getName());
     private final ModelMapper mapper;             // less messy dto - model mapping

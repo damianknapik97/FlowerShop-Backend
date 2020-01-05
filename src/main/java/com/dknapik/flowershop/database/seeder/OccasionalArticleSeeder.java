@@ -3,11 +3,13 @@ package com.dknapik.flowershop.database.seeder;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utility.MoneyUtils;
+import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@ToString
 public class OccasionalArticleSeeder implements SeederInt {
     private final MoneyUtils moneyUtils;                  // Money currency retrieved from application context
     private final OccasionalArticleRepository occasionalArticleRepository;  // Repository for retrieving/saving entities

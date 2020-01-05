@@ -84,10 +84,10 @@ public class AddonRepositoryTest {
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon[] addonArray = {
                 new Addon(name, colour, price, "Test Description"),
-                new Addon(name, colour, price, "Test Description"),
-                new Addon(name, AddonColour.RED, price, "Test Description"),
-                new Addon("Test2", colour, price, "Test Description"),
-                new Addon("Test3", AddonColour.YELLOW, price, "Test Description"),
+                new Addon(name, colour, price, "Test Description1"),
+                new Addon(name, AddonColour.RED, price, "Test Description2"),
+                new Addon("Test2", colour, price, "Test Description3"),
+                new Addon("Test3", AddonColour.YELLOW, price, "Test Description4"),
         };
 
         /* Create control group that will be used as base for comparison */

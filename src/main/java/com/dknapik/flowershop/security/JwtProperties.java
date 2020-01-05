@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
+import lombok.ToString;
 
 import java.security.SecureRandom;
 
@@ -9,6 +10,7 @@ import java.security.SecureRandom;
  *
  * @author Damian
  */
+@ToString
 public class JwtProperties {
     public static final byte[] SECRET = "[B@2bd4308b".getBytes();
     public static final int EXPIRATION_TIME = 864000000;                           // Token is valid for around 10 days

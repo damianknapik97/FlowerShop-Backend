@@ -3,12 +3,14 @@ package com.dknapik.flowershop.database.seeder;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.model.order.*;
 import com.dknapik.flowershop.utility.MoneyUtils;
+import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 
 import java.time.LocalDateTime;
 
+@ToString
 public class OrderSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = false;
     private final MoneyUtils moneyUtils;

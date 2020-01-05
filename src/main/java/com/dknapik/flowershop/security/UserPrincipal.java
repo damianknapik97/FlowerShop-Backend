@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.security;
 
 import com.dknapik.flowershop.model.Account;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

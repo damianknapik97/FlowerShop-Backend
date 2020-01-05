@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.exceptions;
 
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Damian
  */
+@ToString
 public class BindingException extends Exception implements WebExceptionInt {
     private static final long serialVersionUID = 1L;
     protected Class<?> bindingClass;    // Retrieve target class informations for debugging
@@ -44,14 +46,5 @@ public class BindingException extends Exception implements WebExceptionInt {
     @Override
     public void setHttpStatus(HttpStatus httpStatus) {
         this.httpStatus = httpStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "BindingException{" +
-                "bindingClass=" + bindingClass +
-                ", userExceptionMsg='" + userExceptionMsg + '\'' +
-                ", httpStatus=" + httpStatus +
-                '}';
     }
 }

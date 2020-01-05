@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.exceptions;
 
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Damian
  */
+@ToString
 public class DataProcessingException extends Exception implements WebExceptionInt {
     private HttpStatus status;
 
@@ -30,10 +32,4 @@ public class DataProcessingException extends Exception implements WebExceptionIn
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "DataProcessingException{" +
-                "status=" + status +
-                '}';
-    }
 }

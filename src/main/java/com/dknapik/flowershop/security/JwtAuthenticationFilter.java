@@ -3,6 +3,7 @@ package com.dknapik.flowershop.security;
 import com.auth0.jwt.JWT;
 import com.dknapik.flowershop.dto.account.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+@ToString
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final Logger log = LogManager.getLogger(getClass().getName());
     private final AuthenticationManager authenticationManager;

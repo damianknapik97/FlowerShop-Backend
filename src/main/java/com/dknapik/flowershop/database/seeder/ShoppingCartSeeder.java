@@ -7,6 +7,7 @@ import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utility.MoneyUtils;
+import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@ToString
 public class ShoppingCartSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
     private final MoneyUtils moneyUtils;

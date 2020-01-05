@@ -3,6 +3,7 @@ package com.dknapik.flowershop.database.seeder;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Damian
  */
+@ToString
 @Component
 public class AccountSeeder implements SeederInt {
     private ApplicationContext applicationContext;      // To retrieve application password encoder

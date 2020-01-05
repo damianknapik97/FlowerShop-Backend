@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.database.seeder;
 
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author Damian
  */
 @Component
+@ToString
 public class SeederRunner implements CommandLineRunner {
     @Value("${app-debug-mode}")
     private boolean debugMode;

@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.exceptions;
 
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Damian
  */
+@ToString(callSuper = true)
 public class MappingException extends BindingException {
     private static final long serialVersionUID = 1L;
     protected Class<?> bindingFromClass; // Retrieve source class informations for debugging
@@ -33,14 +35,4 @@ public class MappingException extends BindingException {
                 .append(this.userExceptionMsg)
                 .toString();
     }
-
-	@Override
-	public String toString() {
-		return "MappingException{" +
-				"bindingFromClass=" + bindingFromClass +
-				", bindingClass=" + bindingClass +
-				", userExceptionMsg='" + userExceptionMsg + '\'' +
-				", httpStatus=" + httpStatus +
-				'}';
-	}
 }

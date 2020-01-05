@@ -11,6 +11,9 @@ plugins {
 	id 'eclipse'
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+
 group = 'com.dknapik'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -54,6 +57,9 @@ dependencies {
 	// Jackson for processiong JSON 
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
 
+	// Lombok for cleaner and more reliable code
+	compileOnly 'org.projectlombok:lombok:1.18.8'
+	annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
 	//Log4j for logging to help in debug processes
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.1'

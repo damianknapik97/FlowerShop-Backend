@@ -29,9 +29,4 @@ public class MoneyUtilsTest {
         CurrencyUnit expectedCurrencyUnit = Monetary.getCurrency(environment.getProperty("app-monetary-currency"));
         Assertions.assertThat(retrievedCurrencyUnit).isEqualTo(expectedCurrencyUnit);
     }
-
-    @Test
-    public void test() {
-        System.out.println(SecureRandom.getSeed(16) );
-    }
 }

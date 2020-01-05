@@ -3,6 +3,7 @@ package com.dknapik.flowershop.database.seeder;
 import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.utility.MoneyUtils;
+import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Damian
  */
+@ToString
 @Component
 public class FlowerSeeder implements SeederInt {
     private MoneyUtils moneyUtils;                     // Money currency retrieved from application context

@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.utility;
 
+import lombok.ToString;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 @Service
+@ToString
 public class MoneyUtils {
     private final CurrencyUnit currencyUnit;
 
