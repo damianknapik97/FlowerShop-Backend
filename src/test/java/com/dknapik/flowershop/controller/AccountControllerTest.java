@@ -14,26 +14,40 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc()
+@AutoConfigureRestDocs(value = "build/generated-snippets/account")
 public class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -46,14 +60,26 @@ public class AccountControllerTest {
 
 
     @BeforeEach
-    public void removeUser() {
+    public void setup(WebApplicationContext webApplicationContext,
+                      RestDocumentationContextProvider restDocumentation) {
+         /*
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(documentationConfiguration(restDocumentation))
+                .alwaysDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .build();
+
+
+     */
+        /* Check if provided Account entity exists, and remove it if true */
         Optional<Account> account = accountRepository.findByName(username);
         account.ifPresent(value -> accountRepository.delete(value));
         accountRepository.flush();
     }
 
     @Test
-    public void createAccountTest() throws Exception {
+    public void createAccount() throws Exception {
         /* Create DTO and map it to JSON request */
         //MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         AccountDto accountDto =
@@ -65,7 +91,12 @@ public class AccountControllerTest {
                 post("/account").content(jsonRequest).contentType(MediaType.APPLICATION_JSON_VALUE);
 
         /* Perform request, check status and retrieve results by mapping them to DTO */
-        MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
         MessageResponseDto message =
                 objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
 
@@ -74,7 +105,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void retrieveAccountTest() throws Exception {
+    public void retrieveAccount() throws Exception {
         /* Prepare Account and Control Object  test */
         Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
         accountRepository.saveAndFlush(newEntity);
@@ -85,7 +116,12 @@ public class AccountControllerTest {
         MockHttpServletRequestBuilder requestBuilder = get("/account").with(user(username));
 
         /* Perform request, check status and retrieve results by mapping them to DTO */
-        MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
         AccountDetailsDto accountDetailsDTO =
                 objectMapper.readValue(result.getResponse().getContentAsString(), AccountDetailsDto.class);
 
@@ -106,7 +142,12 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE).with(user(username));
 
         /* Perform request, check status and retrieve results by mapping them to DTO */
-        MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
         MessageResponseDto response =
                 objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
 
@@ -136,7 +177,12 @@ public class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE).with(user(username));
 
         /* Perform request, check status and retrieve results by mapping them to DTO */
-        MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
         MessageResponseDto response =
                 objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
 
@@ -157,7 +203,12 @@ public class AccountControllerTest {
                 delete("/account").param("password", password).with(user(username));
 
         /* Perform request, check status and retrieve results by mapping them to DTO */
-        MvcResult result = mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
         MessageResponseDto response =
                 objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
 

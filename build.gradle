@@ -3,20 +3,40 @@
 // cleanEclipse eclipse - use eclipse plugin to import project into eclipse workspace
 // clean - clean project
 
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.3")
+	}
+}
+
+
 plugins {
 	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.8'
+	//id 'org.asciidoctor.convert' version '1.5.8.1'
 	id 'java'
 	id 'eclipse'
 }
 
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
+apply plugin: 'org.asciidoctor.convert'
 
 group = 'com.dknapik'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+asciidoctor {
+	sourceDir 'src/docs/asciidocs'
+	outputDir 'src/docs/asciidocs'
+	attributes \
+      'snippets': file('build/generated-snippets')
+}
+
+
 
 configurations {
 	developmentOnly
@@ -41,6 +61,7 @@ repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/milestone' }
 	maven { url 'https://repo.spring.io/snapshot' }
+	jcenter()
 }
 
 ext {
@@ -83,6 +104,7 @@ dependencies {
 	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 	// https://mvnrepository.com/artifact/com.h2database/h2
 	testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+
 
 }
 

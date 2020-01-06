@@ -1,0 +1,54 @@
+= Account Controller API Documentation
+Url: */account*
+
+Provided Url are connected to each other, for example if we would want to send PUT request to "Update Password" end point,
+we would need to combine main url with the one in method.
+For Example:
+"/account/password"
+
+== *(POST)* Create Account
+Url: **
+
+.request
+include::{snippets}/account/create-account/http-request.adoc[]
+
+.response
+include::{snippets}/account/create-account/http-response.adoc[]
+
+
+== *(GET)* Retrieve Account
+Url: **
+
+.request
+include::{snippets}/account/retrieve-account/http-request.adoc[]
+
+.response
+include::{snippets}/account/retrieve-account/http-response.adoc[]
+
+
+== *(PUT)* Update Account
+Url: **
+
+.request
+include::{snippets}/account/update-account/http-request.adoc[]
+
+.response
+include::{snippets}/account/update-account/http-response.adoc[]
+
+
+== *(PUT)* Update Password
+Url: */password*
+
+.request
+include::{snippets}/account/update-password/http-request.adoc[]
+
+
+== *(DELETE)* Delete Account
+Url: **
+
+.request
+include::{snippets}/account/delete-account/http-request.adoc[]
+
+.response
+include::{snippets}/account/delete-account/http-response.adoc[]
+
