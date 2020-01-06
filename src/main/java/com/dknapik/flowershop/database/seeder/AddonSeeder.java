@@ -3,7 +3,7 @@ package com.dknapik.flowershop.database.seeder;
 import com.dknapik.flowershop.database.product.AddonRepository;
 import com.dknapik.flowershop.model.product.Addon;
 import com.dknapik.flowershop.model.product.AddonColour;
-import com.dknapik.flowershop.utility.MoneyUtils;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;

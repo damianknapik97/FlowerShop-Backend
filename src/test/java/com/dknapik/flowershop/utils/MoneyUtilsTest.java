@@ -1,20 +1,18 @@
-package com.dknapik.flowershop.utility;
+package com.dknapik.flowershop.utils;
 
-import com.dknapik.flowershop.utility.MoneyUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
-import java.security.SecureRandom;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
 public class MoneyUtilsTest {

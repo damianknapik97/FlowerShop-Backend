@@ -155,7 +155,7 @@ public class AccountController {
      * @return string message with informations about data processing status.
      */
     @DeleteMapping()
-    public ResponseEntity<MessageResponseDto> deleteAccount(@RequestParam("password") String password,
+    public ResponseEntity<MessageResponseDto> deleteAccount(@Valid @RequestParam("password") String password,
                                                             Principal principal) {
         MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_DELETE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;

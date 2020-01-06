@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.utility;
+package com.dknapik.flowershop.utils;
 
 import lombok.ToString;
 import org.springframework.core.env.Environment;
