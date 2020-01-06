@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.model.Account;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @ToString
+@Log4j2
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final AccountRepository accountRepository;
-    protected final Logger log = LogManager.getLogger(getClass().getName());
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
                                   AccountRepository accountRepository) {

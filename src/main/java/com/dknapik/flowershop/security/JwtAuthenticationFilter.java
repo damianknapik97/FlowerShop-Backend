@@ -4,8 +4,7 @@ import com.auth0.jwt.JWT;
 import com.dknapik.flowershop.dto.account.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @ToString
+@Log4j2
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final Logger log = LogManager.getLogger(getClass().getName());
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {

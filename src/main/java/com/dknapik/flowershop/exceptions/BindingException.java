@@ -15,6 +15,11 @@ public class BindingException extends Exception implements WebExceptionInt {
     protected String userExceptionMsg;
     protected HttpStatus httpStatus;
 
+    public BindingException(Enum e, Class<?> bindingClass) {
+        this.userExceptionMsg = e.toString();
+        this.bindingClass = bindingClass;
+    }
+
     public BindingException(String exceptionMsg, Class<?> bindingClass) {
         super(exceptionMsg);
         this.userExceptionMsg = exceptionMsg;

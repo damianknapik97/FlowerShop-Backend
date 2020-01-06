@@ -3,8 +3,6 @@ package com.dknapik.flowershop.security;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.ToString;
 
-import java.security.SecureRandom;
-
 /**
  * Constants used in JWT authentication and authorization
  *

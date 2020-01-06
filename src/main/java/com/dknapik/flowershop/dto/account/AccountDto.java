@@ -33,4 +33,13 @@ public class AccountDto {
     private String password;
     private AccountRole role = AccountRole.USER;
 
+    public AccountDto(@NotEmpty @Size(min = 4) String name,
+                      @NotEmpty @Email String email,
+                      @NotEmpty @Size(min = 8) @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+") String password,
+                      AccountRole role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }

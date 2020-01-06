@@ -12,6 +12,11 @@ import org.springframework.http.HttpStatus;
 public class DataProcessingException extends Exception implements WebExceptionInt {
     private HttpStatus status;
 
+
+    public DataProcessingException(Enum e) {
+        super(e.toString());
+    }
+
     public DataProcessingException(String message, HttpStatus status) {
         super(message);
         this.status = status;

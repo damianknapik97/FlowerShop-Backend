@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.services;
 
+import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.dto.account.AccountDetailsDto;
 import com.dknapik.flowershop.dto.account.AccountDto;
@@ -8,8 +9,7 @@ import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.model.Account;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 /**
@@ -30,8 +31,8 @@ import java.security.Principal;
  */
 @Service
 @ToString
+@Log4j2
 public class AccountService {
-    private final Logger log = LogManager.getLogger(getClass().getName());
     private final ModelMapper mapper;             // less messy dto - model mapping
     private final AccountRepository accountRepo; // database access
     private final ApplicationContext context;    // retrieve existing beans
@@ -52,17 +53,17 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - account already exists.
      */
-    public void createNewUser(AccountDto accountDto,
+    public void createNewUser(@Valid AccountDto accountDto,
                               BindingResult bindingResult)
             throws BindingException, DataProcessingException {
         if (bindingResult.hasErrors()) {
-            log.error("Couldn't create new account because provided data isn't valid and properly binded");
-            throw new BindingException(bindingResult.getFieldError().getDefaultMessage(), accountDto.getClass());
+            log.error(AccountMessage.NEW_ENTITY_CREATION_ERROR.toString());
+            throw new BindingException(AccountMessage.NEW_ENTITY_CREATION_ERROR, accountDto.getClass());
         }
 
         if (this.accountRepo.existsByName(accountDto.getName())) {
-            log.warn("Account already  exists");
-            throw new DataProcessingException("Account with provided login already exists");
+            log.warn(AccountMessage.ALREADY_EXISTS.toString());
+            throw new DataProcessingException(AccountMessage.ALREADY_EXISTS);
         }
 
         accountDto.setPassword(
@@ -80,8 +81,7 @@ public class AccountService {
     public AccountDetailsDto retrieveAccountDetails(Principal principal)
             throws DataProcessingException {
         Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-        );
+                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
 
         return this.mapper.map(acc, AccountDetailsDto.class);
     }
@@ -95,19 +95,18 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - couldn't retrieve currently logged user from security context.
      */
-    public void updateAccount(AccountDetailsDto accDetailsDto,
+    public void updateAccount(@Valid AccountDetailsDto accDetailsDto,
                               BindingResult bindingResult,
                               Principal principal)
             throws BindingException, DataProcessingException {
         if (bindingResult.hasErrors()) {
-            log.error("Couldn't update account details because provided data couldn't be properly binded");
-            throw new BindingException(bindingResult.getFieldError().getDefaultMessage(),
+            log.error(AccountMessage.ENTITY_UPDATE_ERROR.toString());
+            throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR,
                     accDetailsDto.getClass());
         }
 
         Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
-        );
+                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
 
         this.mapper.map(accDetailsDto, acc);
         this.accountRepo.saveAndFlush(acc);
@@ -122,24 +121,24 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - thrown when provided passwords doesn't match.
      */
-    public void updatePassword(PasswordChangeDto passwordChangeDto,
+    public void updatePassword(@Valid PasswordChangeDto passwordChangeDto,
                                BindingResult bindingResult,
                                Principal principal)
             throws BindingException, DataProcessingException {
         if (bindingResult.hasErrors()) {
-            log.error("Couldn't update account password because provided data wasn't properly binded");
-            throw new BindingException(bindingResult.getFieldError().getDefaultMessage(),
+            log.error(AccountMessage.ENTITY_UPDATE_ERROR.toString());
+            throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR,
                     passwordChangeDto.getClass());
         }
 
         Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR)
         );
 
         PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
         if (!passwordChangeDto.getNewPassword().contentEquals(passwordChangeDto.getNewPasswordConfirmation())) {
-            log.warn("Couldn't update account password because provided new password doesn't match confirmation password");
-            throw new DataProcessingException("Provided password doesn't match actual password");
+            log.warn(AccountMessage.PASSWORD_UPDATE_ERROR.toString());
+            throw new DataProcessingException(AccountMessage.PASSWORD_UPDATE_ERROR);
         }
 
         acc.setPassword(encoder.encode(passwordChangeDto.getNewPassword()));
@@ -158,7 +157,7 @@ public class AccountService {
             throws DataProcessingException {
         if (password != null) {
             Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                    () -> new DataProcessingException("Error, couldn't retrieve currently logged user details")
+                    () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR)
             );
 
             PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
@@ -166,7 +165,7 @@ public class AccountService {
             if (encoder.matches(password, acc.getPassword())) {
                 this.accountRepo.delete(acc);
             } else {
-                throw new DataProcessingException("Provided password doesn't match");
+                throw new DataProcessingException(AccountMessage.ENTITY_DELETE_ERROR);
             }
         }
 

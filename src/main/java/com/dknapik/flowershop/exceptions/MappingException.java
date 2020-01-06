@@ -13,6 +13,13 @@ public class MappingException extends BindingException {
     private static final long serialVersionUID = 1L;
     protected Class<?> bindingFromClass; // Retrieve source class informations for debugging
 
+
+    public MappingException(Enum e, Class<?> bindingClass, Class<?> bindingFromClass) {
+        super(e.toString(), bindingClass);
+        this.bindingFromClass = bindingFromClass;
+        this.httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+    }
+
     public MappingException(String exceptionMsg, Class<?> bindingClass, Class<?> bindingFromClass) {
         super(exceptionMsg, bindingClass);
         this.bindingFromClass = bindingFromClass;
