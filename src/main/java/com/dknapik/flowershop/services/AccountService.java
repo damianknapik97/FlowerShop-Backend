@@ -7,6 +7,7 @@ import com.dknapik.flowershop.dto.account.AccountDto;
 import com.dknapik.flowershop.dto.account.PasswordChangeDto;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +20,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Optional;
 
 /**
  * This class deals with all the operations done on user account currently it is:
@@ -72,6 +74,18 @@ public class AccountService {
     }
 
     /**
+     * Retrieve single account entity, check if exists and return
+     *
+     * @param accountName - account login
+     * @return single Account entity
+     */
+    public Account retrieveAccountByName(String accountName) {
+        Optional<Account> account = accountRepo.findByName(accountName);
+        return account.orElseThrow(() ->
+                new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+    }
+
+    /**
      * Retrieves user details from database by retrieving currently logged user details from spring security context.
      *
      * @param principal - handle used to access spring security context.
@@ -110,6 +124,20 @@ public class AccountService {
 
         this.mapper.map(accDetailsDto, acc);
         this.accountRepo.saveAndFlush(acc);
+    }
+
+    /**
+     * Checks if provided account exists in database, and updated it if true
+     *
+     * @param account - Account Entity that will be saved in database if exists
+     */
+    public void updateAccount(Account account) {
+        /* Check if account exists, if not, we are not performing update but save so throw an exception */
+        if (!accountRepo.existsById(account.getId())) {
+            throw new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+        } else {
+            accountRepo.saveAndFlush(account);
+        }
     }
 
     /**

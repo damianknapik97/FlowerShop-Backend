@@ -30,9 +30,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountRole role = AccountRole.USER;
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
-    private List<ShoppingCart> shoppingCartList;
+    private ShoppingCart shoppingCart = new ShoppingCart();
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn
     private List<Order> orderList;
@@ -55,13 +55,15 @@ public class Account {
                    String password,
                    String email,
                    AccountRole role,
-                   List<ShoppingCart> shoppingCartList,
+                   ShoppingCart shoppingCart,
                    List<Order> orderList) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.shoppingCartList = shoppingCartList;
+        this.shoppingCart = shoppingCart;
         this.orderList = orderList;
     }
+
+
 }
