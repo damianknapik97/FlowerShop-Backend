@@ -55,14 +55,6 @@ public class AccountControllerTest {
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext,
                       RestDocumentationContextProvider restDocumentation) {
-         /*
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentation))
-                .alwaysDo(document("{method-name}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
-                .build();
-        */
 
         /* Check if provided Account entity exists, and remove it if true */
         Optional<Account> account = accountRepository.findByName(username);
