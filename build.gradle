@@ -69,14 +69,18 @@ ext {
 }
 
 dependencies {
-	// Money API to handle currencies
+	// Money API to handle currencies and monetary transcations
 	implementation 'org.javamoney:moneta:1.1'
+	implementation 'org.zalando:jackson-datatype-money:1.1.1' // Extends capabilities of Java Money
+	compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1' // Extends Hibernate capabilities
+
+
 	// JWT tokens libraries
 	implementation 'com.auth0:java-jwt:3.4.1'
 	// ModelMapper to help in mapping VivewModels(DTO's) to Models(Entities)
 	implementation 'org.modelmapper:modelmapper:2.3.0'
 	// Jackson for processiong JSON 
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
 
 	// Lombok for cleaner and more reliable code
 	compileOnly 'org.projectlombok:lombok:1.18.8'
@@ -104,8 +108,6 @@ dependencies {
 	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 	// https://mvnrepository.com/artifact/com.h2database/h2
 	testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
-
-
 }
 
 test {
