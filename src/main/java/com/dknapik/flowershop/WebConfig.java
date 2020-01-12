@@ -3,6 +3,7 @@ package com.dknapik.flowershop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -25,6 +26,11 @@ public class WebConfig implements WebMvcConfigurer {
         return new ObjectMapper()
                 .registerModule(new SimpleModule().addSerializer(BigDecimal.class, new ToStringSerializer()))
                 .registerModule(new MoneyModule());
+    }
+
+    @Bean(name = "ModelMapper")
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
     @Override

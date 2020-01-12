@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -18,11 +17,11 @@ public class SouvenirDto {
     private UUID id;
     @NotBlank
     private String name;
+    @NotNull
+    private BigDecimal amount;
     @NotBlank
     @Size(min = 3, max = 3)
     private String currency;
-    @NotNull
-    private BigDecimal monetaryAmount;
     @NotNull
     private String description;
 }

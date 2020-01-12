@@ -2,6 +2,8 @@ package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.SouvenirRepository;
+import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.dto.product.SouvenirDto;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,12 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,14 +26,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.money.Monetary;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -47,9 +47,8 @@ class SouvenirControllerTest {
     private SouvenirRepository repository;
     @Autowired
     private Environment env;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @BeforeEach
@@ -59,14 +58,21 @@ class SouvenirControllerTest {
 
     @Test
     public void getSouvenirsTest() throws Exception {
-
         int numberOfEntities = 45;
         String prefix = "TestingSouvenir";
         int page = 2;
+        RestResponsePage<SouvenirDto> controlPage;
+        List<SouvenirDto> pageContent = new LinkedList<>();
 
         /* Initialize testing entities and create List representation of page that should be returned */
-        List<Souvenir> controlValue = initializeSouvenirs(prefix, numberOfEntities);
-        controlValue.subList(ProductProperties.PAGE_SIZE * page, numberOfEntities);
+        List<Souvenir> designatedEntities = initializeSouvenirs(prefix, numberOfEntities);
+        designatedEntities = designatedEntities.subList(ProductProperties.PAGE_SIZE * page, numberOfEntities);
+
+        /* Create control value by mapping designated entities into dto*/
+        for (Souvenir souvenir : designatedEntities) {
+            pageContent.add(convertToDto(souvenir));
+        }
+        controlPage = new RestResponsePage<>(pageContent, PageRequest.of(2, ProductProperties.PAGE_SIZE), numberOfEntities);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
@@ -81,12 +87,16 @@ class SouvenirControllerTest {
                 .andReturn();
 
         /* Map response to Page<Souvenir> data type */
-        TypeReference<Page<Souvenir>> typeReference = new TypeReference<Page<Souvenir>>() {} ;
-        Page<Souvenir> resultValue = objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+        TypeReference<RestResponsePage<SouvenirDto>> typeReference =
+                new TypeReference<RestResponsePage<SouvenirDto>>() {
+                };
+        RestResponsePage<SouvenirDto> resultValue =
+                objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
-        List<Souvenir> resultValueList = resultValue.toList();
-        Assertions.assertThat(resultValueList).containsExactlyInAnyOrderElementsOf(controlValue);
+        Assertions.assertThat(resultValue).
+                usingElementComparatorIgnoringFields("amount")  // Ignoring Amount field because of different number format
+                .containsExactlyInAnyOrderElementsOf(controlPage);
 
     }
 
@@ -102,7 +112,7 @@ class SouvenirControllerTest {
 
 
         Souvenir newEntity;
-        while (numberOfEntities >= 0) {
+        while (numberOfEntities > 0) {
             newEntity = new Souvenir(namePrefix.concat(String.valueOf(numberOfEntities)), money, description);
             souvenirList.add(newEntity);
             repository.save(newEntity);
@@ -111,5 +121,33 @@ class SouvenirControllerTest {
 
         repository.flush();
         return souvenirList;
+    }
+
+    /**
+     * Manually convert Souvenir Entity to Dto cause ModelMapper won't properly handle MonetaryAmount interface
+     *
+     * @param souvenir - entity for mapping
+     * @return dto created from provided entity
+     */
+    private SouvenirDto convertToDto(Souvenir souvenir) {
+        return new SouvenirDto(souvenir.getId(),
+                souvenir.getName(),
+                souvenir.getPrice().getNumber().numberValue(BigDecimal.class),
+                souvenir.getPrice().getCurrency().getCurrencyCode(),
+                souvenir.getDescription());
+    }
+
+    /**
+     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
+     *
+     * @param souvenirDto - dto to map to entity
+     * @return - mapped entity
+     */
+    private Souvenir convertToEntity(SouvenirDto souvenirDto) {
+        return new Souvenir(
+                souvenirDto.getName(),
+                Money.of(souvenirDto.getAmount(), souvenirDto.getCurrency()),
+                souvenirDto.getDescription()
+        );
     }
 }
