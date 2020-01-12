@@ -1,13 +1,23 @@
 package com.dknapik.flowershop.model.bouquet;
 
+import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.javamoney.moneta.Money;
+import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
+import javax.money.MonetaryAmount;
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
+@TypeDefs(
+        value = {
+                @TypeDef(name = "moneyAmountAndCurrency", typeClass = MoneyAmountAndCurrency.class)
+        }
+)
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,8 +27,12 @@ public class Bouquet {
     private UUID id;
     @Column
     private String name;
-    @Column
-    private Money productionCost;
+    @Columns(columns = {
+            @Column(name = "currency_code", nullable = false, length = 3),
+            @Column(name = "price", nullable = false)
+    })
+    @Type(type = "moneyAmountAndCurrency")
+    private MonetaryAmount productionCost;
     @Column
     private int discountPercentage;  // Is counted based on the whole price (productionCost + products costs)
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
@@ -32,7 +46,7 @@ public class Bouquet {
 
 
     public Bouquet(String name,
-                   Money productionCost,
+                   MonetaryAmount productionCost,
                    int discountPercentage,
                    List<BouquetFlower> bouquetFlowerList,
                    List<BouquetAddon> bouquetAddonList,
