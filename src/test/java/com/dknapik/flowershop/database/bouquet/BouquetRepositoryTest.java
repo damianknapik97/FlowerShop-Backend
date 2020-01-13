@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class BouquetRepositoryTest {
     public void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Bouquet bouquet = new Bouquet();
+        bouquet.setProductionCost(Money.of(0.00, "PLN"));
         bouquetRepository.saveAndFlush(bouquet);
 
         /* Save to database using repository */
@@ -59,6 +61,7 @@ public class BouquetRepositoryTest {
     public void retrieveFromDatabaseTest() {
         /* Create order entity using product entity */
         Bouquet bouquet = new Bouquet();
+        bouquet.setProductionCost(Money.of(0, "PLN"));  // Price is disallowed to be null;
         bouquetRepository.saveAndFlush(bouquet);
 
         /* Save entity to database using test entity manager */

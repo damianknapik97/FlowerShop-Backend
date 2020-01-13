@@ -30,7 +30,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean(name = "ModelMapper")
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setAmbiguityIgnored(true);
+        return mapper;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model.product;
 
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Columns;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class OccasionalArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

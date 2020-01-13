@@ -48,7 +48,8 @@ public class AccountControllerTest {
     private AccountRepository accountRepository;
     @Autowired
     private ApplicationContext context;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
     private String username = "TestUser";
 
 

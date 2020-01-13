@@ -40,10 +40,10 @@ public class AccountService {
     private final ApplicationContext context;    // retrieve existing beans
 
     @Autowired
-    public AccountService(AccountRepository accountRepo, ApplicationContext context) {
+    public AccountService(AccountRepository accountRepo, ApplicationContext context, ModelMapper modelMapper) {
         this.accountRepo = accountRepo;
         this.context = context;
-        this.mapper = new ModelMapper();
+        this.mapper = modelMapper;
     }
 
     /**
