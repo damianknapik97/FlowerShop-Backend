@@ -17,11 +17,11 @@ public class FlowerDto {
     private UUID id;
     @NotBlank
     private String name;
+    @NotNull
+    private BigDecimal amount; // Money Amount - name like that is required by MoneyModule in ObjectMapper
     @NotBlank
     @Size(min = 3, max = 3)
-    private String currency;
-    @NotNull
-    private BigDecimal price;
+    private String currency;  // Currency Unit - name name like that is required by MoneyModule in ObjectMapper
     @NotNull
     private String description;
     private int height;

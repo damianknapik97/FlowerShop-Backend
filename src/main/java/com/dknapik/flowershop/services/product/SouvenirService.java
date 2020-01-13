@@ -20,10 +20,21 @@ public class SouvenirService {
         this.repository = repository;
     }
 
+    /**
+     * Retrieve Page of Souvenir products
+     * By default page consist of 20 products
+     *
+     * @param pageNumber - which page to return
+     * @return Page with Souvenir products
+     */
     public RestResponsePage<Souvenir> retrieveSouvenirPage(int pageNumber) {
+        /* Create Page request for repository */
         Pageable pageable = PageRequest.of(pageNumber, ProductProperties.PAGE_SIZE);
+
+        /* Retrieve page of products from repository and cast it to list */
         List<Souvenir> content = repository.findAll(pageable).getContent();
 
+        /* Return collection of products ready for trasnport/serialization/mapping */
         return new RestResponsePage<>(content, pageable, repository.count());
     }
 }

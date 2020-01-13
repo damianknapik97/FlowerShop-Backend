@@ -4,7 +4,6 @@ import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.SouvenirDto;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.dknapik.flowershop.services.product.SouvenirService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +20,34 @@ import java.util.List;
 
 public class SouvenirController {
     private final SouvenirService service;
-    private final ObjectMapper objectMapper;
+
 
     @Autowired
-    public SouvenirController(SouvenirService service, ObjectMapper objectMapper) {
+    public SouvenirController(SouvenirService service) {
         this.service = service;
-        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Retrieve unsorted page of Souvenir prooducts
+     *
+     * @param page - number of page to return (By default page contains 20 objects)
+     * @return Page with Souvenir products
+     */
+    @GetMapping
+    public ResponseEntity<RestResponsePage<SouvenirDto>> getSouvenirs(
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        /* Retrieve Page of Souvenir entities */
+        RestResponsePage<Souvenir> souvenirs = service.retrieveSouvenirPage(page);
+
+        /* Convert content to Dto */
+        List<SouvenirDto> souvenirDtoList = new LinkedList<>();
+        for (Souvenir souvenir : souvenirs) {
+            souvenirDtoList.add(convertToDto(souvenir));
+        }
+
+        /* Build Response entity and respond */
+        RestResponsePage<SouvenirDto> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
+        return new ResponseEntity<>(souvenirDtos, HttpStatus.OK);
     }
 
     /**
@@ -55,28 +76,5 @@ public class SouvenirController {
                 Money.of(souvenirDto.getAmount(), souvenirDto.getCurrency()),
                 souvenirDto.getDescription()
         );
-    }
-
-    /**
-     * Retrieve unsorted page of Souvenir prooducts
-     *
-     * @param page - number of page to return (By default page contains 20 objects)
-     * @return Page with Souvenir products
-     */
-    @GetMapping
-    public ResponseEntity<RestResponsePage<SouvenirDto>> getSouvenirs(
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        /* Retrieve Page of Souvenir entities */
-        RestResponsePage<Souvenir> souvenirs = service.retrieveSouvenirPage(page);
-
-        /* Convert content to Dto */
-        List<SouvenirDto> souvenirDtoList = new LinkedList<>();
-        for (Souvenir souvenir : souvenirs) {
-            souvenirDtoList.add(convertToDto(souvenir));
-        }
-
-        /* Build Response entity and respond */
-        RestResponsePage<SouvenirDto> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
-        return new ResponseEntity<>(souvenirDtos, HttpStatus.OK);
     }
 }

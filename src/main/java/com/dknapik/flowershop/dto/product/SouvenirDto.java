@@ -18,10 +18,10 @@ public class SouvenirDto {
     @NotBlank
     private String name;
     @NotNull
-    private BigDecimal amount;
+    private BigDecimal amount; // Money Amount - name like that is required by MoneyModule in ObjectMapper
     @NotBlank
     @Size(min = 3, max = 3)
-    private String currency;
+    private String currency;  // Currency Unit - name name like that is required by MoneyModule in ObjectMapper
     @NotNull
     private String description;
 }
