@@ -38,6 +38,12 @@ public class Account {
     private List<Order> orderList;
 
 
+    public Account(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
     public Account(String password, String email, AccountRole role) {
         this.password = password;
         this.email = email;

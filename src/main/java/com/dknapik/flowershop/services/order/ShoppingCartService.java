@@ -1,18 +1,18 @@
 package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
-import com.dknapik.flowershop.dto.order.ShoppingCartDetailedDto;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.AccountService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
 public class ShoppingCartService {
-    private final ModelMapper mapper = new ModelMapper();             // less messy dto - model mapping
     private final ShoppingCartRepository repository;
     private final AccountService accountService;
 
@@ -25,24 +25,26 @@ public class ShoppingCartService {
 
 
     /**
+     * Retrieves shopping cart for provided account. If shopping cart was not found,
+     * new entity is created, assigned to provided account and returned.
      *
      * @param accountName - From which account retrieve ShoppingCart
      * @return - Detailed shopping cart dto
      */
-    public ShoppingCartDetailedDto retrieveSingleShoppingCart(String accountName) {
+    public ShoppingCart retrieveSingleShoppingCart(String accountName) {
         Account account = accountService.retrieveAccountByName(accountName);
         ShoppingCart shoppingCart = account.getShoppingCart();
 
+        /* If shopping cart doesn't exists, create new instance to provided account */
         if (shoppingCart == null) {
             shoppingCart = createNewShoppingCart(accountName);
         }
 
-        /* Map extracted ShoppingCart entity to DTO and return it */
-        return mapper.map(shoppingCart, ShoppingCartDetailedDto.class);
+        return shoppingCart;
     }
 
     /**
-     *  Create new Shopping Cart entity and assign it to account
+     * Create new Shopping Cart entity and assign it to account
      *
      * @param accountName - Which account assign new shopping cart to
      * @return - Newly assigned Shopping Cart entity
@@ -58,16 +60,37 @@ public class ShoppingCartService {
         return shoppingCart;
     }
 
-    public int countNumberOfProducts(String accountName) {
-        Account account = accountService.retrieveAccountByName(accountName);
-        ShoppingCart shoppingCart = account.getShoppingCart();
+    /**
+     * Counts total number of currently added products to the shopping cart
+     *
+     * @param shoppingCartId - UUID of shopping cart
+     * @return integer with number of products in shopping cart
+     */
+    public int countNumberOfProducts(UUID shoppingCartId) {
+        Optional<ShoppingCart> searchResults = repository.findById(shoppingCartId);
+        int numberOfProducts = 0;
 
-        if (shoppingCart == null) {
-            shoppingCart = createNewShoppingCart(accountName);
+        /* Check if shopping cart exists, and return 0 if it doesn't */
+        if (!searchResults.isPresent()) {
+            return numberOfProducts;
+        }
+        ShoppingCart shoppingCart = searchResults.get();
+
+        /* Add number of orders for each product */
+        if (shoppingCart.getBouquetList() != null) {
+            numberOfProducts += shoppingCart.getBouquetList().size();
+        }
+        if (shoppingCart.getFlowerOrderList() != null) {
+            numberOfProducts += shoppingCart.getFlowerOrderList().size();
+        }
+        if (shoppingCart.getOccasionalArticleOrderList() != null) {
+            numberOfProducts += shoppingCart.getOccasionalArticleOrderList().size();
+        }
+        if (shoppingCart.getSouvenirOrderList() != null) {
+            numberOfProducts += shoppingCart.getSouvenirOrderList().size();
         }
 
-
-
-        return 0;
+        return numberOfProducts;
     }
+
 }

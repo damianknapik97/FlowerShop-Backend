@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class ShoppingCartDetailedDto {
+public class ShoppingCartDto {
     @NotNull
     private UUID id;
     private String name;

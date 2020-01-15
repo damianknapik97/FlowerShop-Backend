@@ -46,6 +46,18 @@ public class ShoppingCart {
     }
 
     public ShoppingCart(String name,
+                        List<OccasionalArticleOrder> occasionalArticleOrderList,
+                        List<SouvenirOrder> souvenirOrderList,
+                        List<FlowerOrder> flowerOrderList,
+                        List<Bouquet> bouquetList) {
+        this.name = name;
+        this.occasionalArticleOrderList = occasionalArticleOrderList;
+        this.souvenirOrderList = souvenirOrderList;
+        this.flowerOrderList = flowerOrderList;
+        this.bouquetList = bouquetList;
+    }
+
+    public ShoppingCart(String name,
                         LocalDateTime creationDate,
                         List<OccasionalArticleOrder> occasionalArticleOrderList,
                         List<SouvenirOrder> souvenirOrderList,
