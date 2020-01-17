@@ -30,10 +30,10 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountRole role = AccountRole.USER;
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart = new ShoppingCart();
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn
     private List<Order> orderList;
 

@@ -87,7 +87,6 @@ public class ShoppingCartControllerTest {
         Account account = createAccount("GetShoppingCartTest", "GetShoppingCartTest", shoppingCart);
         controlObject = convertToDto(shoppingCart);
 
-
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
                 get("/shoppingcart").with(user(account.getName()));
@@ -148,10 +147,9 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * Populated database with order and flower entities.
      *
      * @param numberOfEntities - how many entities should be generated
-     * @return - List with persisted Flower Order entities based on Flower entities
+     * @return - List with NOT persisted Flower Order entities based on Flower entities.
      */
     private List<FlowerOrder> initializeFlowerOrders(String productPrefix, int numberOfEntities) {
         List<Flower> flowerList = initializeFlowers(productPrefix, numberOfEntities);

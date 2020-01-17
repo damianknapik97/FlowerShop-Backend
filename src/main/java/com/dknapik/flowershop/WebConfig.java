@@ -1,5 +1,7 @@
 package com.dknapik.flowershop;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -20,13 +22,7 @@ import java.math.BigDecimal;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
-    @Primary
-    @Bean(name = "ObjectMapper")
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .registerModule(new SimpleModule().addSerializer(BigDecimal.class, new ToStringSerializer()))
-                .registerModule(new MoneyModule());
-    }
+
 
     @Bean(name = "ModelMapper")
     public ModelMapper modelMapper() {
