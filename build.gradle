@@ -14,15 +14,13 @@ buildscript {
 
 
 plugins {
-	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
+	id "org.springframework.boot" version "2.2.2.RELEASE"
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	//id 'org.asciidoctor.convert' version '1.5.8.1'
 	id 'java'
-	id 'eclipse'
+	id 'idea'
 }
 
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'idea'
+//apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.asciidoctor.convert'
 
 group = 'com.dknapik'
@@ -80,7 +78,7 @@ dependencies {
 	// ModelMapper to help in mapping VivewModels(DTO's) to Models(Entities)
 	implementation 'org.modelmapper:modelmapper:2.3.0'
 	// Jackson for processiong JSON 
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.2'
 
 	// Lombok for cleaner and more reliable code
 	compileOnly 'org.projectlombok:lombok:1.18.8'

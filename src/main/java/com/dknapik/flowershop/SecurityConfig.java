@@ -88,29 +88,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Configuration of CORS policy filter that restricts from unwanted access to api's from other origins.
-     *
-     * @return configured filter allowing only data exchanges with front end application.
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        // TODO Will be limited to specific origins later
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
-    /**
      * Configure bean that will be used to encrypt or compare user provided passwords
      *
      * @return
