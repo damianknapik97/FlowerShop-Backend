@@ -2,7 +2,10 @@ package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.order.FlowerOrder;
+import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
+import com.dknapik.flowershop.model.order.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +57,6 @@ public class ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         account.setShoppingCart(shoppingCart);
 
-        repository.saveAndFlush(shoppingCart);
         accountService.updateAccount(account);
 
         return shoppingCart;
@@ -81,13 +83,15 @@ public class ShoppingCartService {
             numberOfProducts += shoppingCart.getBouquetList().size();
         }
         if (shoppingCart.getFlowerOrderList() != null) {
-            numberOfProducts += shoppingCart.getFlowerOrderList().size();
+            numberOfProducts += shoppingCart.getFlowerOrderList().stream().mapToInt(FlowerOrder::getItemCount).sum();
         }
         if (shoppingCart.getOccasionalArticleOrderList() != null) {
-            numberOfProducts += shoppingCart.getOccasionalArticleOrderList().size();
+            numberOfProducts += shoppingCart.getOccasionalArticleOrderList()
+                    .stream().mapToInt(OccasionalArticleOrder::getItemCount).sum();
         }
         if (shoppingCart.getSouvenirOrderList() != null) {
-            numberOfProducts += shoppingCart.getSouvenirOrderList().size();
+            numberOfProducts += shoppingCart.getSouvenirOrderList()
+                    .stream().mapToInt(SouvenirOrder::getItemCount).sum();
         }
 
         return numberOfProducts;
