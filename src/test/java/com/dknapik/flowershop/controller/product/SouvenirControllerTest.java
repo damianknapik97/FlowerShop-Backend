@@ -12,6 +12,7 @@ import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -49,6 +50,8 @@ class SouvenirControllerTest {
     private Environment env;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
 
     @BeforeEach
@@ -94,9 +97,7 @@ class SouvenirControllerTest {
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
-        Assertions.assertThat(resultValue).
-                usingElementComparatorIgnoringFields("amount")  // Ignoring Amount field because of different number format
-                .containsExactlyInAnyOrderElementsOf(controlPage);
+        Assertions.assertThat(resultValue).containsExactlyInAnyOrderElementsOf(controlPage);
 
     }
 
@@ -123,31 +124,24 @@ class SouvenirControllerTest {
         return souvenirList;
     }
 
+
     /**
-     * Manually convert Souvenir Entity to Dto cause ModelMapper won't properly handle MonetaryAmount interface
+     * Convert Souvenir Entity to Dto using Model Mapper
      *
      * @param souvenir - entity for mapping
      * @return dto created from provided entity
      */
     private SouvenirDto convertToDto(Souvenir souvenir) {
-        return new SouvenirDto(souvenir.getId(),
-                souvenir.getName(),
-                souvenir.getPrice().getNumber().numberValue(BigDecimal.class),
-                souvenir.getPrice().getCurrency().getCurrencyCode(),
-                souvenir.getDescription());
+        return modelMapper.map(souvenir, SouvenirDto.class);
     }
 
     /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
+     * Convert Souvenir Dto to Entity using ModelMapper
      *
      * @param souvenirDto - dto to map to entity
      * @return - mapped entity
      */
     private Souvenir convertToEntity(SouvenirDto souvenirDto) {
-        return new Souvenir(
-                souvenirDto.getName(),
-                Money.of(souvenirDto.getAmount(), souvenirDto.getCurrency()),
-                souvenirDto.getDescription()
-        );
+        return modelMapper.map(souvenirDto, Souvenir.class);
     }
 }

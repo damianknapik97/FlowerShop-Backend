@@ -4,13 +4,12 @@ import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.FlowerDto;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.services.product.FlowerService;
-import org.javamoney.moneta.Money;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,11 +18,13 @@ import java.util.List;
 @CrossOrigin
 public class FlowerController {
     private final FlowerService service;
+    private final ModelMapper modelMapper;
 
 
     @Autowired
-    public FlowerController(FlowerService service) {
+    public FlowerController(FlowerService service, ModelMapper modelMapper) {
         this.service = service;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -43,32 +44,22 @@ public class FlowerController {
     }
 
     /**
-     * Manually convert Entity to Dto cause ModelMapper won't properly handle MonetaryAmount interface
+     * Convert Entity to Dto using Model Mapper
      *
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
     private FlowerDto convertToDto(Flower entity) {
-        return new FlowerDto(entity.getId(),
-                entity.getName(),
-                entity.getPrice().getNumber().numberValue(BigDecimal.class),
-                entity.getPrice().getCurrency().getCurrencyCode(),
-                entity.getDescription(),
-                entity.getHeight());
+        return modelMapper.map(entity, FlowerDto.class);
     }
 
     /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
+     * Convert Souvenir Dto to Entity using Model Mapper
      *
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
     private Flower convertToEntity(FlowerDto dto) {
-        return new Flower(dto.getId(),
-                dto.getName(),
-                Money.of(dto.getAmount(), dto.getCurrency()),
-                dto.getDescription(),
-                dto.getHeight()
-        );
+        return modelMapper.map(dto, Flower.class);
     }
 }

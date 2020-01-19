@@ -5,6 +5,7 @@ import com.dknapik.flowershop.dto.product.SouvenirDto;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.dknapik.flowershop.services.product.SouvenirService;
 import org.javamoney.moneta.Money;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ import java.util.List;
 
 public class SouvenirController {
     private final SouvenirService service;
+    private final ModelMapper modelMapper;
 
 
     @Autowired
-    public SouvenirController(SouvenirService service) {
+    public SouvenirController(SouvenirService service, ModelMapper modelMapper) {
         this.service = service;
+        this.modelMapper = modelMapper;
     }
 
     /**
@@ -51,30 +54,22 @@ public class SouvenirController {
     }
 
     /**
-     * Manually convert Souvenir Entity to Dto cause ModelMapper won't properly handle MonetaryAmount interface
+     * Convert Souvenir Entity to Dto using Model Mapper
      *
      * @param souvenir - entity for mapping
      * @return dto created from provided entity
      */
     private SouvenirDto convertToDto(Souvenir souvenir) {
-        return new SouvenirDto(souvenir.getId(),
-                souvenir.getName(),
-                souvenir.getPrice().getNumber().numberValue(BigDecimal.class),
-                souvenir.getPrice().getCurrency().getCurrencyCode(),
-                souvenir.getDescription());
+        return modelMapper.map(souvenir, SouvenirDto.class);
     }
 
     /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
+     * Convert Souvenir Dto to Entity using ModelMapper
      *
      * @param souvenirDto - dto to map to entity
      * @return - mapped entity
      */
     private Souvenir convertToEntity(SouvenirDto souvenirDto) {
-        return new Souvenir(
-                souvenirDto.getName(),
-                Money.of(souvenirDto.getAmount(), souvenirDto.getCurrency()),
-                souvenirDto.getDescription()
-        );
+        return modelMapper.map(souvenirDto, Souvenir.class);
     }
 }

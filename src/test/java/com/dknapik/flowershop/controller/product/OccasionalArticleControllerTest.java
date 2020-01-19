@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,6 +56,8 @@ class OccasionalArticleControllerTest {
     private Environment env;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @BeforeEach
     public void purgeDatabase() {
@@ -99,9 +102,7 @@ class OccasionalArticleControllerTest {
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
-        Assertions.assertThat(resultValue).
-                usingElementComparatorIgnoringFields("amount")  // Ignoring Amount field because of different number format
-                .containsExactlyInAnyOrderElementsOf(controlCollection);
+        Assertions.assertThat(resultValue).containsExactlyInAnyOrderElementsOf(controlCollection);
     }
 
 
@@ -154,12 +155,7 @@ class OccasionalArticleControllerTest {
      * @return dto created from provided entity
      */
     private OccasionalArticleDto convertToDto(OccasionalArticle entity) {
-        return new OccasionalArticleDto(entity.getId(),
-                entity.getName(),
-                entity.getPrice().getNumber().numberValue(BigDecimal.class),
-                entity.getPrice().getCurrency().getCurrencyCode(),
-                entity.getDescription(),
-                entity.getTheme());
+        return modelMapper.map(entity, OccasionalArticleDto.class);
     }
 
     /**
@@ -169,11 +165,6 @@ class OccasionalArticleControllerTest {
      * @return - mapped entity
      */
     private OccasionalArticle convertToEntity(OccasionalArticleDto dto) {
-        return new OccasionalArticle(dto.getId(),
-                dto.getName(),
-                Money.of(dto.getAmount(), dto.getCurrency()),
-                dto.getDescription(),
-                dto.getTheme()
-        );
+        return modelMapper.map(dto, OccasionalArticle.class);
     }
 }

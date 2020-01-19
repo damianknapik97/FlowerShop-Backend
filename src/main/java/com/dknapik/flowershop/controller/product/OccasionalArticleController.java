@@ -4,13 +4,12 @@ import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.OccasionalArticleDto;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
-import org.javamoney.moneta.Money;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,11 +18,13 @@ import java.util.List;
 @CrossOrigin
 public class OccasionalArticleController {
     private final OccasionalArticleService service;
+    private final ModelMapper modelMapper;
 
 
     @Autowired
-    public OccasionalArticleController(OccasionalArticleService service) {
+    public OccasionalArticleController(OccasionalArticleService service, ModelMapper modelMapper) {
         this.service = service;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -45,32 +46,22 @@ public class OccasionalArticleController {
     }
 
     /**
-     * Manually convert Entity to Dto cause ModelMapper won't properly handle MonetaryAmount interface
+     * Convert Entity to Dto using Model Mapper
      *
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
     private OccasionalArticleDto convertToDto(OccasionalArticle entity) {
-        return new OccasionalArticleDto(entity.getId(),
-                entity.getName(),
-                entity.getPrice().getNumber().numberValue(BigDecimal.class),
-                entity.getPrice().getCurrency().getCurrencyCode(),
-                entity.getDescription(),
-                entity.getTheme());
+        return modelMapper.map(entity, OccasionalArticleDto.class);
     }
 
     /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
+     * Convert Souvenir Dto to Entity using Model Mapper
      *
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
     private OccasionalArticle convertToEntity(OccasionalArticleDto dto) {
-        return new OccasionalArticle(dto.getId(),
-                dto.getName(),
-                Money.of(dto.getAmount(), dto.getCurrency()),
-                dto.getDescription(),
-                dto.getTheme()
-        );
+        return modelMapper.map(dto, OccasionalArticle.class);
     }
 }
