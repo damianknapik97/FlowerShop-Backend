@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.money.Monetary;
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,19 +62,21 @@ class SouvenirControllerTest {
     public void getSouvenirsTest() throws Exception {
         int numberOfEntities = 45;
         String prefix = "TestingSouvenir";
-        int page = 2;
+        int page = 1;
         RestResponsePage<SouvenirDto> controlPage;
         List<SouvenirDto> pageContent = new LinkedList<>();
 
         /* Initialize testing entities and create List representation of page that should be returned */
         List<Souvenir> designatedEntities = initializeSouvenirs(prefix, numberOfEntities);
-        designatedEntities = designatedEntities.subList(ProductProperties.PAGE_SIZE * page, numberOfEntities);
+        designatedEntities = designatedEntities.subList(ProductProperties.PAGE_SIZE * page,
+                        ProductProperties.PAGE_SIZE * page + ProductProperties.PAGE_SIZE);
 
         /* Create control value by mapping designated entities into dto*/
         for (Souvenir souvenir : designatedEntities) {
             pageContent.add(convertToDto(souvenir));
         }
-        controlPage = new RestResponsePage<>(pageContent, PageRequest.of(2, ProductProperties.PAGE_SIZE), numberOfEntities);
+        controlPage =
+                new RestResponsePage<>(pageContent, PageRequest.of(page, ProductProperties.PAGE_SIZE), numberOfEntities);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
@@ -111,16 +112,13 @@ class SouvenirControllerTest {
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         String description = "Test Article";
 
-
-        Souvenir newEntity;
-        while (numberOfEntities > 0) {
-            newEntity = new Souvenir(namePrefix.concat(String.valueOf(numberOfEntities)), money, description);
-            souvenirList.add(newEntity);
-            repository.save(newEntity);
-            numberOfEntities--;
+        for (int i = 0; i < numberOfEntities; i++) {
+            souvenirList.add(new Souvenir(namePrefix.concat(String.valueOf(i)), money, description));
         }
 
+        repository.saveAll(souvenirList);
         repository.flush();
+
         return souvenirList;
     }
 

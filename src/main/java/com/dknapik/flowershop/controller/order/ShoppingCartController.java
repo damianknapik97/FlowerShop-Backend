@@ -14,7 +14,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/shoppingcart")
+@RequestMapping("/shopping-cart")
 @CrossOrigin
 public class ShoppingCartController {
     private final ShoppingCartService service;

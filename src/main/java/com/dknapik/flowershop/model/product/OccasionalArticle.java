@@ -26,7 +26,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticle {
+public class OccasionalArticle implements Comparable<OccasionalArticle> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -49,5 +49,13 @@ public class OccasionalArticle {
         this.price = price;
         this.description = description;
         this.theme = theme;
+    }
+
+    /**
+     * Compares by name
+     */
+    @Override
+    public int compareTo(OccasionalArticle o) {
+        return this.name.compareTo(o.getName());
     }
 }

@@ -1,6 +1,13 @@
 package com.dknapik.flowershop.database.seeder;
 
 /**
+ * TODO This module should be removed as Seeders not only decrease performance of the tests
+ * by being initialized every time, they also are inappropriately implemented.
+ *
+ * Current idea: Create manually PostgreSQL database, and reuse it using override of docker volumes.
+ */
+
+/**
  * Used to populated database with exemplary data to assist in debugging and development.
  *
  * @author Damian

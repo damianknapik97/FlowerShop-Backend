@@ -36,7 +36,9 @@ public class SouvenirSeeder implements SeederInt {
         Souvenir[] souvenirArray = {
                 new Souvenir("Cup", price, description),
                 new Souvenir("Perfume", price, description),
-                new Souvenir("Pillow", price, description)
+                new Souvenir("Pillow", price, description),
+                new Souvenir("Hearth shaped pillow", price, description),
+                new Souvenir("Round pillow", price, description)
         };
 
         /* Check if entity already exists and save it if not */

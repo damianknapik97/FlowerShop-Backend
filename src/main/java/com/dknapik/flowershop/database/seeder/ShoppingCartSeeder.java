@@ -1,8 +1,11 @@
 package com.dknapik.flowershop.database.seeder;
 
+import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OccasionalArticleOrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
+import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
@@ -11,6 +14,7 @@ import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -25,17 +29,23 @@ public class ShoppingCartSeeder implements SeederInt {
     private final OccasionalArticleRepository occasionalArticleRepository;
     private final OccasionalArticleOrderRepository occasionalArticleOrderRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder encoder;
 
 
     @Autowired
     public ShoppingCartSeeder(MoneyUtils moneyUtils,
                               OccasionalArticleRepository occasionalArticleRepository,
                               OccasionalArticleOrderRepository occasionalArticleOrderRepository,
-                              ShoppingCartRepository shoppingCartRepository) {
+                              ShoppingCartRepository shoppingCartRepository,
+                              AccountRepository accountRepository,
+                              PasswordEncoder passwordEncoder) {
         this.moneyUtils = moneyUtils;
         this.occasionalArticleRepository = occasionalArticleRepository;
         this.occasionalArticleOrderRepository = occasionalArticleOrderRepository;
         this.shoppingCartRepository = shoppingCartRepository;
+        this.accountRepository = accountRepository;
+        this.encoder = passwordEncoder;
     }
 
     @Override
@@ -49,7 +59,6 @@ public class ShoppingCartSeeder implements SeederInt {
                         "This item is great for specific occasion.",
                         "New Year");
 
-
         /* Create new Occasional Article Order and add it to the list */
         OccasionalArticleOrder newOrder = new OccasionalArticleOrder(2, occasionalArticle);
         List<OccasionalArticleOrder> occasionalArticleOrderList = new LinkedList<>();
@@ -59,8 +68,29 @@ public class ShoppingCartSeeder implements SeederInt {
         ShoppingCart testingShoppingCart = new ShoppingCart(shoppingCartName, occasionalArticleOrderList);
         Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findOne(Example.of(testingShoppingCart));
         if (!shoppingCart.isPresent()) {
-            shoppingCartRepository.saveAndFlush(testingShoppingCart);
+            Account userAccount = retrieveAccount("user");
+            userAccount.setShoppingCart(testingShoppingCart);
+            this.accountRepository.saveAndFlush(userAccount);
         }
+    }
+
+    /**
+     * Search for provided account name. If provided account name doesn't match any entity, create new one
+     *
+     * @param accountName
+     * @return Account entity;
+     */
+    private Account retrieveAccount(String accountName) {
+        Account toReturn;
+        if (!this.accountRepository.existsByName(accountName)) {
+            toReturn = new Account(accountName,
+                    encoder.encode(accountName),
+                    "user@test.pl",
+                    AccountRole.USER);
+        } else {
+            toReturn = this.accountRepository.findByName(accountName).get();
+        }
+        return toReturn;
     }
 
     /**

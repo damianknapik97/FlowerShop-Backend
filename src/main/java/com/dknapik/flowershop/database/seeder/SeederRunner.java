@@ -8,6 +8,12 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * TODO This module should be removed as Seeders not only decrease performance of the tests
+ * by being initialized every time, they also are inappropriately/messy implemented.
+ *
+ * Current idea: Create manually PostgreSQL database, and reuse it using override of docker volumes.
+ */
 
 /**
  * Class used for initializing some values inside database used by application.
@@ -38,7 +44,7 @@ public class SeederRunner implements CommandLineRunner {
                 accountSeeder,
                 addonSeeder,
                 souvenirSeeder,
-                flowerSeeder.setNumberOfEntities(30),
+                flowerSeeder.setNumberOfEntities(52),
                 occasionalArticle,
                 shoppingCartSeeder,
                 occasionalArticleSeeder

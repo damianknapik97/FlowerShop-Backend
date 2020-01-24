@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product/occasionalarticle")
+@RequestMapping("/product/occasional-article")
 @CrossOrigin
 public class OccasionalArticleController {
     private final OccasionalArticleService service;

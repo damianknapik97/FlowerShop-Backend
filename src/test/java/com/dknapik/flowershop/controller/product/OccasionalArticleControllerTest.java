@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(value = "build/generated-snippets/occasionalarticle")
+@AutoConfigureRestDocs(value = "build/generated-snippets/occasional-article")
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
 class OccasionalArticleControllerTest {
     @Autowired
@@ -61,6 +62,13 @@ class OccasionalArticleControllerTest {
 
     @BeforeEach
     public void purgeDatabase() {
+        /* Initialized by Seeders, order entities must be deleted for products to be removable */
+        orderRepository.deleteAll();
+        repository.deleteAll();
+    }
+
+    @AfterEach
+    public void purgeDatabase2() {
         /* Initialized by Seeders, order entities must be deleted for products to be removable */
         orderRepository.deleteAll();
         repository.deleteAll();
@@ -84,7 +92,7 @@ class OccasionalArticleControllerTest {
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
-                get("/product/occasionalarticle").param("page", String.valueOf(page));
+                get("/product/occasional-article").param("page", String.valueOf(page));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)
@@ -118,16 +126,16 @@ class OccasionalArticleControllerTest {
         String description = "Test Occasional Article";
 
         /* Create number of entities provided in function argument */
+        OccasionalArticle newEntity;
         while (numberOfEntities > 0) {
-            entityList.add(new OccasionalArticle(namePrefix.concat(String.valueOf(numberOfEntities)),
-                    money, description.concat(String.valueOf(numberOfEntities)), "TestTheme"));
+            /* We have to save entities to database per entity, to ensure that request will send expected entities */
+            newEntity = new OccasionalArticle(namePrefix.concat(String.valueOf(numberOfEntities)),
+                    money, description.concat(String.valueOf(numberOfEntities)), "TestTheme");
+            entityList.add(newEntity);
+            repository.save(newEntity);
             numberOfEntities--;
         }
-
-        /* Save created entities to database */
-        repository.saveAll(entityList);
         repository.flush();
-
         return entityList;
     }
 

@@ -26,7 +26,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Flower {
+public class Flower implements Comparable<Flower> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -49,5 +49,13 @@ public class Flower {
         this.price = price;
         this.description = description;
         this.height = height;
+    }
+
+    /**
+     * Sort by name
+     */
+    @Override
+    public int compareTo(Flower o) {
+        return this.name.compareTo(o.name);
     }
 }

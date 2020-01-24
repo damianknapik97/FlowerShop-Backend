@@ -24,7 +24,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Souvenir {
+public class Souvenir implements Comparable<Souvenir> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -44,5 +44,13 @@ public class Souvenir {
         this.name = name;
         this.price = price;
         this.description = description;
+    }
+
+    /**
+     * Compare by name
+     */
+    @Override
+    public int compareTo(Souvenir o) {
+        return this.name.compareTo(o.getName());
     }
 }

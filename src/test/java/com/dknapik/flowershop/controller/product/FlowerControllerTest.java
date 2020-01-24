@@ -68,8 +68,9 @@ public class FlowerControllerTest {
 
         /* Initialize testing entities and create List with entities that should be in http response */
         List<Flower> flowerList = initializeEntities(prefix, numberOfEntities)
-                .subList(0, ProductProperties.PAGE_SIZE);
+                .subList(ProductProperties.PAGE_SIZE * page, ProductProperties.PAGE_SIZE * page + ProductProperties.PAGE_SIZE);
         List<FlowerDto> content = castCollectionToDto(flowerList);
+
         controlCollection =
                 new RestResponsePage<>(content, PageRequest.of(page, ProductProperties.PAGE_SIZE), numberOfEntities);
 
@@ -108,10 +109,9 @@ public class FlowerControllerTest {
         String description = "Test Flower";
 
         /* Create number of entities provided in function argument */
-        while (numberOfEntities > 0) {
-            entityList.add(new Flower(namePrefix.concat(String.valueOf(numberOfEntities)),
-                    money, description.concat(String.valueOf(numberOfEntities)), 5));
-            numberOfEntities--;
+        for (int i = 0; i < numberOfEntities; i++) {
+            entityList.add(new Flower(namePrefix.concat(String.valueOf(i)),
+                    money, description.concat(String.valueOf(i)), 5));
         }
 
         /* Save created entities to database */

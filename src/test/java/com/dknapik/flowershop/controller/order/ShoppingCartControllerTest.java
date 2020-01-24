@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(value = "build/generated-snippets/shoppingcart")
+@AutoConfigureRestDocs(value = "build/generated-snippets/shopping-cart")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 public class ShoppingCartControllerTest {
     @Autowired
@@ -88,7 +88,7 @@ public class ShoppingCartControllerTest {
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
-                get("/shoppingcart").with(user(account.getName()));
+                get("/shopping-cart").with(user(account.getName()));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)
@@ -119,7 +119,7 @@ public class ShoppingCartControllerTest {
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
-                get("/shoppingcart/count").param("id", shoppingCart.getId().toString()).with(user(userName));
+                get("/shopping-cart/count").param("id", shoppingCart.getId().toString()).with(user(userName));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)

@@ -47,12 +47,6 @@ public class AccountSeeder implements SeederInt {
                     AccountRole.EMPLOYEE));
         }
 
-        if (!this.accountRepository.existsByName("user")) {
-            accountRepository.save(new Account("user",
-                    encoder.encode("user"),
-                    "user@test.pl",
-                    AccountRole.USER));
-        }
         this.accountRepository.flush();
     }
 

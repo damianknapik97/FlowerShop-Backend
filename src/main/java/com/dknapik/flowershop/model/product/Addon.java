@@ -24,7 +24,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Addon {
+public class Addon implements Comparable<Addon> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -48,5 +48,13 @@ public class Addon {
         this.colour = colour;
         this.price = price;
         this.description = description;
+    }
+
+    /**
+     * Compare by name
+     */
+    @Override
+    public int compareTo(Addon o) {
+        return this.name.compareTo(o.getName());
     }
 }
