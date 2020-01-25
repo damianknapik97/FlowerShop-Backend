@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.bouquet;
 
+import com.dknapik.flowershop.model.order.ProductOrder;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import lombok.Data;
 import lombok.NoArgsConstructor;

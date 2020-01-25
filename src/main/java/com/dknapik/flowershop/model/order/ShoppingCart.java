@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,5 +82,20 @@ public class ShoppingCart {
         this.occasionalArticleOrderList = occasionalArticleOrderList;
         this.souvenirOrderList = souvenirOrderList;
         this.flowerOrderList = flowerOrderList;
+    }
+
+    /**
+     * Return all instances of <b>SINGLE</b> products inside this
+     *
+     * @return
+     */
+    public List<List<? extends ProductOrder>> getAllProductOrders() {
+        List<List<? extends ProductOrder>> returnList = new LinkedList<>();
+
+        returnList.add(occasionalArticleOrderList);
+        returnList.add(souvenirOrderList);
+        returnList.add(flowerOrderList);
+
+        return returnList;
     }
 }

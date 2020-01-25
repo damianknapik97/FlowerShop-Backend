@@ -24,7 +24,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Souvenir implements Comparable<Souvenir> {
+public class Souvenir implements Product, Comparable<Souvenir> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -39,11 +39,41 @@ public class Souvenir implements Comparable<Souvenir> {
     @Column(nullable = false, length = 1024)
     private String description;
 
-
     public Souvenir(String name, MonetaryAmount price, String description) {
         this.name = name;
         this.price = price;
         this.description = description;
+    }
+
+    /**
+     * Retrieves original class of the products
+     *
+     * @return Class instance of class implementing this interface
+     */
+    @Override
+    public Class<?> getProductClass() {
+        return this.getClass();
+    }
+
+    /**
+     * Compare given product original class with this products class.
+     *
+     * @param product - Object to compare to
+     * @return - true if both classes match.
+     */
+    @Override
+    public boolean compareClass(Product product) {
+        return product.getProductClass().equals(this.getClass());
+    }
+
+    /**
+     * Cast class implementing this interface to Product interface
+     *
+     * @return Class
+     */
+    @Override
+    public Product getProduct() {
+        return this;
     }
 
     /**
