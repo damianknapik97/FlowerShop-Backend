@@ -63,12 +63,12 @@ public class Addon implements Product, Comparable<Addon> {
     /**
      * Compare given product original class with this products class.
      *
-     * @param product - Object to compare to
+     * @param classToCompare - Object to compare to
      * @return - true if both classes match.
      */
     @Override
-    public boolean compareClass(Product product) {
-        return product.getProductClass().equals(this.getClass());
+    public boolean compareClass(Class<?> classToCompare) {
+        return classToCompare.equals(this.getClass());
     }
 
     /**

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticleDto {
+public class OccasionalArticleDto implements ProductDto {
     private UUID id;
     @NotBlank
     private String name;
@@ -22,4 +22,32 @@ public class OccasionalArticleDto {
     private String description;
     @NotBlank
     private String theme;
+
+    /**
+     * Retrieves original class of the products
+     *
+     * @return Class instance of class implementing this interface
+     */
+    public Class<?> getProductDtoClass() {
+        return this.getClass();
+    }
+
+    /**
+     * Compare given product original class with this products class.
+     *
+     * @param classToCompare - Object to compare to
+     * @return - true if both classes match.
+     */
+    public boolean compareClass(Class<?> classToCompare) {
+        return classToCompare.equals(this.getClass());
+    }
+
+    /**
+     * Cast class implementing this interface to ProductDto interface
+     *
+     * @return Class
+     */
+    public ProductDto getProductDto() {
+        return this;
+    }
 }

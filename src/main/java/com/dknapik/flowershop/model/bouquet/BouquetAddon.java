@@ -37,12 +37,12 @@ public class BouquetAddon implements ProductOrder {
     /**
      * Compare given product original class with this products class.
      *
-     * @param productOrder - Object to compare to
+     * @param classToCompare - class to compare to
      * @return - true if both classes match.
      */
     @Override
-    public boolean compareClass(ProductOrder productOrder) {
-        return productOrder.getClass().equals(this.getClass());
+    public boolean compareClass(Class<?> classToCompare) {
+        return classToCompare.equals(this.getClass());
     }
 
     /**

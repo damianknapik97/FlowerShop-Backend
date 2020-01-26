@@ -15,10 +15,10 @@ public interface ProductOrder {
     /**
      * Compare given product original class with this products class.
      *
-     * @param productOrder - Object to compare to
+     * @param classToCompare - class to compare to
      * @return - true if both classes match.
      */
-    public boolean compareClass(ProductOrder productOrder);
+    public boolean compareClass(Class<?> classToCompare);
 
     /**
      * Cast class implementing this interface to ProductOrder interface
