@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model.order;
 
 import com.dknapik.flowershop.model.bouquet.Bouquet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -89,6 +90,7 @@ public class ShoppingCart {
      *
      * @return
      */
+    @JsonIgnore
     public List<List<? extends ProductOrder>> getAllProductOrders() {
         List<List<? extends ProductOrder>> returnList = new LinkedList<>();
 

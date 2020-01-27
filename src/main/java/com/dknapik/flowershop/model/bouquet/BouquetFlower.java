@@ -3,6 +3,7 @@ package com.dknapik.flowershop.model.bouquet;
 import com.dknapik.flowershop.model.order.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,7 @@ public class BouquetFlower implements ProductOrder {
      * @return Class instance of class implementing this interface
      */
     @Override
+    @JsonIgnore
     public Class<?> getProductOrderClass() {
         return this.getClass();
     }
@@ -45,6 +47,7 @@ public class BouquetFlower implements ProductOrder {
      * @return - true if both classes match.
      */
     @Override
+    @JsonIgnore
     public boolean compareClass(Class<?> classToCompare) {
         return classToCompare.equals(this.getClass());
     }
@@ -55,6 +58,7 @@ public class BouquetFlower implements ProductOrder {
      * @return Class
      */
     @Override
+    @JsonIgnore
     public ProductOrder getProductOrder() {
         return this;
     }
@@ -65,6 +69,7 @@ public class BouquetFlower implements ProductOrder {
      * @return - product associated with class implementing this interface
      */
     @Override
+    @JsonIgnore
     public Product getProduct() {
         return flower;
     }

@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model.product;
 
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Columns;
@@ -56,6 +57,7 @@ public class Addon implements Product, Comparable<Addon> {
      * @return Class instance of class implementing this interface
      */
     @Override
+    @JsonIgnore
     public Class<?> getProductClass() {
         return this.getClass();
     }
@@ -67,6 +69,7 @@ public class Addon implements Product, Comparable<Addon> {
      * @return - true if both classes match.
      */
     @Override
+    @JsonIgnore
     public boolean compareClass(Class<?> classToCompare) {
         return classToCompare.equals(this.getClass());
     }
@@ -77,6 +80,7 @@ public class Addon implements Product, Comparable<Addon> {
      * @return Class
      */
     @Override
+    @JsonIgnore
     public Product getProduct() {
         return this;
     }
@@ -85,6 +89,7 @@ public class Addon implements Product, Comparable<Addon> {
      * Compare by name
      */
     @Override
+    @JsonIgnore
     public int compareTo(Addon o) {
         return this.name.compareTo(o.getName());
     }
