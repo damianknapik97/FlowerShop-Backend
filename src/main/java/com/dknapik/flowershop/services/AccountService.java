@@ -2,9 +2,9 @@ package com.dknapik.flowershop.services;
 
 import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.flowershop.dto.account.AccountDetailsDto;
-import com.dknapik.flowershop.dto.account.AccountDto;
-import com.dknapik.flowershop.dto.account.PasswordChangeDto;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
+import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
@@ -55,7 +55,7 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - account already exists.
      */
-    public void createNewUser(@Valid AccountDto accountDto,
+    public void createNewUser(@Valid AccountDTO accountDto,
                               BindingResult bindingResult)
             throws BindingException, DataProcessingException {
         if (bindingResult.hasErrors()) {
@@ -92,12 +92,12 @@ public class AccountService {
      * @return additional details about account sending request.
      * @throws DataProcessingException - couldn't find currently logged user details.
      */
-    public AccountDetailsDto retrieveAccountDetails(Principal principal)
+    public AccountDetailsDTO retrieveAccountDetails(Principal principal)
             throws DataProcessingException {
         Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
                 () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
 
-        return this.mapper.map(acc, AccountDetailsDto.class);
+        return this.mapper.map(acc, AccountDetailsDTO.class);
     }
 
     /**
@@ -109,7 +109,7 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - couldn't retrieve currently logged user from security context.
      */
-    public void updateAccount(@Valid AccountDetailsDto accDetailsDto,
+    public void updateAccount(@Valid AccountDetailsDTO accDetailsDto,
                               BindingResult bindingResult,
                               Principal principal)
             throws BindingException, DataProcessingException {
@@ -149,7 +149,7 @@ public class AccountService {
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - thrown when provided passwords doesn't match.
      */
-    public void updatePassword(@Valid PasswordChangeDto passwordChangeDto,
+    public void updatePassword(@Valid PasswordChangeDTO passwordChangeDto,
                                BindingResult bindingResult,
                                Principal principal)
             throws BindingException, DataProcessingException {

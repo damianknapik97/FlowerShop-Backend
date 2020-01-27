@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.money.MonetaryAmount;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -14,16 +15,16 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddonDto implements ProductDto {
+public class AddonDTO implements ProductDTO {
     private UUID id;
     @NotBlank
-    private String name;
+    private @Valid String name;
     @NotNull
-    private AddonColour colour;
+    private @Valid AddonColour colour;
     @NotNull
-    private MonetaryAmount price;
+    private @Valid MonetaryAmount price;
     @NotNull
-    private String description;
+    private @Valid String description;
 
     /**
      * Retrieves original class of the products
@@ -31,7 +32,7 @@ public class AddonDto implements ProductDto {
      * @return Class instance of class implementing this interface
      */
     @JsonIgnore
-    public Class<?> getProductDtoClass() {
+    public Class<?> getProductDTOClass() {
         return this.getClass();
     }
 
@@ -47,12 +48,12 @@ public class AddonDto implements ProductDto {
     }
 
     /**
-     * Cast class implementing this interface to ProductDto interface
+     * Cast class implementing this interface to ProductDTO interface
      *
      * @return Class
      */
     @JsonIgnore
-    public ProductDto getProductDto() {
+    public ProductDTO getProductDTO() {
         return this;
     }
 }

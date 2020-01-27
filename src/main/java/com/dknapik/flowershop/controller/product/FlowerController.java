@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.FlowerDto;
+import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.services.product.FlowerService;
@@ -30,7 +30,7 @@ public class FlowerController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponsePage<FlowerDto>> getFlowers(
+    public ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         log.info("Processing getFlowers request");
         /* Retrieve desired page */
@@ -38,13 +38,13 @@ public class FlowerController {
 
         /* Cast retrieved entities to dto and create new RestResponsePage */
         log.info("Casting Entities to Dto");
-        List<FlowerDto> flowerDtoList = new LinkedList<>();
+        List<FlowerDTO> flowerDtoList = new LinkedList<>();
         for (Flower f : flowerResponsePage) {
-            flowerDtoList.add(productMapper.convertToDto(f, FlowerDto.class));
+            flowerDtoList.add(productMapper.convertToDto(f, FlowerDTO.class));
         }
 
         log.info("Building response");
-        RestResponsePage<FlowerDto> dtoRestResponsePage = new RestResponsePage<>(flowerDtoList, flowerResponsePage);
+        RestResponsePage<FlowerDTO> dtoRestResponsePage = new RestResponsePage<>(flowerDtoList, flowerResponsePage);
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }
 }

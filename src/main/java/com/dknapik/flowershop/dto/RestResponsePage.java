@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.dto;
 
-import com.dknapik.flowershop.constants.ProductProperties;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,7 +35,7 @@ public class RestResponsePage<T> extends PageImpl<T> {
      * Create RestResponsePage with the same properties but new content.
      * Useful for mapping Entities to Dto.
      *
-     * @param content - List with content
+     * @param content          - List with content
      * @param restResponsePage - Already existing RestResponsePage object
      */
     public <Y> RestResponsePage(List<T> content, RestResponsePage<Y> restResponsePage) {
@@ -46,7 +45,6 @@ public class RestResponsePage<T> extends PageImpl<T> {
     public RestResponsePage(List<T> content, Pageable pageable, long total) {
         super(content, pageable, total);
     }
-
 
 
     public RestResponsePage(List<T> content) {

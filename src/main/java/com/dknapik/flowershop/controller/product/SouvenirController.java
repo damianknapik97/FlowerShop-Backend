@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.SouvenirDto;
+import com.dknapik.flowershop.dto.product.SouvenirDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.dknapik.flowershop.services.product.SouvenirService;
@@ -36,7 +36,7 @@ public class SouvenirController {
      * @return Page with Souvenir products
      */
     @GetMapping
-    public ResponseEntity<RestResponsePage<SouvenirDto>> getSouvenirs(
+    public ResponseEntity<RestResponsePage<SouvenirDTO>> getSouvenirs(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         /* Retrieve Page of Souvenir entities */
         log.info("Processing getSouvenirs request");
@@ -44,14 +44,14 @@ public class SouvenirController {
 
         /* Convert content to Dto */
         log.debug("Casting Entities to Dto");
-        List<SouvenirDto> souvenirDtoList = new LinkedList<>();
+        List<SouvenirDTO> souvenirDtoList = new LinkedList<>();
         for (Souvenir souvenir : souvenirs) {
-            souvenirDtoList.add(productMapper.convertToDto(souvenir, SouvenirDto.class));
+            souvenirDtoList.add(productMapper.convertToDto(souvenir, SouvenirDTO.class));
         }
 
         /* Build Response entity and respond */
         log.info("Building response");
-        RestResponsePage<SouvenirDto> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
+        RestResponsePage<SouvenirDTO> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
         return new ResponseEntity<>(souvenirDtos, HttpStatus.OK);
     }
 }

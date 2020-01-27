@@ -1,6 +1,6 @@
 package com.dknapik.flowershop.mapper.order;
 
-import com.dknapik.flowershop.dto.order.ProductOrderDto;
+import com.dknapik.flowershop.dto.order.ProductOrderDTO;
 import com.dknapik.flowershop.model.order.ProductOrder;
 import com.dknapik.flowershop.model.product.Product;
 import lombok.ToString;
@@ -26,7 +26,7 @@ public class ProductOrderMapper {
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
-    public <T extends ProductOrderDto> T convertToDto(ProductOrder entity, Class<T> type) {
+    public <T extends ProductOrderDTO> T convertToDto(ProductOrder entity, Class<T> type) {
         log.trace(() -> "Mapping " + entity.getProductOrderClass().getSimpleName() + " to " + type.getSimpleName());
         return type.cast(modelMapper.map(entity, type));
     }
@@ -37,9 +37,9 @@ public class ProductOrderMapper {
      * @param productOrderDto - dto to map to entity
      * @return - mapped entity
      */
-    public <T extends Product> T convertToEntity(ProductOrderDto productOrderDto, Class<T> type) {
+    public <T extends Product> T convertToEntity(ProductOrderDTO productOrderDto, Class<T> type) {
         log.trace(() ->
-                "Mapping " + productOrderDto.getProductOrderDtoClass().getSimpleName() + " to " + type.getSimpleName());
+                "Mapping " + productOrderDto.getProductOrderDTOClass().getSimpleName() + " to " + type.getSimpleName());
         return type.cast(modelMapper.map(productOrderDto, type));
     }
 

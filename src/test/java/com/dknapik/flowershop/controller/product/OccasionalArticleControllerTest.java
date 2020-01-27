@@ -4,15 +4,13 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.order.OccasionalArticleOrderRepository;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.OccasionalArticleDto;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,13 +77,13 @@ class OccasionalArticleControllerTest {
         int numberOfEntities = 45;
         String prefix = "Testing Flower";
         int page = 0;
-        RestResponsePage<OccasionalArticleDto> controlCollection;
+        RestResponsePage<OccasionalArticleDTO> controlCollection;
 
 
         /* Initialize testing entities and create List with entities that should be in http response */
         List<OccasionalArticle> articleList = initializeEntities(prefix, numberOfEntities)
                 .subList(0, ProductProperties.PAGE_SIZE);
-        List<OccasionalArticleDto> content = castCollectionToDto(articleList);
+        List<OccasionalArticleDTO> content = castCollectionToDto(articleList);
         controlCollection =
                 new RestResponsePage<>(content, PageRequest.of(page, ProductProperties.PAGE_SIZE), numberOfEntities);
 
@@ -103,10 +100,10 @@ class OccasionalArticleControllerTest {
                 .andReturn();
 
         /* Map response to Page<Souvenir> data type */
-        TypeReference<RestResponsePage<OccasionalArticleDto>> typeReference =
-                new TypeReference<RestResponsePage<OccasionalArticleDto>>() {
+        TypeReference<RestResponsePage<OccasionalArticleDTO>> typeReference =
+                new TypeReference<RestResponsePage<OccasionalArticleDTO>>() {
                 };
-        RestResponsePage<OccasionalArticleDto> resultValue =
+        RestResponsePage<OccasionalArticleDTO> resultValue =
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
@@ -145,8 +142,8 @@ class OccasionalArticleControllerTest {
      * @param collection - iterable collection containing Flower entities
      * @return list with FlowerDto objects
      */
-    private List<OccasionalArticleDto> castCollectionToDto(Iterable<OccasionalArticle> collection) {
-        List<OccasionalArticleDto> returnCollection = new LinkedList<>();
+    private List<OccasionalArticleDTO> castCollectionToDto(Iterable<OccasionalArticle> collection) {
+        List<OccasionalArticleDTO> returnCollection = new LinkedList<>();
 
         for (OccasionalArticle article : collection) {
             returnCollection.add(convertToDto(article));
@@ -162,8 +159,8 @@ class OccasionalArticleControllerTest {
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
-    private OccasionalArticleDto convertToDto(OccasionalArticle entity) {
-        return modelMapper.map(entity, OccasionalArticleDto.class);
+    private OccasionalArticleDTO convertToDto(OccasionalArticle entity) {
+        return modelMapper.map(entity, OccasionalArticleDTO.class);
     }
 
     /**
@@ -172,7 +169,7 @@ class OccasionalArticleControllerTest {
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
-    private OccasionalArticle convertToEntity(OccasionalArticleDto dto) {
+    private OccasionalArticle convertToEntity(OccasionalArticleDTO dto) {
         return modelMapper.map(dto, OccasionalArticle.class);
     }
 }

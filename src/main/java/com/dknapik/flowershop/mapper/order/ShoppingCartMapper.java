@@ -1,6 +1,6 @@
 package com.dknapik.flowershop.mapper.order;
 
-import com.dknapik.flowershop.dto.order.ShoppingCartDto;
+import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import lombok.ToString;
@@ -31,8 +31,8 @@ public class ShoppingCartMapper {
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
-    public ShoppingCartDto convertToDto(ShoppingCart entity) {
-        return mapper.map(entity, ShoppingCartDto.class);
+    public ShoppingCartDTO convertToDto(ShoppingCart entity) {
+        return mapper.map(entity, ShoppingCartDTO.class);
     }
 
     /**
@@ -41,7 +41,7 @@ public class ShoppingCartMapper {
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
-    public ShoppingCart convertToEntity(@Valid ShoppingCartDto dto) {
+    public ShoppingCart convertToEntity(@Valid ShoppingCartDTO dto) {
         return mapper.map(dto, ShoppingCart.class);
     }
 }

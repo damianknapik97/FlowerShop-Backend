@@ -3,8 +3,7 @@ package com.dknapik.flowershop.controller.product;
 import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.SouvenirRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.SouvenirDto;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.dto.product.SouvenirDTO;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,8 +63,8 @@ class SouvenirControllerTest {
         int numberOfEntities = 45;
         String prefix = "TestingSouvenir";
         int page = 1;
-        RestResponsePage<SouvenirDto> controlPage;
-        List<SouvenirDto> pageContent = new LinkedList<>();
+        RestResponsePage<SouvenirDTO> controlPage;
+        List<SouvenirDTO> pageContent = new LinkedList<>();
 
         /* Initialize testing entities and create List representation of page that should be returned */
         List<Souvenir> designatedEntities = initializeSouvenirs(prefix, numberOfEntities);
@@ -92,10 +91,10 @@ class SouvenirControllerTest {
                 .andReturn();
 
         /* Map response to Page<Souvenir> data type */
-        TypeReference<RestResponsePage<SouvenirDto>> typeReference =
-                new TypeReference<RestResponsePage<SouvenirDto>>() {
+        TypeReference<RestResponsePage<SouvenirDTO>> typeReference =
+                new TypeReference<RestResponsePage<SouvenirDTO>>() {
                 };
-        RestResponsePage<SouvenirDto> resultValue =
+        RestResponsePage<SouvenirDTO> resultValue =
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
@@ -130,8 +129,8 @@ class SouvenirControllerTest {
      * @param souvenir - entity for mapping
      * @return dto created from provided entity
      */
-    private SouvenirDto convertToDto(Souvenir souvenir) {
-        return modelMapper.map(souvenir, SouvenirDto.class);
+    private SouvenirDTO convertToDto(Souvenir souvenir) {
+        return modelMapper.map(souvenir, SouvenirDTO.class);
     }
 
     /**
@@ -140,7 +139,7 @@ class SouvenirControllerTest {
      * @param souvenirDto - dto to map to entity
      * @return - mapped entity
      */
-    private Souvenir convertToEntity(SouvenirDto souvenirDto) {
+    private Souvenir convertToEntity(SouvenirDTO souvenirDto) {
         return modelMapper.map(souvenirDto, Souvenir.class);
     }
 }

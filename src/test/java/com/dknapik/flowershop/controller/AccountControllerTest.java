@@ -2,10 +2,10 @@ package com.dknapik.flowershop.controller;
 
 import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.flowershop.dto.MessageResponseDto;
-import com.dknapik.flowershop.dto.account.AccountDetailsDto;
-import com.dknapik.flowershop.dto.account.AccountDto;
-import com.dknapik.flowershop.dto.account.PasswordChangeDto;
+import com.dknapik.flowershop.dto.MessageResponseDTO;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
+import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,8 +67,8 @@ public class AccountControllerTest {
     public void createAccount() throws Exception {
         /* Create DTO and map it to JSON request */
         //MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        AccountDto accountDto =
-                new AccountDto(username, "example@test.pl", "Password12345!", AccountRole.USER);
+        AccountDTO accountDto =
+                new AccountDTO(username, "example@test.pl", "Password12345!", AccountRole.USER);
         String jsonRequest = objectMapper.writeValueAsString(accountDto);
 
         /* Create request*/
@@ -82,8 +82,8 @@ public class AccountControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
-        MessageResponseDto message =
-                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
+        MessageResponseDTO message =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
 
         /* Check if results match desired value */
         Assertions.assertThat(message.getMessage()).isEqualTo(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
@@ -94,7 +94,7 @@ public class AccountControllerTest {
         /* Prepare Account and Control Object  test */
         Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
         accountRepository.saveAndFlush(newEntity);
-        AccountDto controlObject = new AccountDto(newEntity.getId(), newEntity.getName(), newEntity.getEmail(),
+        AccountDTO controlObject = new AccountDTO(newEntity.getId(), newEntity.getName(), newEntity.getEmail(),
                 newEntity.getPassword(), newEntity.getRole());
 
         /* Create request*/
@@ -107,8 +107,8 @@ public class AccountControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
-        AccountDetailsDto accountDetailsDTO =
-                objectMapper.readValue(result.getResponse().getContentAsString(), AccountDetailsDto.class);
+        AccountDetailsDTO accountDetailsDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), AccountDetailsDTO.class);
 
         /* Check if results match desired control object */
         Assertions.assertThat(accountDetailsDTO).isEqualToComparingFieldByField(controlObject);
@@ -119,7 +119,7 @@ public class AccountControllerTest {
         /* Prepare Account and payload */
         Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
         accountRepository.saveAndFlush(newEntity);
-        AccountDetailsDto accountDetailsDto = new AccountDetailsDto("NewEmail@Test.com");
+        AccountDetailsDTO accountDetailsDto = new AccountDetailsDTO("NewEmail@Test.com");
 
         /* Create request*/
         String jsonContent = objectMapper.writeValueAsString(accountDetailsDto);
@@ -133,8 +133,8 @@ public class AccountControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
-        MessageResponseDto response =
-                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
+        MessageResponseDTO response =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
 
         /* Check if results match desired control object */
         Assertions.assertThat(response.getMessage()).isEqualTo(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
@@ -153,8 +153,8 @@ public class AccountControllerTest {
         accountRepository.saveAndFlush(newEntity);
 
         /* Prepare dto for request */
-        PasswordChangeDto passwordChangeDto =
-                new PasswordChangeDto(newEntity.getId(), password, newPassword, newPassword);
+        PasswordChangeDTO passwordChangeDto =
+                new PasswordChangeDTO(newEntity.getId(), password, newPassword, newPassword);
 
         /* Create request */
         String jsonContent = objectMapper.writeValueAsString(passwordChangeDto);
@@ -168,8 +168,8 @@ public class AccountControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
-        MessageResponseDto response =
-                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
+        MessageResponseDTO response =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
 
         /* Check if results match desired control object */
         Assertions.assertThat(response.getMessage()).isEqualTo(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
@@ -194,8 +194,8 @@ public class AccountControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
-        MessageResponseDto response =
-                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDto.class);
+        MessageResponseDTO response =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
 
         /* Check if results match desired control object */
         Assertions.assertThat(response.getMessage()).isEqualTo(AccountMessage.ENTITY_DELETE_SUCCESSFUL.toString());

@@ -3,7 +3,7 @@ package com.dknapik.flowershop.controller.product;
 import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.FlowerDto;
+import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.model.product.Flower;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,13 +63,13 @@ public class FlowerControllerTest {
         int numberOfEntities = 45;
         String prefix = "Testing Flower";
         int page = 0;
-        RestResponsePage<FlowerDto> controlCollection;
+        RestResponsePage<FlowerDTO> controlCollection;
 
 
         /* Initialize testing entities and create List with entities that should be in http response */
         List<Flower> flowerList = initializeEntities(prefix, numberOfEntities)
                 .subList(ProductProperties.PAGE_SIZE * page, ProductProperties.PAGE_SIZE * page + ProductProperties.PAGE_SIZE);
-        List<FlowerDto> content = castCollectionToDto(flowerList);
+        List<FlowerDTO> content = castCollectionToDto(flowerList);
 
         controlCollection =
                 new RestResponsePage<>(content, PageRequest.of(page, ProductProperties.PAGE_SIZE), numberOfEntities);
@@ -87,10 +87,10 @@ public class FlowerControllerTest {
                 .andReturn();
 
         /* Map response to Page<Souvenir> data type */
-        TypeReference<RestResponsePage<FlowerDto>> typeReference =
-                new TypeReference<RestResponsePage<FlowerDto>>() {
+        TypeReference<RestResponsePage<FlowerDTO>> typeReference =
+                new TypeReference<RestResponsePage<FlowerDTO>>() {
                 };
-        RestResponsePage<FlowerDto> resultValue =
+        RestResponsePage<FlowerDTO> resultValue =
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Cast Page to List, and compare it with previously created control value */
@@ -127,8 +127,8 @@ public class FlowerControllerTest {
      * @param collection - iterable collection containing Flower entities
      * @return list with FlowerDto objects
      */
-    private List<FlowerDto> castCollectionToDto(Iterable<Flower> collection) {
-        List<FlowerDto> returnCollection = new LinkedList<>();
+    private List<FlowerDTO> castCollectionToDto(Iterable<Flower> collection) {
+        List<FlowerDTO> returnCollection = new LinkedList<>();
 
         for (Flower flower : collection) {
             returnCollection.add(convertToDto(flower));
@@ -143,8 +143,8 @@ public class FlowerControllerTest {
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
-    private FlowerDto convertToDto(Flower entity) {
-        return modelMapper.map(entity, FlowerDto.class);
+    private FlowerDTO convertToDto(Flower entity) {
+        return modelMapper.map(entity, FlowerDTO.class);
     }
 
     /**
@@ -153,7 +153,7 @@ public class FlowerControllerTest {
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
-    private Flower convertToEntity(FlowerDto dto) {
+    private Flower convertToEntity(FlowerDTO dto) {
         return modelMapper.map(dto, Flower.class);
     }
 

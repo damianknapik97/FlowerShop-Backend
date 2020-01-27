@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
-import com.dknapik.flowershop.dto.product.OccasionalArticleDto;
+import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
@@ -29,7 +29,7 @@ public class OccasionalArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<RestResponsePage<OccasionalArticleDto>> getOccasionalArticles(
+    public ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         /* Retrieve desired page */
         log.info("Processing getOccasionalArticles request");
@@ -38,13 +38,13 @@ public class OccasionalArticleController {
 
         /* Cast retrieved entities to dto and create new RestResponsePage */
         log.info("Casting Entities to Dto");
-        List<OccasionalArticleDto> occasionalArticleDtoList = new LinkedList<>();
+        List<OccasionalArticleDTO> occasionalArticleDtoList = new LinkedList<>();
         for (OccasionalArticle occasionalArticle : occasionalArticleRestResponsePage) {
-            occasionalArticleDtoList.add(productMapper.convertToDto(occasionalArticle, OccasionalArticleDto.class));
+            occasionalArticleDtoList.add(productMapper.convertToDto(occasionalArticle, OccasionalArticleDTO.class));
         }
 
         log.info("Building response");
-        RestResponsePage<OccasionalArticleDto> dtoRestResponsePage =
+        RestResponsePage<OccasionalArticleDTO> dtoRestResponsePage =
                 new RestResponsePage<>(occasionalArticleDtoList, occasionalArticleRestResponsePage);
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }

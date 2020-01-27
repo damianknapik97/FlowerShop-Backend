@@ -1,6 +1,6 @@
 package com.dknapik.flowershop.controller.order;
 
-import com.dknapik.flowershop.dto.order.ShoppingCartDto;
+import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.order.ShoppingCartService;
@@ -35,9 +35,9 @@ public class ShoppingCartController {
      * @return ShoppingCart Dto with products, name and id
      */
     @GetMapping
-    public ResponseEntity<ShoppingCartDto> getShoppingCart(Principal principal) {
+    public ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
-        ShoppingCartDto shoppingCartDto = mapper.convertToDto(shoppingCart);
+        ShoppingCartDTO shoppingCartDto = mapper.convertToDto(shoppingCart);
 
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);
     }

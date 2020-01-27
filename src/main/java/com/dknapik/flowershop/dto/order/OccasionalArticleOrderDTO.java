@@ -1,24 +1,26 @@
 package com.dknapik.flowershop.dto.order;
 
-import com.dknapik.flowershop.dto.product.OccasionalArticleDto;
-import com.dknapik.flowershop.dto.product.ProductDto;
+import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
+import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticleOrderDto implements ProductOrderDto {
+public class OccasionalArticleOrderDTO implements ProductOrderDTO {
     private UUID id;
-    private int itemCount;
+    @Min(1)
+    private @Valid int itemCount;
     @NotNull
-    private @Valid OccasionalArticleDto occasionalArticleDto;
+    private @Valid OccasionalArticleDTO occasionalArticleDTO;
 
     /**
      * Retrieves original class of the product order
@@ -26,7 +28,7 @@ public class OccasionalArticleOrderDto implements ProductOrderDto {
      * @return Class instance of class implementing this interface
      */
     @JsonIgnore
-    public Class<?> getProductOrderDtoClass() {
+    public Class<?> getProductOrderDTOClass() {
         return this.getClass();
     }
 
@@ -42,12 +44,12 @@ public class OccasionalArticleOrderDto implements ProductOrderDto {
     }
 
     /**
-     * Cast class implementing this interface to ProductOrderDto interface
+     * Cast class implementing this interface to ProductOrderDTO interface
      *
      * @return Class
      */
     @JsonIgnore
-    public ProductOrderDto getProductOrderDto() {
+    public ProductOrderDTO getProductOrderDTO() {
         return this;
     }
 
@@ -57,7 +59,7 @@ public class OccasionalArticleOrderDto implements ProductOrderDto {
      * @return - product associated with class implementing this interface
      */
     @JsonIgnore
-    public ProductDto getProductDto() {
-        return occasionalArticleDto;
+    public ProductDTO getProductDTO() {
+        return occasionalArticleDTO;
     }
 }

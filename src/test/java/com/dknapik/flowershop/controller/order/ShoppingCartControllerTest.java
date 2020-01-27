@@ -4,7 +4,7 @@ import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.FlowerOrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.FlowerRepository;
-import com.dknapik.flowershop.dto.order.ShoppingCartDto;
+import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.FlowerOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
@@ -79,7 +79,7 @@ public class ShoppingCartControllerTest {
         /* Test configuration */
         int numberOfProducts = 10;
         String prefix = "Testing Product";
-        ShoppingCartDto controlObject;
+        ShoppingCartDTO controlObject;
 
         /* Initialize entities needed in database */
         ShoppingCart shoppingCart = initializeShoppingCartEntity(prefix, numberOfProducts, false);
@@ -99,8 +99,8 @@ public class ShoppingCartControllerTest {
                 .andReturn();
 
         /* Map response to expected dto  */
-        ShoppingCartDto resultValue =
-                objectMapper.readValue(result.getResponse().getContentAsString(), ShoppingCartDto.class);
+        ShoppingCartDTO resultValue =
+                objectMapper.readValue(result.getResponse().getContentAsString(), ShoppingCartDTO.class);
 
         /* Cast Page to List, and compare it with previously created control value */
         Assertions.assertThat(resultValue).isEqualTo(controlObject);
@@ -235,8 +235,8 @@ public class ShoppingCartControllerTest {
      * @param entity- entity for mapping
      * @return dto created from provided entity
      */
-    private ShoppingCartDto convertToDto(ShoppingCart entity) {
-        return mapper.map(entity, ShoppingCartDto.class);
+    private ShoppingCartDTO convertToDto(ShoppingCart entity) {
+        return mapper.map(entity, ShoppingCartDTO.class);
     }
 
     /**
@@ -245,7 +245,7 @@ public class ShoppingCartControllerTest {
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
-    private ShoppingCart convertToEntity(ShoppingCartDto dto) {
+    private ShoppingCart convertToEntity(ShoppingCartDTO dto) {
         return mapper.map(dto, ShoppingCart.class);
     }
 }

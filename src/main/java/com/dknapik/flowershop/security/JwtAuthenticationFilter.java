@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.security;
 
 import com.auth0.jwt.JWT;
-import com.dknapik.flowershop.dto.account.LoginDto;
+import com.dknapik.flowershop.dto.account.LoginDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -32,10 +32,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        LoginDto credentials;
+        LoginDTO credentials;
         try {
             //Map request to LoginViewModel, which contains credentials and data validation
-            credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+            credentials = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
 
             //Create login token
             UsernamePasswordAuthenticationToken authenticationToken =

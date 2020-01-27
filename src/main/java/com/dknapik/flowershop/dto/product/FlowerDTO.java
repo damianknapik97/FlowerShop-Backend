@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.money.MonetaryAmount;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -13,16 +15,16 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticleDto implements ProductDto {
+public class FlowerDTO implements ProductDTO {
     private UUID id;
     @NotBlank
-    private String name;
+    private @Valid String name;
     @NotNull
-    private MonetaryAmount price;
-    @NotBlank
-    private String description;
-    @NotBlank
-    private String theme;
+    private @Valid MonetaryAmount price;
+    @NotNull
+    private @Valid String description;
+    @Min(1)
+    private @Valid int height;
 
     /**
      * Retrieves original class of the products
@@ -30,7 +32,7 @@ public class OccasionalArticleDto implements ProductDto {
      * @return Class instance of class implementing this interface
      */
     @JsonIgnore
-    public Class<?> getProductDtoClass() {
+    public Class<?> getProductDTOClass() {
         return this.getClass();
     }
 
@@ -46,12 +48,12 @@ public class OccasionalArticleDto implements ProductDto {
     }
 
     /**
-     * Cast class implementing this interface to ProductDto interface
+     * Cast class implementing this interface to ProductDTO interface
      *
      * @return Class
      */
     @JsonIgnore
-    public ProductDto getProductDto() {
+    public ProductDTO getProductDTO() {
         return this;
     }
 }

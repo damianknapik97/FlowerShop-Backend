@@ -1,10 +1,10 @@
 package com.dknapik.flowershop.controller;
 
 import com.dknapik.flowershop.constants.AccountMessage;
-import com.dknapik.flowershop.dto.MessageResponseDto;
-import com.dknapik.flowershop.dto.account.AccountDetailsDto;
-import com.dknapik.flowershop.dto.account.AccountDto;
-import com.dknapik.flowershop.dto.account.PasswordChangeDto;
+import com.dknapik.flowershop.dto.MessageResponseDTO;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
+import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.services.AccountService;
@@ -44,16 +44,16 @@ public class AccountController {
      * @return string message with informations about data processing status.
      */
     @PostMapping()
-    public ResponseEntity<MessageResponseDto> createAccount(@Valid @RequestBody AccountDto accountDto,
+    public ResponseEntity<MessageResponseDTO> createAccount(@Valid @RequestBody AccountDTO accountDto,
                                                             BindingResult bindingResult) {
-        MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
+        MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
         try {
             this.service.createNewUser(accountDto, bindingResult);    // Process provided data
         } catch (BindingException | DataProcessingException e) {
             log.warn("Exception creating new account", e);
-            response = new MessageResponseDto(e.getMessage());
+            response = new MessageResponseDTO(e.getMessage());
             status = e.getHttpStatus();
         }
 
@@ -69,9 +69,9 @@ public class AccountController {
      * @return string message with informations about data processing status.
      */
     @GetMapping()
-    public ResponseEntity<AccountDetailsDto> retrieveAccount(Principal principal) {
+    public ResponseEntity<AccountDetailsDTO> retrieveAccount(Principal principal) {
         log.info("Processing retrieveAccount request");
-        AccountDetailsDto acc = null;
+        AccountDetailsDTO acc = null;
         HttpStatus status = HttpStatus.OK;
 
         try {
@@ -94,12 +94,12 @@ public class AccountController {
      * @return - string message with informations about data processing status.
      */
     @PutMapping()
-    public ResponseEntity<MessageResponseDto> updateAccount(
-            @Valid @RequestBody AccountDetailsDto accountDetailsViewModel,
+    public ResponseEntity<MessageResponseDTO> updateAccount(
+            @Valid @RequestBody AccountDetailsDTO accountDetailsViewModel,
             BindingResult bindingResult,
             Principal principal) {
         log.info("Processing updateAccount request");
-        MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
+        MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
         try {
@@ -124,11 +124,11 @@ public class AccountController {
      * @return string message with informations about data processing status.
      */
     @PutMapping("/password")
-    public ResponseEntity<MessageResponseDto> updatePassword(@Valid @RequestBody PasswordChangeDto passwordChangeDto,
+    public ResponseEntity<MessageResponseDTO> updatePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDto,
                                                              BindingResult bindingResult,
                                                              Principal principal) {
         log.info("Processing updatePassword request");
-        MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
+        MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
         try {
@@ -152,10 +152,10 @@ public class AccountController {
      * @return string message with informations about data processing status.
      */
     @DeleteMapping()
-    public ResponseEntity<MessageResponseDto> deleteAccount(@Valid @RequestParam("password") String password,
+    public ResponseEntity<MessageResponseDTO> deleteAccount(@Valid @RequestParam("password") String password,
                                                             Principal principal) {
         log.info("Processing deleteAccount request");
-        MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_DELETE_SUCCESSFUL.toString());
+        MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_DELETE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
         try {

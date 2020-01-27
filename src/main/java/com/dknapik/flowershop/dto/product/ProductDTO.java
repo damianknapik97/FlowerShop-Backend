@@ -1,13 +1,13 @@
 package com.dknapik.flowershop.dto.product;
 
-public interface ProductDto {
+public interface ProductDTO {
 
     /**
      * Retrieves original class of the products
      *
      * @return Class instance of class implementing this interface
      */
-    public Class<?> getProductDtoClass();
+    public Class<?> getProductDTOClass();
 
     /**
      * Compare given product original class with this products class.
@@ -18,9 +18,9 @@ public interface ProductDto {
     public boolean compareClass(Class<?> classToCompare);
 
     /**
-     * Cast class implementing this interface to ProductDto interface
+     * Cast class implementing this interface to ProductDTO interface
      *
      * @return Class
      */
-    public ProductDto getProductDto();
+    public ProductDTO getProductDTO();
 }

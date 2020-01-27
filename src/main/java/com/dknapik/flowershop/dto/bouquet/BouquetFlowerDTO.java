@@ -1,8 +1,8 @@
 package com.dknapik.flowershop.dto.bouquet;
 
-import com.dknapik.flowershop.dto.order.ProductOrderDto;
-import com.dknapik.flowershop.dto.product.AddonDto;
-import com.dknapik.flowershop.dto.product.ProductDto;
+import com.dknapik.flowershop.dto.order.ProductOrderDTO;
+import com.dknapik.flowershop.dto.product.FlowerDTO;
+import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BouquetAddonDto implements ProductOrderDto {
+public class BouquetFlowerDTO implements ProductOrderDTO {
     private UUID id;
     @NotNull
-    private @Valid AddonDto addonDTO;
+    private @Valid FlowerDTO flowerDto;
 
     /**
      * Retrieves original class of the product order
@@ -26,7 +26,7 @@ public class BouquetAddonDto implements ProductOrderDto {
      * @return Class instance of class implementing this interface
      */
     @JsonIgnore
-    public Class<?> getProductOrderDtoClass() {
+    public Class<?> getProductOrderDTOClass() {
         return this.getClass();
     }
 
@@ -42,12 +42,12 @@ public class BouquetAddonDto implements ProductOrderDto {
     }
 
     /**
-     * Cast class implementing this interface to ProductOrderDto interface
+     * Cast class implementing this interface to ProductOrderDTO interface
      *
      * @return Class
      */
     @JsonIgnore
-    public ProductOrderDto getProductOrderDto() {
+    public ProductOrderDTO getProductOrderDTO() {
         return this;
     }
 
@@ -57,7 +57,7 @@ public class BouquetAddonDto implements ProductOrderDto {
      * @return - product associated with class implementing this interface
      */
     @JsonIgnore
-    public ProductDto getProductDto() {
-        return addon;
+    public ProductDTO getProductDTO() {
+        return flowerDto;
     }
 }
