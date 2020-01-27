@@ -70,6 +70,7 @@ public class AccountController {
      */
     @GetMapping()
     public ResponseEntity<AccountDetailsDto> retrieveAccount(Principal principal) {
+        log.info("Processing retrieveAccount request");
         AccountDetailsDto acc = null;
         HttpStatus status = HttpStatus.OK;
 
@@ -80,6 +81,7 @@ public class AccountController {
             status = e.getHttpStatus();
         }
 
+        log.info("Building response");
         return new ResponseEntity<>(acc, status);
     }
 
@@ -96,6 +98,7 @@ public class AccountController {
             @Valid @RequestBody AccountDetailsDto accountDetailsViewModel,
             BindingResult bindingResult,
             Principal principal) {
+        log.info("Processing updateAccount request");
         MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
@@ -107,6 +110,7 @@ public class AccountController {
             status = e.getHttpStatus();
         }
 
+        log.info("Building response");
         return new ResponseEntity<>(response, status);
     }
 
@@ -123,17 +127,19 @@ public class AccountController {
     public ResponseEntity<MessageResponseDto> updatePassword(@Valid @RequestBody PasswordChangeDto passwordChangeDto,
                                                              BindingResult bindingResult,
                                                              Principal principal) {
+        log.info("Processing updatePassword request");
         MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_UPDATE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
         try {
             this.service.updatePassword(passwordChangeDto, bindingResult, principal);
         } catch (BindingException | DataProcessingException e) {
-            this.log.warn("Exception changing password", e);
+            log.warn("Exception changing password", e);
             response.setMessage(e.getMessage());
             status = e.getHttpStatus();
         }
 
+        log.info("Building response");
         return new ResponseEntity<>(response, status);
     }
 
@@ -148,6 +154,7 @@ public class AccountController {
     @DeleteMapping()
     public ResponseEntity<MessageResponseDto> deleteAccount(@Valid @RequestParam("password") String password,
                                                             Principal principal) {
+        log.info("Processing deleteAccount request");
         MessageResponseDto response = new MessageResponseDto(AccountMessage.ENTITY_DELETE_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
 
@@ -159,6 +166,7 @@ public class AccountController {
             status = e.getHttpStatus();
         }
 
+        log.info("Building response");
         return new ResponseEntity<>(response, status);
     }
 }

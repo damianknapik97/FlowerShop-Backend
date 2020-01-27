@@ -4,6 +4,7 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.SouvenirRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.SouvenirDto;
+import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

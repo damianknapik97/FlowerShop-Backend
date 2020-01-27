@@ -1,9 +1,10 @@
 package com.dknapik.flowershop.controller.order;
 
 import com.dknapik.flowershop.dto.order.ShoppingCartDto;
+import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.order.ShoppingCartService;
-import org.modelmapper.ModelMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/shopping-cart")
 @CrossOrigin
+@Log4j2
 public class ShoppingCartController {
     private final ShoppingCartService service;
-    private final ModelMapper mapper;
+    private final ShoppingCartMapper mapper;
 
     @Autowired
-    public ShoppingCartController(ShoppingCartService service, ModelMapper mapper) {
+    public ShoppingCartController(ShoppingCartService service, ShoppingCartMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -35,7 +37,7 @@ public class ShoppingCartController {
     @GetMapping
     public ResponseEntity<ShoppingCartDto> getShoppingCart(Principal principal) {
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
-        ShoppingCartDto shoppingCartDto = convertToDto(shoppingCart);
+        ShoppingCartDto shoppingCartDto = mapper.convertToDto(shoppingCart);
 
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);
     }
@@ -51,26 +53,6 @@ public class ShoppingCartController {
         int numberOfProducts = service.countNumberOfProducts(id);
 
         return new ResponseEntity<>(numberOfProducts, HttpStatus.OK);
-    }
-
-    /**
-     * Maps provided object to entity.
-     *
-     * @param entity- entity for mapping
-     * @return dto created from provided entity
-     */
-    private ShoppingCartDto convertToDto(ShoppingCart entity) {
-        return mapper.map(entity, ShoppingCartDto.class);
-    }
-
-    /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
-     *
-     * @param dto - dto to map to entity
-     * @return - mapped entity
-     */
-    private ShoppingCart convertToEntity(ShoppingCartDto dto) {
-        return mapper.map(dto, ShoppingCart.class);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class SouvenirDto implements ProductDto {
      *
      * @return Class instance of class implementing this interface
      */
+    @JsonIgnore
     public Class<?> getProductDtoClass() {
         return this.getClass();
     }
@@ -36,6 +38,7 @@ public class SouvenirDto implements ProductDto {
      * @param classToCompare - Object to compare to
      * @return - true if both classes match.
      */
+    @JsonIgnore
     public boolean compareClass(Class<?> classToCompare) {
         return classToCompare.equals(this.getClass());
     }
@@ -45,6 +48,7 @@ public class SouvenirDto implements ProductDto {
      *
      * @return Class
      */
+    @JsonIgnore
     public ProductDto getProductDto() {
         return this;
     }
