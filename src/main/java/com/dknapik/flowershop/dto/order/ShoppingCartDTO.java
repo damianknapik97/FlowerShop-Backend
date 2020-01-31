@@ -20,5 +20,5 @@ public class ShoppingCartDTO {
     private @Valid List<OccasionalArticleOrderDTO> occasionalArticleOrderDTOs;
     private @Valid List<SouvenirOrderDTO> souvenirOrderDTOs;
     private @Valid List<FlowerOrderDTO> flowerOrderDTOs;
-    private @Valid List<BouquetDTO> bouquetDTOS;
+    private @Valid List<BouquetDTO> bouquetDTOs;
 }

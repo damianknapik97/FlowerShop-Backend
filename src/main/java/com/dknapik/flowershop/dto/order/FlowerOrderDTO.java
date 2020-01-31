@@ -18,7 +18,7 @@ public class FlowerOrderDTO implements ProductOrderDTO {
     private UUID id;
     private int itemCount;
     @NotNull
-    private @Valid FlowerDTO flowerDto;
+    private @Valid FlowerDTO flowerDTO;
 
     /**
      * Retrieves original class of the product order
@@ -58,6 +58,6 @@ public class FlowerOrderDTO implements ProductOrderDTO {
      */
     @JsonIgnore
     public ProductDTO getProductDTO() {
-        return flowerDto;
+        return flowerDTO;
     }
 }

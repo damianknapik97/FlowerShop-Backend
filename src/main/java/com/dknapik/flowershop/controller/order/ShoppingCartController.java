@@ -29,16 +29,20 @@ public class ShoppingCartController {
     }
 
     /**
-     * Returns detailed shopping cart instance, with all currently added productss.
+     * Returns detailed shopping cart instance, with all currently added products.
      *
      * @param principal - logged user
      * @return ShoppingCart Dto with products, name and id
      */
     @GetMapping
     public ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
+        log.info("Processing getShoppingCart request");
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
+
+        log.info("Casting retrieved results to dto");
         ShoppingCartDTO shoppingCartDto = mapper.convertToDto(shoppingCart);
 
+        log.info("Building response");
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);
     }
 
@@ -50,8 +54,10 @@ public class ShoppingCartController {
      */
     @GetMapping("/count")
     public ResponseEntity<Integer> countShoppingCartProducts(@Valid @RequestParam("id") UUID id) {
+        log.info("Processing countShoppingCartProducts request");
         int numberOfProducts = service.countNumberOfProducts(id);
 
+        log.info("Building response entity");
         return new ResponseEntity<>(numberOfProducts, HttpStatus.OK);
     }
 }
