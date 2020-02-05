@@ -7,7 +7,6 @@ import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
-import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
@@ -47,7 +46,10 @@ public class ShoppingCartSeeder implements SeederInt {
         this.encoder = passwordEncoder;
     }
 
-    /* TODO: There might be some problems with removing shopping carts that were unasigned from the account, investigate */
+    /* TODO: Problems with Cascades:
+     *   - The first one : CascadeType.Persit does not persist Occasional Article Order inside shopping cart
+     *   - The second one: CascadeType.Merge  persist Ocassional Article Order inside shopping cart (why ?)
+     *   - The third one: Removing Account together with shopping cart, for some reason creates new Occasional Article Order entity */
     @Override
     public void seed() {
         String userName = "user";
@@ -56,7 +58,6 @@ public class ShoppingCartSeeder implements SeederInt {
 
         /* Try to retrieve shopping cart and create new one if doesn't exist */
         if (shoppingCartEmpty) {
-            System.out.println("NO JA PIERDOLE");
             /* Retrieve/Create Occasional Article from/in database */
             Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
             OccasionalArticle occasionalArticle =
@@ -70,30 +71,25 @@ public class ShoppingCartSeeder implements SeederInt {
             List<OccasionalArticleOrder> occasionalArticleOrderList = new LinkedList<>();
             occasionalArticleOrderList.add(newOrder);
 
-            System.out.println(newOrder.getOccasionalArticle().getId().toString());
-
-
-            ShoppingCart newShoppingCart = new ShoppingCart(
-                    "TestTest",
-                    occasionalArticleOrderList,
-                    new LinkedList<>(),
-                    new LinkedList<>(),
-                    new LinkedList<>()
-            );
-
             /* Create new shopping cart object, populated by id and occasional article orders */
-            //userAccount.getShoppingCart().setName("TEST");
-           // userAccount.getShoppingCart().setOccasionalArticleOrderList(occasionalArticleOrderList);
-            userAccount.setShoppingCart(newShoppingCart);
-            System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().get(0).getOccasionalArticle().getId().toString());
-            System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
-            shoppingCartRepository.saveAndFlush(userAccount.getShoppingCart());
-            //accountRepository.saveAndFlush(userAccount);
+            userAccount.getShoppingCart().setName("TEST");
+            userAccount.getShoppingCart().setOccasionalArticleOrderList(occasionalArticleOrderList);
+            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
+            //occasionalArticleOrderRepository.saveAll(userAccount.getShoppingCart().getOccasionalArticleOrderList());
+            //occasionalArticleOrderRepository.flush();
+            //shoppingCartRepository.saveAndFlush(userAccount.getShoppingCart());
+            accountRepository.saveAndFlush(userAccount);
+            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().get(0).getId().toString());
+            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
 
+            //shoppingCartRepository.delete(userAccount.getShoppingCart());
+            //shoppingCartRepository.flush();
+            //accountRepository.delete(userAccount);
+            //accountRepository.flush();
 
-            /* Delete old shopping cart that is probably empty */
-            //userAccount.setShoppingCart(cartToSave);
-            //accountRepository.saveAndFlush(userAccount);
+            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
+            //accountRepository.flush();
+
         }
     }
 
@@ -167,9 +163,6 @@ public class ShoppingCartSeeder implements SeederInt {
         } else {
             occasionalArticle = retrievedOccasionalArticle.get();
         }
-
-        occasionalArticle = occasionalArticleRepository.findById(occasionalArticle.getId()).get();
-
         return occasionalArticle;
     }
 

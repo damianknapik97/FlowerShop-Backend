@@ -18,8 +18,8 @@ public class OccasionalArticleOrder implements ProductOrder {
     private UUID id;
     @Column
     private int itemCount;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn()
     private OccasionalArticle occasionalArticle;
 
 
