@@ -38,9 +38,15 @@ public class ShoppingCartController {
     public ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
         log.info("Processing getShoppingCart request");
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
+        if (shoppingCart.getOccasionalArticleOrderList() != null) {
+            System.out.println(shoppingCart.getOccasionalArticleOrderList().size());
+        }
+
 
         log.info("Casting retrieved results to dto");
         ShoppingCartDTO shoppingCartDto = mapper.convertToDto(shoppingCart);
+        System.out.println(shoppingCartDto.getOccasionalArticleOrderDTOs().size());
+
 
         log.info("Building response");
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);
