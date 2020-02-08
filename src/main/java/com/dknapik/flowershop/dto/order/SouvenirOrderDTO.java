@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.order;
 
+import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.dto.product.SouvenirDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.UUID;
 
 @Data
@@ -28,6 +30,7 @@ public class SouvenirOrderDTO implements ProductOrderDTO {
      * @return Class instance of class implementing this interface
      */
     @JsonIgnore
+    @Override
     public Class<?> getProductOrderDTOClass() {
         return this.getClass();
     }
@@ -39,6 +42,7 @@ public class SouvenirOrderDTO implements ProductOrderDTO {
      * @return - true if both classes match.
      */
     @JsonIgnore
+    @Override
     public boolean compareClass(Class<?> classToCompare) {
         return classToCompare.equals(this.getClass());
     }
@@ -49,6 +53,7 @@ public class SouvenirOrderDTO implements ProductOrderDTO {
      * @return Class
      */
     @JsonIgnore
+    @Override
     public ProductOrderDTO getProductOrderDTO() {
         return this;
     }
@@ -59,7 +64,27 @@ public class SouvenirOrderDTO implements ProductOrderDTO {
      * @return - product associated with class implementing this interface
      */
     @JsonIgnore
+    @Override
     public ProductDTO getProductDTO() {
         return souvenirDTO;
+    }
+
+    /**
+     * Checks if provided ProductDTO is able to be casted to Product class inside this Order DTO and casts it.
+     *
+     * @param productDTO - Product DTO to set inside this Order DTO class
+     */
+    @JsonIgnore
+    @Override
+    public void setProductDTO(ProductDTO productDTO) {
+        ProductDTO product = Objects.requireNonNull(productDTO);
+        if (product.compareClass(SouvenirDTO.class)) {
+            souvenirDTO = (SouvenirDTO) product;
+        } else {
+            throw new IllegalArgumentException("Provided product dto class - " +
+                    product.getProductDTOClass().toString() +
+                    " - doesn't match the one inside product order dto -" +
+                    SouvenirDTO.class.toString());
+        }
     }
 }

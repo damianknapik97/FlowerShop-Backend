@@ -1,9 +1,11 @@
 package com.dknapik.flowershop.mapper.order;
 
 import com.dknapik.flowershop.dto.order.*;
+import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
 import com.dknapik.flowershop.model.order.*;
+import com.dknapik.flowershop.model.product.Product;
 import lombok.ToString;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @ToString
@@ -26,6 +29,30 @@ public class ShoppingCartMapper {
         this.productMapper = productMapper;
         this.productOrderMapper = productOrderMapper;
     }
+
+    public ShoppingCartDTO convertToDTO(ShoppingCart entity) {
+        ShoppingCartDTO returnDTO = mapper.map(entity, ShoppingCartDTO.class);
+
+        /* Map products */
+        if (entity.getOccasionalArticleOrderList() != null) {
+            returnDTO.setOccasionalArticleOrderDTOs(
+                    convertOccasionalArticleOrdersToDTO(entity.getOccasionalArticleOrderList()));
+        }
+
+        return returnDTO;
+    }
+
+    private List<OccasionalArticleOrderDTO> convertOccasionalArticleOrdersToDTO(
+            Iterable<OccasionalArticleOrder> occasionalArticleOrders) {
+        Iterable<OccasionalArticleOrder> toConvert = Objects.requireNonNull(occasionalArticleOrders);
+        List<OccasionalArticleOrderDTO> convertedDTOs = new LinkedList<>();
+
+        toConvert.forEach((occasionalArticleOrder -> {
+            convertedDTOs.add(productOrderMapper.convertToDto(occasionalArticleOrder, OccasionalArticleOrderDTO.class));
+        }));
+        return convertedDTOs;
+    }
+
 
     /**
      * Maps provided object to entity.
@@ -52,7 +79,7 @@ public class ShoppingCartMapper {
         return returnDTO;
     }
 
-    public ProductOrderDTO mapProductOrderDTO(ProductOrder productOrder) {
+    private ProductOrderDTO mapProductOrderDTO(ProductOrder productOrder) {
         ProductOrderDTO productOrderDTO = null;
         if (productOrder.compareClass(FlowerOrder.class)) {
             productOrderDTO = productOrderMapper.convertToDto(productOrder, FlowerOrderDTO.class);
@@ -64,7 +91,7 @@ public class ShoppingCartMapper {
         return productOrderDTO;
     }
 
-    public ProductDTO mapProductDTO() {
+    private ProductDTO mapProductDTO(Product product) {
         return null;
     }
 

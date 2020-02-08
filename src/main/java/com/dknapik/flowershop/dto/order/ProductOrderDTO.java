@@ -32,4 +32,11 @@ public interface ProductOrderDTO {
      * @return - product associated with class implementing this interface
      */
     public ProductDTO getProductDTO();
+
+    /**
+     * Checks if provided ProductDTO is able to be casted to Product class inside this Order DTO and casts it.
+     *
+     * @param productDTO - Product DTO to set inside this Order DTO class
+     */
+    public void setProductDTO(ProductDTO productDTO);
 }

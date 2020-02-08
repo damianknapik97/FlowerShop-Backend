@@ -44,7 +44,7 @@ public class ShoppingCartController {
 
 
         log.info("Casting retrieved results to dto");
-        ShoppingCartDTO shoppingCartDto = mapper.convertToDto(shoppingCart);
+        ShoppingCartDTO shoppingCartDto = mapper.convertToDTO(shoppingCart);
         System.out.println(shoppingCartDto.getOccasionalArticleOrderDTOs().size());
 
 
