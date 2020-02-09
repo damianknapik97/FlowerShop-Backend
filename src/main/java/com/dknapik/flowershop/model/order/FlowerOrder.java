@@ -1,5 +1,7 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.dto.product.FlowerDTO;
+import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -70,5 +73,24 @@ public class FlowerOrder implements ProductOrder {
     @JsonIgnore
     public Product getProduct() {
         return flower;
+    }
+
+    /**
+     * Checks if provided Product is able to be casted to Product class inside this Order and casts it.
+     *
+     * @param product - Product DTO to set inside this Order DTO class
+     */
+    @Override
+    @JsonIgnore
+    public void setProduct(Product product) {
+        Objects.requireNonNull(product);
+        if (product.compareClass(Flower.class)) {
+            flower = (Flower) product;
+        } else {
+            throw new IllegalArgumentException("Provided product dto class - " +
+                    product.getProductClass().toString() +
+                    " - doesn't match the one inside product order dto -" +
+                    Flower.class.toString());
+        }
     }
 }

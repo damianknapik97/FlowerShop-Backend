@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model.order;
 
 
+import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.model.product.Product;
 
 public interface ProductOrder {
@@ -33,4 +34,11 @@ public interface ProductOrder {
      * @return - product associated with class implementing this interface
      */
     public Product getProduct();
+
+    /**
+     * Checks if provided Product is able to be casted to Product class inside this Order and casts it.
+     *
+     * @param product - Product DTO to set inside this Order DTO class
+     */
+    public void setProduct(Product product);
 }

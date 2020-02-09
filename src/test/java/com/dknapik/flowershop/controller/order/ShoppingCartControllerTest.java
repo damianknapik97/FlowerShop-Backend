@@ -5,6 +5,7 @@ import com.dknapik.flowershop.database.order.FlowerOrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
+import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.FlowerOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
@@ -59,7 +60,7 @@ public class ShoppingCartControllerTest {
     @Autowired
     private Environment env;
     @Autowired
-    private ModelMapper mapper;
+    private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -84,7 +85,7 @@ public class ShoppingCartControllerTest {
         /* Initialize entities needed in database */
         ShoppingCart shoppingCart = initializeShoppingCartEntity(prefix, numberOfProducts, false);
         Account account = createAccount("GetShoppingCartTest", "GetShoppingCartTest", shoppingCart);
-        controlObject = convertToDto(shoppingCart);
+        controlObject = shoppingCartMapper.convertToDTO(shoppingCart);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
@@ -103,7 +104,7 @@ public class ShoppingCartControllerTest {
                 objectMapper.readValue(result.getResponse().getContentAsString(), ShoppingCartDTO.class);
 
         /* Cast Page to List, and compare it with previously created control value */
-        Assertions.assertThat(resultValue).isEqualTo(controlObject);
+        Assertions.assertThat(resultValue).isEqualToIgnoringNullFields(controlObject);
     }
 
     @Test
@@ -173,10 +174,10 @@ public class ShoppingCartControllerTest {
     private ShoppingCart initializeShoppingCartEntity(String productNamePrefix, int numberOfProducts, boolean saveToDatabase) {
         /* Create Shopping Cart entity from provided arguments */
         ShoppingCart shoppingCartEntity = new ShoppingCart("Testing Shopping Cart",
-                new LinkedList<>(),
-                new LinkedList<>(),
+                null,
+                null,
                 initializeFlowerOrders(productNamePrefix, numberOfProducts),
-                new LinkedList<>());
+                null);
 
         /* Save created entity to database */
         if (saveToDatabase) {
@@ -234,18 +235,19 @@ public class ShoppingCartControllerTest {
      *
      * @param entity- entity for mapping
      * @return dto created from provided entity
-     */
+
     private ShoppingCartDTO convertToDto(ShoppingCart entity) {
         return mapper.map(entity, ShoppingCartDTO.class);
     }
-
+     */
     /**
      * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
      *
      * @param dto - dto to map to entity
      * @return - mapped entity
-     */
+
     private ShoppingCart convertToEntity(ShoppingCartDTO dto) {
         return mapper.map(dto, ShoppingCart.class);
     }
+     */
 }

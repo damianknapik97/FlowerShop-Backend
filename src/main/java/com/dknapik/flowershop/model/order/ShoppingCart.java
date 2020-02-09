@@ -24,7 +24,7 @@ public class ShoppingCart {
     @CreatedDate
     @Column
     private LocalDateTime creationDate;
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn()
     private List<OccasionalArticleOrder> occasionalArticleOrderList;
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})

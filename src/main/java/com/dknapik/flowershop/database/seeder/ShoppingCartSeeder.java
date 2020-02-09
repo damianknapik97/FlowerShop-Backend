@@ -14,6 +14,7 @@ import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @Component
 @ToString
+@Transactional
 public class ShoppingCartSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
     private final MoneyUtils moneyUtils;
@@ -105,7 +107,7 @@ public class ShoppingCartSeeder implements SeederInt {
             souvenirsEmpty = userAccount.getShoppingCart().getSouvenirOrderList().isEmpty();
         }
 
-        boolean occasionalArticleEmpty= true;
+        boolean occasionalArticleEmpty = true;
         if (userAccount.getShoppingCart().getOccasionalArticleOrderList() != null) {
             occasionalArticleEmpty = userAccount.getShoppingCart().getOccasionalArticleOrderList().isEmpty();
         }
@@ -136,7 +138,7 @@ public class ShoppingCartSeeder implements SeederInt {
                     encoder.encode(accountName),
                     "user@test.pl",
                     AccountRole.USER);
-                accountRepository.saveAndFlush(toReturn);
+            accountRepository.saveAndFlush(toReturn);
         } else {
             toReturn = this.accountRepository.findByName(accountName).get();
         }

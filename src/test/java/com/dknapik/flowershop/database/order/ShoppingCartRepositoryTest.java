@@ -6,6 +6,7 @@ import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,21 @@ public class ShoppingCartRepositoryTest {
     private OccasionalArticleOrderRepository orderRepository;
     @Autowired
     private Environment env;
+
+    /**
+     * Ensure database is empty before of each test
+     */
+    @BeforeEach
+    public void purgeDatabase() {
+        shoppingCartRepository.deleteAll();
+        shoppingCartRepository.flush();
+
+        orderRepository.deleteAll();
+        orderRepository.flush();
+
+        productRepository.deleteAll();
+        productRepository.flush();
+    }
 
     /**
      * Check if entity can be saved to database without any undesired changes or errors
