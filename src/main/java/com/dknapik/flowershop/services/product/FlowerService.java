@@ -1,8 +1,10 @@
 package com.dknapik.flowershop.services.product;
 
+import com.dknapik.flowershop.constants.ProductMessage;
 import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.product.Flower;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class FlowerService {
@@ -18,6 +22,17 @@ public class FlowerService {
     @Autowired
     public FlowerService(FlowerRepository repository) {
         this.repository = repository;
+    }
+
+    /**
+     * Searched database for single product instance and returns it.
+     *
+     * @param id - product id
+     * @return Flower entity with provided id;
+     */
+    public Flower retrieveSingleFlower(UUID id) {
+        Optional<Flower> retrievedFlower = repository.findById(id);
+        return retrievedFlower.orElseThrow(() -> new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
     }
 
     /**

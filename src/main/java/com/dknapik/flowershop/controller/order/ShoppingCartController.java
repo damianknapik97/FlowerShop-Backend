@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.controller.order;
 
+import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.ShoppingCart;
@@ -36,13 +37,16 @@ public class ShoppingCartController {
      */
     @GetMapping
     public ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
-        log.info("Processing getShoppingCart request");
+        log.info(() -> "Processing request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user " + principal.getName());
+
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
 
-        log.info("Casting retrieved results to dto");
+        log.trace("Casting retrieved results to dto");
         ShoppingCartDTO shoppingCartDto = mapper.convertToDTO(shoppingCart);
 
-        log.info("Building response");
+        log.trace(() -> "Building response entity for request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user " + principal.getName());
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);
     }
 
@@ -54,12 +58,47 @@ public class ShoppingCartController {
      */
     @GetMapping("/count")
     public ResponseEntity<Integer> countShoppingCartProducts(@Valid @RequestParam("id") UUID id) {
-        log.info("Processing countShoppingCartProducts request");
+        log.trace(() -> "Processing request: " + this.getClass().getEnclosingMethod().getName() +
+                " using following id " + id.toString());
+
         int numberOfProducts = service.countNumberOfProducts(id);
 
-        log.info("Building response entity");
+        log.trace(() -> "Building response entity for request: " + this.getClass().getEnclosingMethod().getName());
         return new ResponseEntity<>(numberOfProducts, HttpStatus.OK);
     }
+
+    @PutMapping("/flower")
+    public ResponseEntity<MessageResponseDTO> putFlowerOrder(@Valid @RequestParam("id") UUID id, Principal principal) {
+        log.info(() -> "Processing request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+
+        service.addFlowerToShoppingCart(principal.getName(), id);
+
+        log.trace(() -> "Building response entity for request:" + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+        return null;
+    }
+
+    @PutMapping("/occasional-article")
+    public ResponseEntity<MessageResponseDTO> putOccasionalArticleOrder(@Valid @RequestParam("id") UUID id, Principal principal) {
+        log.info(() -> "Processing request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+
+        log.trace(() -> "Building response entity for request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+        return null;
+    }
+
+    @PutMapping("/souvenir")
+    public ResponseEntity<MessageResponseDTO> putSouvenirOrder(@Valid @RequestParam("id") UUID id, Principal principal) {
+        log.info(() -> "Processing request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+
+        log.trace(() -> "Building response entity for request: " + this.getClass().getEnclosingMethod().getName() +
+                " for following user - " + principal.getName() + " - using following id " + id.toString());
+        return null;
+    }
+
 }
 
 

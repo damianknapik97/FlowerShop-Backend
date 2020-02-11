@@ -137,7 +137,6 @@ public class ShoppingCartControllerTest {
         Assertions.assertThat(resultValue).isEqualTo(numberOfProducts);
     }
 
-
     public void purgeDatabase() {
         accountRepository.deleteAll();
         repository.deleteAll();
@@ -199,10 +198,6 @@ public class ShoppingCartControllerTest {
             flowerOrderList.add(new FlowerOrder(1, flowerList.get(i)));
         }
 
-        /* Save created entities to database */
-        // flowerOrderRepository.saveAll(flowerOrderList);
-        // flowerOrderRepository.flush();
-
         return flowerOrderList;
     }
 
@@ -230,24 +225,4 @@ public class ShoppingCartControllerTest {
         return flowerList;
     }
 
-    /**
-     * Maps provided object to entity.
-     *
-     * @param entity- entity for mapping
-     * @return dto created from provided entity
-
-    private ShoppingCartDTO convertToDto(ShoppingCart entity) {
-        return mapper.map(entity, ShoppingCartDTO.class);
-    }
-     */
-    /**
-     * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
-     *
-     * @param dto - dto to map to entity
-     * @return - mapped entity
-
-    private ShoppingCart convertToEntity(ShoppingCartDTO dto) {
-        return mapper.map(dto, ShoppingCart.class);
-    }
-     */
 }
