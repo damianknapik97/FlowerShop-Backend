@@ -147,5 +147,68 @@ public class ShoppingCartService {
         repository.saveAndFlush(shoppingCart);
     }
 
+    public void addOccasionalArticleToShoppingCart(String accountName, UUID occasionalArticleID) {
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
+
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getOccasionalArticleOrderList() == null) {
+            log.trace("Shopping cart doesn't contain any Occasional Article collection, initializing...");
+            shoppingCart.setOccasionalArticleOrderList(new LinkedList<>());
+        }
+
+        /* Check if order with provided product already exists, and increase it quantity if true */
+        boolean orderAlreadyExists = false;
+        for (OccasionalArticleOrder occasionalArticleOrder : shoppingCart.getOccasionalArticleOrderList()) {
+            if (occasionalArticleOrder.getOccasionalArticle().getId().compareTo(occasionalArticleID) == 0) {
+                log.trace("Order with provided product already exists, incrementing number of products");
+                occasionalArticleOrder.setItemCount(occasionalArticleOrder.getItemCount() + 1);
+                orderAlreadyExists = true;
+            }
+        }
+
+        /* If order doesn't exists, we create new one */
+        if (!orderAlreadyExists) {
+            log.trace("Order with provided product DOESN'T already exists, creating new one");
+            shoppingCart.getOccasionalArticleOrderList().add(new OccasionalArticleOrder(
+                    1, occasionalArticleService.retrieveSingleOccasionalArticle(occasionalArticleID)));
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+    }
+
+    public void addSouvenirToShoppingCart(String accountName, UUID souvenirID) {
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
+
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getSouvenirOrderList() == null) {
+            log.trace("Shopping cart doesn't contain any Souvenir collection, initializing...");
+            shoppingCart.setSouvenirOrderList(new LinkedList<>());
+        }
+
+        /* Check if order with provided product already exists, and increase it quantity if true */
+        boolean orderAlreadyExists = false;
+        for (SouvenirOrder souvenirOrder : shoppingCart.getSouvenirOrderList()) {
+            if (souvenirOrder.getSouvenir().getId().compareTo(souvenirID) == 0) {
+                log.trace("Order with provided product already exists, incrementing number of products");
+                souvenirOrder.setItemCount(souvenirOrder.getItemCount() + 1);
+                orderAlreadyExists = true;
+            }
+        }
+
+        /* If order doesn't exists, we create new one */
+        if (!orderAlreadyExists) {
+            log.trace("Order with provided product DOESN'T already exists, creating new one");
+            shoppingCart.getSouvenirOrderList().add(new SouvenirOrder(
+                    1, souvenirService.retrieveSingleSouvenir(souvenirID)));
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+
+    }
+
 
 }

@@ -149,7 +149,7 @@ public class AccountController {
      *
      * @param password  - user input
      * @param principal - handle to spring security context to retrieve user performing request.
-     * @return string message with informations about data processing status.
+     * @return string message with information about data processing status.
      */
     @DeleteMapping()
     public ResponseEntity<MessageResponseDTO> deleteAccount(@Valid @RequestParam("password") String password,

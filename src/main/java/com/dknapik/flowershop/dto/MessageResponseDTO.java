@@ -2,6 +2,7 @@ package com.dknapik.flowershop.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,11 @@ public class MessageResponseDTO {
     @NotNull
     private @Valid String message;
 
-    public MessageResponseDTO(String message) {
+    public MessageResponseDTO(@NonNull String message) {
         this.message = message;
+    }
+
+    public MessageResponseDTO(@NonNull Enum<?> message) {
+        this.message = message.toString();
     }
 }
