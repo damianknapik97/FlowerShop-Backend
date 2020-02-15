@@ -2,7 +2,9 @@ package com.dknapik.flowershop.constants;
 
 public enum ShoppingCartMessage {
     PRODUCT_ADDED_SUCCESSFULLY("Added product to your shopping cart"),
-    PRODUCT_NOT_ADDED("Failed to add product to your shopping cart");
+    PRODUCT_NOT_ADDED("Failed to add product to your shopping cart"),
+
+    PRODUCT_REMOVED_SUCCESSFULLY("Removed product from your shopping cart");
 
     final String infoMessage;
 

@@ -12,7 +12,9 @@ import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.FlowerOrder;
+import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
+import com.dknapik.flowershop.model.order.SouvenirOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.model.product.Souvenir;
@@ -44,8 +46,7 @@ import java.util.List;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -257,6 +258,125 @@ public class ShoppingCartControllerTest {
         Assertions.assertThat(afterTestResults.getSouvenirOrderList().get(0).getSouvenir())
                 .isEqualToComparingFieldByField(testingProduct);
 
+    }
+
+    @Test
+    public void removeFlowerOrderFromShoppingCartTest() throws Exception {
+        /* Initialize entities needed in database */
+        String userName = "Test";
+        String url = "/shopping-cart/flower";
+        ShoppingCart shoppingCart =
+                initializeShoppingCartEntity("Test product", 1, false);
+        Account account = createAccount(userName, "GetShoppingCartTest", shoppingCart);
+
+        /* Create Request */
+        MockHttpServletRequestBuilder requestBuilder =
+                delete(url).param("id", shoppingCart.getFlowerOrderList().get(0).getId().toString()).with(user(userName));
+
+        /* Perform Request, Check status, Create Documentation */
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        /* Map response */
+        MessageResponseDTO messageResponseDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+        if (!messageResponseDTO.getMessage().equals(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY.toString())) {
+            throw new RuntimeException("Unexpected response value");
+        }
+
+        /* Retrieve shopping cart again from the database, to check if the new product was added */
+        ShoppingCart afterTestResults = repository.getOne(shoppingCart.getId());
+        Assertions.assertThat(afterTestResults.getFlowerOrderList().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void removeOccasionalArticleOrderFromShoppingCartTest() throws Exception {
+        /* Set testing parameters */
+        String userName = "Test";
+        String url = "/shopping-cart/occasional-article";
+        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
+
+        /* Initialize entities needed in database */
+        OccasionalArticle testingProduct =
+                new OccasionalArticle("Testing Product", money, "Testing Product", "Testing Product");
+        occasionalArticleRepository.saveAndFlush(testingProduct);
+        OccasionalArticleOrder occasionalArticleOrder = new OccasionalArticleOrder(1, testingProduct);
+        ShoppingCart shoppingCart =
+                initializeShoppingCartEntity("Test product", 0, false);
+        shoppingCart.setOccasionalArticleOrderList(new LinkedList<>());
+        shoppingCart.getOccasionalArticleOrderList().add(occasionalArticleOrder);
+        Account account = createAccount(userName, "GetShoppingCartTest", shoppingCart);
+
+
+        /* Create Request */
+        MockHttpServletRequestBuilder requestBuilder =
+                delete(url).param("id", shoppingCart.getOccasionalArticleOrderList().get(0).getId().toString())
+                        .with(user(userName));
+
+        /* Perform Request, Check status, Create Documentation */
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        /* Map response */
+        MessageResponseDTO messageResponseDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+        if (!messageResponseDTO.getMessage().equals(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY.toString())) {
+            throw new RuntimeException("Unexpected response value");
+        }
+
+        /* Retrieve shopping cart again from the database, to check if the new product was added */
+        ShoppingCart afterTestResults = repository.getOne(shoppingCart.getId());
+        Assertions.assertThat(afterTestResults.getFlowerOrderList().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void removeSouvenirOrderFromShoppingCartTest() throws Exception {
+        /* Set testing parameters */
+        String userName = "Test";
+        String url = "/shopping-cart/occasional-article";
+        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
+
+        /* Initialize entities needed in database */
+        Souvenir testingProduct = new Souvenir("Testing Product", money, "Testing Product");
+        souvenirRepository.saveAndFlush(testingProduct);
+        SouvenirOrder souvenirOrder = new SouvenirOrder(1, testingProduct);
+        ShoppingCart shoppingCart =
+                initializeShoppingCartEntity("Test product", 0, false);
+        shoppingCart.setSouvenirOrderList(new LinkedList<>());
+        shoppingCart.getSouvenirOrderList().add(souvenirOrder);
+        Account account = createAccount(userName, "GetShoppingCartTest", shoppingCart);
+
+        /* Create Request */
+        MockHttpServletRequestBuilder requestBuilder =
+                delete(url).param("id", shoppingCart.getSouvenirOrderList().get(0).getId().toString())
+                        .with(user(userName));
+
+        /* Perform Request, Check status, Create Documentation */
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        /* Map response */
+        MessageResponseDTO messageResponseDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+        if (!messageResponseDTO.getMessage().equals(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY.toString())) {
+            throw new RuntimeException("Unexpected response value");
+        }
+
+        /* Retrieve shopping cart again from the database, to check if the new product was added */
+        ShoppingCart afterTestResults = repository.getOne(shoppingCart.getId());
+        Assertions.assertThat(afterTestResults.getFlowerOrderList().isEmpty()).isTrue();
     }
 
     public void purgeDatabase() {

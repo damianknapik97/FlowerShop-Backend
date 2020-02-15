@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
 
+/* TODO: This class is rather long, should it be refactored into multiple smaller ones ? - investigate */
 
 @Service
 @Log4j2
@@ -116,6 +117,13 @@ public class ShoppingCartService {
         return numberOfProducts;
     }
 
+    /**
+     * Add or increment number of products from provided id inside product order
+     * inside shopping cart for provided account.
+     *
+     * @param accountName - account to retrieve shopping cart from
+     * @param flowerID    - product id to add to shopping cart
+     */
     public void addFlowerToShoppingCart(String accountName, UUID flowerID) {
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
@@ -129,7 +137,7 @@ public class ShoppingCartService {
         /* Check if order with provided product already exists, and increase it quantity if true */
         boolean orderAlreadyExists = false;
         for (FlowerOrder flowerOrder : shoppingCart.getFlowerOrderList()) {
-            if (flowerOrder.getFlower().getId().compareTo(flowerID) == 0) {
+            if (flowerOrder.getFlower().getId().equals(flowerID)) {
                 log.trace("Order with provided product already exists, incrementing number of products");
                 flowerOrder.setItemCount(flowerOrder.getItemCount() + 1);
                 orderAlreadyExists = true;
@@ -147,6 +155,13 @@ public class ShoppingCartService {
         repository.saveAndFlush(shoppingCart);
     }
 
+    /**
+     * Add or increment number of products from provided id inside product order
+     * inside shopping cart for provided account.
+     *
+     * @param accountName         - account to retrieve shopping cart from
+     * @param occasionalArticleID - product id to add to shopping cart
+     */
     public void addOccasionalArticleToShoppingCart(String accountName, UUID occasionalArticleID) {
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
@@ -160,7 +175,7 @@ public class ShoppingCartService {
         /* Check if order with provided product already exists, and increase it quantity if true */
         boolean orderAlreadyExists = false;
         for (OccasionalArticleOrder occasionalArticleOrder : shoppingCart.getOccasionalArticleOrderList()) {
-            if (occasionalArticleOrder.getOccasionalArticle().getId().compareTo(occasionalArticleID) == 0) {
+            if (occasionalArticleOrder.getOccasionalArticle().getId().equals(occasionalArticleID)) {
                 log.trace("Order with provided product already exists, incrementing number of products");
                 occasionalArticleOrder.setItemCount(occasionalArticleOrder.getItemCount() + 1);
                 orderAlreadyExists = true;
@@ -178,6 +193,13 @@ public class ShoppingCartService {
         repository.saveAndFlush(shoppingCart);
     }
 
+    /**
+     * Add or increment number of products from provided id inside product order
+     * inside shopping cart for provided account.
+     *
+     * @param accountName - account to retrieve shopping cart from
+     * @param souvenirID  - product id to add to shopping cart
+     */
     public void addSouvenirToShoppingCart(String accountName, UUID souvenirID) {
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
@@ -191,7 +213,7 @@ public class ShoppingCartService {
         /* Check if order with provided product already exists, and increase it quantity if true */
         boolean orderAlreadyExists = false;
         for (SouvenirOrder souvenirOrder : shoppingCart.getSouvenirOrderList()) {
-            if (souvenirOrder.getSouvenir().getId().compareTo(souvenirID) == 0) {
+            if (souvenirOrder.getSouvenir().getId().equals(souvenirID)) {
                 log.trace("Order with provided product already exists, incrementing number of products");
                 souvenirOrder.setItemCount(souvenirOrder.getItemCount() + 1);
                 orderAlreadyExists = true;
@@ -207,8 +229,92 @@ public class ShoppingCartService {
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
         repository.saveAndFlush(shoppingCart);
-
     }
 
+    /**
+     * Retrieves shopping cart for provided account, searches for provided product order inside mentioned shopping cart
+     * and removes it from both shopping cart and database, regardless of number of products inside it.
+     *
+     * @param accountName   - account to retrieve shopping cart from
+     * @param flowerOrderID - product ORDER id to remove from shopping cart
+     */
+    public void removeFlowerOrderFromShoppingCart(String accountName, UUID flowerOrderID) {
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getFlowerOrderList() == null) {
+            log.trace("Shopping cart doesn't contain any Flower collection, initializing...");
+            shoppingCart.setFlowerOrderList(new LinkedList<>());
+        }
+
+        /* Search shopping cart for provided product order and delete it if it exists  */
+        for (int i = 0; i < shoppingCart.getFlowerOrderList().size(); i++) {
+            if (shoppingCart.getFlowerOrderList().get(i).getId().equals(flowerOrderID)) {
+                shoppingCart.getFlowerOrderList().remove(i);
+                break;
+            }
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+    }
+
+    /**
+     * Retrieves shopping cart for provided account, searches for provided product order inside mentioned shopping cart
+     * and removes it from both shopping cart and database, regardless of number of products inside it.
+     *
+     * @param accountName              - account to retrieve shopping cart from
+     * @param occasionalArticleOrderID - product ORDER id to remove from shopping cart
+     */
+    public void removeOccasionalArticleFromShoppingCart(String accountName, UUID occasionalArticleOrderID) {
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
+
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getOccasionalArticleOrderList() == null) {
+            log.trace("Shopping cart doesn't contain any Occasional Article collection, initializing...");
+            shoppingCart.setOccasionalArticleOrderList(new LinkedList<>());
+        }
+
+        /* Search shopping cart for provided product order and delete it if it exists  */
+        for (int i = 0; i < shoppingCart.getOccasionalArticleOrderList().size(); i++) {
+            if (shoppingCart.getOccasionalArticleOrderList().get(i).getId().equals(occasionalArticleOrderID)) {
+                shoppingCart.getOccasionalArticleOrderList().remove(i);
+                break;
+            }
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+    }
+
+    /**
+     * Retrieves shopping cart for provided account, searches for provided product order inside mentioned shopping cart
+     * and removes it from both shopping cart and database, regardless of number of products inside it.
+     *
+     * @param accountName     - account to retrieve shopping cart from
+     * @param souvenirOrderID - product ORDER id to remove from shopping cart
+     */
+    public void removeSouvenirArticleFromShoppingCart(String accountName, UUID souvenirOrderID) {
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
+
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getSouvenirOrderList() == null) {
+            log.trace("Shopping cart doesn't contain any Souvenir collection, initializing...");
+            shoppingCart.setSouvenirOrderList(new LinkedList<>());
+        }
+
+        /* Search shopping cart for provided product order and delete it if it exists  */
+        for (int i = 0; i < shoppingCart.getOccasionalArticleOrderList().size(); i++) {
+            if (shoppingCart.getOccasionalArticleOrderList().get(i).getId().equals(souvenirOrderID)) {
+                shoppingCart.getOccasionalArticleOrderList().remove(i);
+                break;
+            }
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+    }
 }
