@@ -1,15 +1,16 @@
 package com.dknapik.flowershop.security;
 
+import com.dknapik.flowershop.database.AccountRepository;
+import com.dknapik.flowershop.model.Account;
+import lombok.ToString;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.flowershop.model.Account;
-
 @Service
+@ToString
 public class UserPrincipalDetailsService implements UserDetailsService {
-    private AccountRepository accRepository;
+    private final AccountRepository accRepository;
 
     public UserPrincipalDetailsService(AccountRepository accRepository) {
         this.accRepository = accRepository;

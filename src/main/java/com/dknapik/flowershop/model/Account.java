@@ -1,90 +1,75 @@
 package com.dknapik.flowershop.model;
 
-import java.util.UUID;
+import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.ShoppingCart;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents accounts in application
- * 
- * @author Damian
  *
+ * @author Damian
  */
 @Entity
+@Data
+@NoArgsConstructor
 public class Account {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
-	@Column(unique = true)
-	private String name;
-	@Column
-	private String password;
-	@Column
-	private String email;
-	@Column
-	private String role;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    @Column(nullable = false, unique = true)
+    private String name;
+    @Column(nullable = false)
+    private String password;
+    @Column
+    private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountRole role = AccountRole.USER;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn
+    private ShoppingCart shoppingCart = new ShoppingCart();
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn
+    private List<Order> orderList;
 
-	public Account() {}
 
-	public Account(String password, String email, String role) {
-		this.password = password;
-		this.email = email;
-		this.role = role;
-	}
+    public Account(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 
-	public Account(String name, String password, String email, String role) {
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.role = role;
-	}
+    public Account(String password, String email, AccountRole role) {
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 
-	public UUID getId() {
-		return id;
-	}
-	
-	public void setId(UUID id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
+    public Account(String name, String password, String email, AccountRole role) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public void setPasswordNoEncoding(String password) {
-		this.password = password;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getRole() {
-		return role;
-	}
-	
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
+    public Account(String name,
+                   String password,
+                   String email,
+                   AccountRole role,
+                   ShoppingCart shoppingCart,
+                   List<Order> orderList) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.shoppingCart = shoppingCart;
+        this.orderList = orderList;
+    }
+
+
 }

@@ -3,17 +3,38 @@
 // cleanEclipse eclipse - use eclipse plugin to import project into eclipse workspace
 // clean - clean project
 
-plugins {
-	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.8'
-	id 'java'
-	id 'eclipse'
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.3")
+	}
 }
+
+
+plugins {
+	id "org.springframework.boot" version "2.2.2.RELEASE"
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id 'idea'
+}
+
+//apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.asciidoctor.convert'
 
 group = 'com.dknapik'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+asciidoctor {
+	sourceDir 'src/docs/asciidocs'
+	outputDir 'src/docs/asciidocs'
+	attributes \
+      'snippets': file('build/generated-snippets')
+}
+
+
 
 configurations {
 	developmentOnly
@@ -29,10 +50,17 @@ configurations {
 //}
 //bootRun.dependsOn(runDocker)
 
+
+task runTestDocker(type: Exec) {
+	commandLine 'cmd', '/c', 'RunPowerShellScript.bat', '"true"'
+}
+cleanTest.dependsOn(runTestDocker)
+
 repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/milestone' }
 	maven { url 'https://repo.spring.io/snapshot' }
+	jcenter()
 }
 
 ext {
@@ -40,15 +68,22 @@ ext {
 }
 
 dependencies {
-	// Money API to handle currencies
+	// Money API to handle currencies and monetary transcations
 	implementation 'org.javamoney:moneta:1.1'
+	implementation 'org.zalando:jackson-datatype-money:1.1.1' // Extends capabilities of Java Money
+	compile group: 'org.jadira.usertype', name: 'usertype.core', version: '7.0.0.CR1' // Extends Hibernate capabilities
+
+
 	// JWT tokens libraries
 	implementation 'com.auth0:java-jwt:3.4.1'
 	// ModelMapper to help in mapping VivewModels(DTO's) to Models(Entities)
 	implementation 'org.modelmapper:modelmapper:2.3.0'
 	// Jackson for processiong JSON 
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.2'
 
+	// Lombok for cleaner and more reliable code
+	compileOnly 'org.projectlombok:lombok:1.18.8'
+	annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
 	//Log4j for logging to help in debug processes
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.1'
@@ -62,12 +97,16 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 
-	//Testing applciation
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+	//Testing application
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.0.RELEASE'
+	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 test {
