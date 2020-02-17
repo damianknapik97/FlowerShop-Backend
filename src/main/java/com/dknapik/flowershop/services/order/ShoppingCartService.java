@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Service
 @Log4j2
-public class ShoppingCartService {
+public final class ShoppingCartService {
     private final ShoppingCartRepository repository;
     private final AccountService accountService;
     private final FlowerService flowerService;

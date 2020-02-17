@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class DeliveryAddress {
+public final class DeliveryAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

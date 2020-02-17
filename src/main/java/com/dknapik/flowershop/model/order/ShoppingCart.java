@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class ShoppingCart {
+public final class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

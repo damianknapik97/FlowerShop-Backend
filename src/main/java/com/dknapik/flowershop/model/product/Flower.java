@@ -27,7 +27,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Flower implements Product, Comparable<Flower> {
+public final class Flower implements Product, Comparable<Flower> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

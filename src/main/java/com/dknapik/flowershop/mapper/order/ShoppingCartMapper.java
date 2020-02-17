@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @ToString
 @Log4j2
-public class ShoppingCartMapper {
+public final class ShoppingCartMapper {
     private final ModelMapper mapper;
     private final ProductMapper productMapper;
     private final ProductOrderMapper productOrderMapper;

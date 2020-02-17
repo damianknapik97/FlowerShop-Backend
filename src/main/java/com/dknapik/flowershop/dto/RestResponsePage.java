@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RestResponsePage<T> extends PageImpl<T> {
+public final class RestResponsePage<T> extends PageImpl<T> {
     private static final long serialVersionUID = 2396954967833463444L;
 
 

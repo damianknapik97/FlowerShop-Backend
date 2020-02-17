@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @ToString
 @Log4j2
-public class ProductMapper {
+public final class ProductMapper {
     private final ModelMapper modelMapper;
 
 

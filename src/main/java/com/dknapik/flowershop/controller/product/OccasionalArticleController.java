@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/product/occasional-article")
 @CrossOrigin
 @Log4j2
-public class OccasionalArticleController {
+public final class OccasionalArticleController {
     private final OccasionalArticleService service;
     private final ProductMapper productMapper;
 

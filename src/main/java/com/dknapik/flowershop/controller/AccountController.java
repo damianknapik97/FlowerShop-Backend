@@ -2,8 +2,8 @@ package com.dknapik.flowershop.controller;
 
 import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
-import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
@@ -28,7 +28,7 @@ import java.security.Principal;
 @RequestMapping("/account")
 @CrossOrigin
 @Log4j2
-public class AccountController {
+public final class AccountController {
     private final AccountService service; // Processes account data
 
     @Autowired

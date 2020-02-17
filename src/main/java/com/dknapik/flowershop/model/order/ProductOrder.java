@@ -1,7 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
 
-import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.model.product.Product;
 
 public interface ProductOrder {

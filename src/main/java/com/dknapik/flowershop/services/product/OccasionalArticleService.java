@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class OccasionalArticleService {
+public final class OccasionalArticleService {
     private final OccasionalArticleRepository repository;
 
 

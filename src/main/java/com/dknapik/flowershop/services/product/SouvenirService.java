@@ -5,7 +5,6 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.product.SouvenirRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
-import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.model.product.Souvenir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class SouvenirService {
+public final class SouvenirService {
     private final SouvenirRepository repository;
 
     @Autowired

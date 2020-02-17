@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/products/bouquets")
 @CrossOrigin
-public class BouquetController {
+public final class BouquetController {
 
 }

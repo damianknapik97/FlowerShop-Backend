@@ -1,7 +1,5 @@
 package com.dknapik.flowershop.model.order;
 
-import com.dknapik.flowershop.dto.product.FlowerDTO;
-import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class SouvenirOrder implements ProductOrder {
+public final class SouvenirOrder implements ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

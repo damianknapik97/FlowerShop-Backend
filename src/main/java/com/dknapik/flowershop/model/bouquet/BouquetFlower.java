@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class BouquetFlower implements ProductOrder {
+public final class BouquetFlower implements ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

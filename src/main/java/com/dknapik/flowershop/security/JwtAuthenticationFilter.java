@@ -20,7 +20,7 @@ import java.util.Date;
 
 @ToString
 @Log4j2
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {

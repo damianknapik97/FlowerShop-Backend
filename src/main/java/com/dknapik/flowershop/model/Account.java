@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Account {
+public final class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

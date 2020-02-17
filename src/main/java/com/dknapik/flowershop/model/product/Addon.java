@@ -25,7 +25,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Addon implements Product, Comparable<Addon> {
+public final class Addon implements Product, Comparable<Addon> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

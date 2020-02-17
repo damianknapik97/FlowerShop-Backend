@@ -27,7 +27,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticle implements Product, Comparable<OccasionalArticle> {
+public final class OccasionalArticle implements Product, Comparable<OccasionalArticle> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

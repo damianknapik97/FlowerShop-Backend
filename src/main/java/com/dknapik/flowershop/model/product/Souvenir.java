@@ -25,7 +25,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Souvenir implements Product, Comparable<Souvenir> {
+public final class Souvenir implements Product, Comparable<Souvenir> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

@@ -10,7 +10,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
 
-public class MoneyAmountAndCurrency extends AbstractMultiColumnUserType<MonetaryAmount> {
+public final class MoneyAmountAndCurrency extends AbstractMultiColumnUserType<MonetaryAmount> {
 
     private static final ColumnMapper<?, ?>[] COLUMN_MAPPERS =
             new ColumnMapper<?, ?>[]{new StringColumnCurrencyUnitMapper(), new BigDecimalBigDecimalColumnMapper()};

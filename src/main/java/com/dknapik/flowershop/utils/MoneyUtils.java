@@ -9,7 +9,7 @@ import javax.money.Monetary;
 
 @Service
 @ToString
-public class MoneyUtils {
+public final class MoneyUtils {
     private final CurrencyUnit currencyUnit;
 
 

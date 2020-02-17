@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/product/souvenir")
 @CrossOrigin
 @Log4j2
-public class SouvenirController {
+public final class SouvenirController {
     private final SouvenirService service;
     private final ProductMapper productMapper;
 

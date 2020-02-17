@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/product/flower")
 @CrossOrigin
 @Log4j2
-public class FlowerController {
+public final class FlowerController {
     private final FlowerService service;
     private final ProductMapper productMapper;
 

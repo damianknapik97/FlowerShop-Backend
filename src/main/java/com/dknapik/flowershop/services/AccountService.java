@@ -2,8 +2,8 @@ package com.dknapik.flowershop.services;
 
 import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.database.AccountRepository;
-import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
@@ -34,7 +34,7 @@ import java.util.Optional;
 @Service
 @ToString
 @Log4j2
-public class AccountService {
+public final class AccountService {
     private final ModelMapper mapper;             // less messy dto - model mapping
     private final AccountRepository accountRepo; // database access
     private final ApplicationContext context;    // retrieve existing beans
