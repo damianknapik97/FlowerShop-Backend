@@ -1,12 +1,17 @@
 package com.dknapik.flowershop.mapper.order;
 
+import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.model.order.Order;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Log4j2
@@ -63,6 +68,23 @@ public final class OrderMapper {
         }
 
         return mappedEntity;
+    }
+
+    /**
+     * Maps provided Page Implementation content with Orders, to Order DTO Rest Response Page.
+     *
+     * @param orderPage
+     * @return
+     */
+    public RestResponsePage<OrderDTO> mapPageToDTO(PageImpl<Order> orderPage) {
+        List<Order> currentContent = orderPage.getContent();
+        List<OrderDTO> mappedContent = new LinkedList<>();
+
+        for (Order order : currentContent) {
+            mappedContent.add(mapToDTO(order));
+        }
+
+        return new RestResponsePage<>(mappedContent, orderPage.getPageable(), orderPage.getTotalElements());
     }
 
 }
