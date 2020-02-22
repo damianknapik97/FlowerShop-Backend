@@ -45,4 +45,8 @@ public final class Order {
         this.deliveryAddress = deliveryAddress;
         this.shoppingCart = shoppingCart;
     }
+
+    public Order(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
 }

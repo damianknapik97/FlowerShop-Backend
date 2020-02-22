@@ -9,6 +9,7 @@ import com.dknapik.flowershop.model.order.FlowerOrder;
 import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.order.SouvenirOrder;
+import com.dknapik.flowershop.model.product.Flower;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -36,7 +37,8 @@ public final class ShoppingCartMapper {
     }
 
     public ShoppingCartDTO convertToDTO(ShoppingCart entity) {
-        log.trace(() -> "Mapping " + ShoppingCart.class.toString() + " to " + ShoppingCartDTO.class.toString());
+        log.trace(() -> "Mapping " + ShoppingCart.class.getSimpleName() +
+                " to " + ShoppingCartDTO.class.getSimpleName());
         ShoppingCartDTO returnDTO = mapper.map(entity, ShoppingCartDTO.class);
 
         /* Map products */
@@ -45,11 +47,9 @@ public final class ShoppingCartMapper {
             returnDTO.setOccasionalArticleOrderDTOs(
                     convertOccasionalArticleOrdersToDTO(entity.getOccasionalArticleOrderList()));
         }
-
         if (entity.getFlowerOrderList() != null) {
             returnDTO.setFlowerOrderDTOs(convertFlowerOrdersToDTO(entity.getFlowerOrderList()));
         }
-
         if (entity.getSouvenirOrderList() != null) {
             returnDTO.setSouvenirOrderDTOs(convertSouvenirOrdersToDTO(entity.getSouvenirOrderList()));
         }
@@ -58,17 +58,32 @@ public final class ShoppingCartMapper {
     }
 
     /**
-     * TODO: Needs refactoring if there will be ever need to use this function.
      *
      * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
      *
      * @param dto - dto to map to entity
      * @return - mapped entity
-
-    public ShoppingCart convertToEntity(@Valid ShoppingCartDTO dto) {
-    return mapper.map(dto, ShoppingCart.class);
-    }
      */
+    public ShoppingCart convertToEntity(ShoppingCartDTO dto) {
+        log.trace(() -> "Mapping " + ShoppingCartDTO.class.getSimpleName() +
+                " to " + ShoppingCartDTO.class.getSimpleName());
+        ShoppingCart returnDTO = mapper.map(dto, ShoppingCart.class);
+
+        /* Map products */
+        if (dto.getFlowerOrderDTOs() != null) {
+            returnDTO.setFlowerOrderList(convertFlowerOrdersToEntity(dto.getFlowerOrderDTOs()));
+        }
+        if (dto.getOccasionalArticleOrderDTOs() != null) {
+            returnDTO.setOccasionalArticleOrderList(convertOccasionalArticleOrdersToEntity(
+                    dto.getOccasionalArticleOrderDTOs()));
+        }
+        if (dto.getSouvenirOrderDTOs() != null) {
+            returnDTO.setSouvenirOrderList(convertSouvenirOrdersToEntity(dto.getSouvenirOrderDTOs()));
+        }
+
+        return returnDTO;
+    }
+
 
 
     /**
@@ -134,5 +149,64 @@ public final class ShoppingCartMapper {
             }
         }
         return convertedDTOs;
+    }
+
+    /**
+     * Convert provided iterable of Order DTOs to List with Order Entities.
+     *
+     * @param flowerOrderDTOs - iterable with DTOs that can be casted to Entities
+     * @return null if provided argument is null, mapped list with Entities otherwise
+     */
+    private List<FlowerOrder> convertFlowerOrdersToEntity(Iterable<FlowerOrderDTO> flowerOrderDTOs) {
+        List<FlowerOrder> returnList = null;
+
+        /* Check if there are any Order DTOs to convert to Entity and convert them. */
+        if (flowerOrderDTOs != null) {
+            returnList = new LinkedList<>();
+            for (FlowerOrderDTO orderDTO : flowerOrderDTOs) {
+                returnList.add(productOrderMapper.convertToEntity(orderDTO, FlowerOrder.class));
+            }
+         }
+
+        return returnList;
+    }
+
+    /**
+     * Convert provided iterable of Order DTOs to List with Order Entities.
+     *
+     * @param occasionalArticleOrderDTOs - iterable with DTOs that can be casted to Entities
+     * @return null if provided argument is null, mapped list with Entities otherwise
+     */
+    private List<OccasionalArticleOrder> convertOccasionalArticleOrdersToEntity(
+            Iterable<OccasionalArticleOrderDTO> occasionalArticleOrderDTOs) {
+        List<OccasionalArticleOrder> returnList = null;
+
+        /* Check if there are any Order DTOs to convert to Entity and convert them. */
+        if (occasionalArticleOrderDTOs != null) {
+            returnList = new LinkedList<>();
+            for (OccasionalArticleOrderDTO orderDTO : occasionalArticleOrderDTOs) {
+                returnList.add(productOrderMapper.convertToEntity(orderDTO, OccasionalArticleOrder.class));
+            }
+        }
+        return returnList;
+    }
+
+    /**
+     * Convert provided iterable of Order DTOs to List with Order Entities.
+     *
+     * @param souvenirOrderDTOs - iterable with DTOs that can be casted to Entities
+     * @return null if provided argument is null, mapped list with Entities otherwise
+     */
+    private List<SouvenirOrder> convertSouvenirOrdersToEntity(Iterable<SouvenirOrderDTO> souvenirOrderDTOs) {
+        List<SouvenirOrder> returnList = null;
+
+        /* Check if there are any Order DTOs to convert to Entity and convert them. */
+        if (souvenirOrderDTOs != null) {
+            returnList = new LinkedList<>();
+            for (SouvenirOrderDTO orderDTO : souvenirOrderDTOs) {
+                returnList.add(productOrderMapper.convertToEntity(orderDTO, SouvenirOrder.class));
+            }
+        }
+        return returnList;
     }
 }

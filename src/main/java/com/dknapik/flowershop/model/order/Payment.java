@@ -41,10 +41,5 @@ public final class Payment {
         this.totalPrice = totalPrice;
         this.paymentType = paymentType;
     }
-
-    public Payment(MonetaryAmount totalPrice, PaymentType paymentType, boolean wasPaid) {
-        this.totalPrice = totalPrice;
-        this.paymentType = paymentType;
-        this.wasPaid = wasPaid;
-    }
+    
 }

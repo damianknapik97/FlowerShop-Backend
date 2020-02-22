@@ -5,7 +5,9 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
+import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
+import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.services.order.OrderService;
 import lombok.ToString;
@@ -26,21 +28,27 @@ import java.security.Principal;
 public final class OrderController {
     public final OrderService service;
     public final OrderMapper mapper;
+    public final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public OrderController(OrderService service, OrderMapper mapper) {
+    public OrderController(OrderService service, OrderMapper mapper, ShoppingCartMapper shoppingCartMapper) {
         this.service = service;
         this.mapper = mapper;
+        this.shoppingCartMapper = shoppingCartMapper;
     }
 
-    @PostMapping
-    public ResponseEntity<MessageResponseDTO> placeOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
+    @PostMapping()
+    public ResponseEntity<OrderDTO> createOrderFromShoppingCart(@Valid @RequestBody ShoppingCartDTO shoppingCartDTO,
+                                                                Principal principal) {
         log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
 
-        service.addNewOrder(mapper.mapToEntity(orderDTO), principal.getName());
+        /* Create new Order, Save it to account, Cast it To DTO */
+        Order order = service.addNewOrderFromShoppingCart(shoppingCartMapper.convertToEntity(shoppingCartDTO),
+                principal.getName());
+        OrderDTO orderDTO = mapper.mapToDTO(order);
 
         log.trace("Building response entity");
-        return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_PLACED_SUCCESSFULLY), HttpStatus.CREATED);
+        return new ResponseEntity<>(orderDTO, HttpStatus.OK);
     }
 
     @PutMapping

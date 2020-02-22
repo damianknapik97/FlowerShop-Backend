@@ -5,7 +5,10 @@ import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.Payment;
+import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.AccountService;
 import lombok.NonNull;
 import lombok.ToString;
@@ -31,14 +34,16 @@ public final class OrderService {
         this.accountService = accountService;
     }
 
+
     /**
-     * Retrieving account, and adding provided Order to it.
+     * Retrieving account, create order from shopping cart, and save it.
      *
-     * @param order
-     * @param accountName
+     * @param shoppingCart - products that shall be inside a new order
+     * @param accountName - to which account add this new order entity
+     * @return - Preserved Order entity
      */
-    public void addNewOrder(@NonNull Order order, @NonNull String accountName) {
-        log.trace("Adding new order");
+    public Order addNewOrderFromShoppingCart(ShoppingCart shoppingCart, String accountName) {
+        log.trace("Creating new order");
         Account account = accountService.retrieveAccountByName(accountName);
 
         /* Check if Account even have initialized list */
@@ -48,10 +53,12 @@ public final class OrderService {
             accountService.updateAccount(account);
         }
 
-        /* Add provided Order entity to Account and save it */
-        log.debug(() -> "Saving following Order entity - " + order.toString() + " for following user " + accountName);
+        /* Create new Order entity and save it to provided account */
+        Order order = new Order(shoppingCart);
         account.getOrderList().add(order);
         accountService.updateAccount(account);
+
+        return order;
     }
 
     /**
