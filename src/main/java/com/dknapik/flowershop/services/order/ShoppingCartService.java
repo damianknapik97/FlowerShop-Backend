@@ -10,6 +10,7 @@ import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import com.dknapik.flowershop.services.product.SouvenirService;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -316,5 +317,25 @@ public final class ShoppingCartService {
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
         repository.saveAndFlush(shoppingCart);
+    }
+
+    /**
+     * Create new shopping cart and set it to provided account. Then remove the old shopping cart
+     *
+     * @param accountName - account login in which following actions should be performed.
+     */
+    public void clearShoppingCart(@NonNull String accountName) {
+        /* Retrieve shopping cart  */
+        log.debug(() -> "Clearing shopping cart");
+        Account account = accountService.retrieveAccountByName(accountName);
+        ShoppingCart oldShoppingCart = account.getShoppingCart();
+
+        /* Create and set new, empty shopping cart and save it to database */
+        account.setShoppingCart(new ShoppingCart());
+        accountService.updateAccount(account);
+
+        /* Remove old shopping cart */
+        repository.delete(oldShoppingCart);
+        repository.flush();
     }
 }

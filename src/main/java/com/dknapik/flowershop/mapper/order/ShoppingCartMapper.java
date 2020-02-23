@@ -9,7 +9,6 @@ import com.dknapik.flowershop.model.order.FlowerOrder;
 import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.order.SouvenirOrder;
-import com.dknapik.flowershop.model.product.Flower;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -58,7 +57,6 @@ public final class ShoppingCartMapper {
     }
 
     /**
-     *
      * Manually convert Souvenir Dto to Entity because of MonetaryAmount attribute.
      *
      * @param dto - dto to map to entity
@@ -83,8 +81,6 @@ public final class ShoppingCartMapper {
 
         return returnDTO;
     }
-
-
 
     /**
      * Converts provided iterable with order entities into list with dto orders.
@@ -166,7 +162,7 @@ public final class ShoppingCartMapper {
             for (FlowerOrderDTO orderDTO : flowerOrderDTOs) {
                 returnList.add(productOrderMapper.convertToEntity(orderDTO, FlowerOrder.class));
             }
-         }
+        }
 
         return returnList;
     }

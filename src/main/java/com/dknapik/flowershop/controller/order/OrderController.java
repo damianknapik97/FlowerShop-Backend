@@ -48,7 +48,7 @@ public final class OrderController {
         OrderDTO orderDTO = mapper.mapToDTO(order);
 
         log.trace("Building response entity");
-        return new ResponseEntity<>(orderDTO, HttpStatus.OK);
+        return new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
     }
 
     @PutMapping

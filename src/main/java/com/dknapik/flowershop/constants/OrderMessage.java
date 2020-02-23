@@ -7,7 +7,8 @@ public enum OrderMessage {
 
     /* Error */
     NO_ORDERS("Your account doesn't contain any existing orders"),
-    NO_ORDER_WITH_SPECIFIC_ID("Your account doesn't contain any order matching provided id");
+    NO_ORDER_WITH_SPECIFIC_ID("Your account doesn't contain any order matching provided id"),
+    ORDER_UPDATE_FAILED("Error updating order informations !");
 
 
     final String infoMessage;

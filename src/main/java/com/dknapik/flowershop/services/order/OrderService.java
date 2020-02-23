@@ -5,9 +5,7 @@ import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
-import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
-import com.dknapik.flowershop.model.order.Payment;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.AccountService;
 import lombok.NonNull;
@@ -27,22 +25,25 @@ import java.util.List;
 public final class OrderService {
     private final OrderRepository repository;
     private final AccountService accountService;
+    private final ShoppingCartService shoppingCartService;
 
     @Autowired
-    public OrderService(OrderRepository repository, AccountService accountService) {
+    public OrderService(OrderRepository repository,
+                        AccountService accountService,
+                        ShoppingCartService shoppingCartService) {
         this.repository = repository;
         this.accountService = accountService;
+        this.shoppingCartService = shoppingCartService;
     }
-
 
     /**
      * Retrieving account, create order from shopping cart, and save it.
      *
      * @param shoppingCart - products that shall be inside a new order
-     * @param accountName - to which account add this new order entity
+     * @param accountName  - to which account add this new order entity
      * @return - Preserved Order entity
      */
-    public Order addNewOrderFromShoppingCart(ShoppingCart shoppingCart, String accountName) {
+    public Order addNewOrderFromShoppingCart(@NonNull ShoppingCart shoppingCart, @NonNull String accountName) {
         log.trace("Creating new order");
         Account account = accountService.retrieveAccountByName(accountName);
 
@@ -57,6 +58,9 @@ public final class OrderService {
         Order order = new Order(shoppingCart);
         account.getOrderList().add(order);
         accountService.updateAccount(account);
+
+        /* Create new shopping cart, co the old one will be detached from account */
+        shoppingCartService.createNewShoppingCart(accountName);
 
         return order;
     }
@@ -96,6 +100,21 @@ public final class OrderService {
         log.debug(() -> "Saving following Order entity - " + order.toString() + " for following user " + accountName);
         entityToUpdate = order;
         repository.saveAndFlush(entityToUpdate);
+    }
+
+    /**
+     * Check if provided order exists in database by id, and update it
+     *
+     * @param order - entity to update
+     */
+    public void updateExistingOrder(@NonNull Order order) {
+        log.trace("Updating existing order");
+        if (repository.existsById(order.getId())) {
+            repository.saveAndFlush(order);
+        } else {
+            log.warn("Couldn't update order because it couldn't be found in database");
+            throw new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED);
+        }
     }
 
     /**
