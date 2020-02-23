@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public final class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(Enum enumMessage) {
+    public ResourceNotFoundException(Enum<?> enumMessage) {
         super(enumMessage.toString());
     }
 

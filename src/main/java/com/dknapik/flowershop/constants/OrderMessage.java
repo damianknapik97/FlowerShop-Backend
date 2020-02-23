@@ -5,6 +5,7 @@ public enum OrderMessage {
     ORDER_PLACED_SUCCESSFULLY("Order was successfully created"),
     ORDER_UPDATED_SUCCESSFULLY("Order was updated successfully"),
 
+
     /* Error */
     NO_ORDERS("Your account doesn't contain any existing orders"),
     NO_ORDER_WITH_SPECIFIC_ID("Your account doesn't contain any order matching provided id"),

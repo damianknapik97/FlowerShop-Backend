@@ -3,11 +3,8 @@ package com.dknapik.flowershop.services.order;
 import com.dknapik.flowershop.constants.DeliveryAddressMessage;
 import com.dknapik.flowershop.database.order.DeliveryAddressRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
-import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
-import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
-import com.dknapik.flowershop.services.AccountService;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -21,37 +18,31 @@ import java.util.UUID;
 @Service
 public final class DeliveryAddressService {
     private final DeliveryAddressRepository repository;
-    private final AccountService accountService;
     private final OrderService orderService;
 
 
     @Autowired
     public DeliveryAddressService(DeliveryAddressRepository repository,
-                                  AccountService accountService,
                                   OrderService orderService) {
         this.repository = repository;
-        this.accountService = accountService;
         this.orderService = orderService;
     }
 
+    /**
+     * Search for provided Order ID inside provided account,
+     * check if delivery address is already assigned to this order,
+     * save the provided delivery address if the previous was false.
+     *
+     * @param orderID         - id to search for
+     * @param deliveryAddress - entity to save
+     * @param accountName     - account to search order for
+     */
     public void addNewDeliveryAddressToOrder(@NonNull UUID orderID,
                                              @NonNull DeliveryAddress deliveryAddress,
                                              @NonNull String accountName) {
-        Account account = accountService.retrieveAccountByName(accountName);
-
-        /* Search account for provided order id */
-        Order order = null;
-        for (Order accountOrder : account.getOrderList()) {
-            if (accountOrder.getId().equals(orderID)) {
-                order = accountOrder;
-            }
-        }
-
-        /* Check if order was found */
-        if (order == null) {
-            log.warn("Couldn't find order with provided ID, assigned to provided user");
-            throw new ResourceNotFoundException(DeliveryAddressMessage.ORDER_NOT_FOUND);
-        }
+        log.trace("Adding new delivery address to existing order");
+        /* Search for order entity */
+        Order order = orderService.retrieveOrderFromAccount(orderID, accountName);
 
         /* Check if delivery order is already set, set delivery address to order and save it to database */
         if (order.getDeliveryAddress() != null) {

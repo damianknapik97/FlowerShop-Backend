@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @ToString
@@ -34,6 +35,41 @@ public final class OrderService {
         this.repository = repository;
         this.accountService = accountService;
         this.shoppingCartService = shoppingCartService;
+    }
+
+    /**
+     * Search for provided account using account name, check if account contains provided Order ID,
+     * validate it and return.
+     *
+     * @param orderID     - ID of order that should be contained inside provided account
+     * @param accountName - login of account to search for
+     * @return - Order entity matching provided ID and account
+     */
+    public Order retrieveOrderFromAccount(UUID orderID, String accountName) {
+        log.trace("Retrieving Order Entity from Account ");
+        Account account = accountService.retrieveAccountByName(accountName);
+
+        /* Check if Account even have initialized list */
+        if (account.getOrderList() == null) {
+            log.warn(() -> "Couldn't update Order entity because provided account doesn't contain any orders");
+            throw new ResourceNotFoundException(OrderMessage.NO_ORDERS);
+        }
+
+        /* Search account for provided order id */
+        Order order = null;
+        for (Order accountOrder : account.getOrderList()) {
+            if (accountOrder.getId().equals(orderID)) {
+                order = accountOrder;
+            }
+        }
+
+        /* Check if order was found */
+        if (order == null) {
+            log.warn("Couldn't find order with provided ID, assigned to provided user");
+            throw new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID);
+        }
+
+        return order;
     }
 
     /**
@@ -69,37 +105,19 @@ public final class OrderService {
      * Retrieving account, searching for provided order by utilizing its ID,
      * and replacing in database existing entity with the one provided in argument.
      *
-     * @param order
-     * @param accountName
+     * @param order       - entity to update
+     * @param accountName - account name from which entity should be taken.
      */
     public void updateExistingOrder(@NonNull Order order, @NonNull String accountName) {
+        /* Retrieve Order for provided account */
         log.trace("Updating existing order");
-        Account account = accountService.retrieveAccountByName(accountName);
 
-        /* Check if Account even have initialized list */
-        if (account.getOrderList() == null) {
-            log.warn(() -> "Couldn't update Order entity because provided account doesn't contain any orders");
-            throw new ResourceNotFoundException(OrderMessage.NO_ORDERS);
-        }
+        /* Checking if we are able to find Order entity in provided account without throwing any error */
+        retrieveOrderFromAccount(order.getId(), accountName);
 
-        /* Search for entity that would match id of provided entity in provided account */
-        Order entityToUpdate = null;
-        for (Order listContent : account.getOrderList()) {
-            if (listContent.getId().equals(order.getId())) {
-                entityToUpdate = listContent;
-                break;
-            }
-        }
-
-        /* Check if entity was found */
-        if (entityToUpdate == null) {
-            log.warn(() -> "No order entity inside provided account matches the provided entity id: " + order.getId());
-            throw new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID);
-        }
-
+        /* Update entity and save it to database */
         log.debug(() -> "Saving following Order entity - " + order.toString() + " for following user " + accountName);
-        entityToUpdate = order;
-        repository.saveAndFlush(entityToUpdate);
+        repository.saveAndFlush(order);
     }
 
     /**

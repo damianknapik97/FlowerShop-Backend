@@ -32,6 +32,9 @@ public final class Order {
     @CreatedDate
     @Column
     private LocalDateTime placementDate;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private OrderStatus status = OrderStatus.CREATED;
 
 
     public Order(String message,
