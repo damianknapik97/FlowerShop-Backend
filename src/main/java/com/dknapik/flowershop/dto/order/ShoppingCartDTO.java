@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class ShoppingCartDTO {
     private @Valid List<SouvenirOrderDTO> souvenirOrderDTOs;
     private @Valid List<FlowerOrderDTO> flowerOrderDTOs;
     private @Valid List<BouquetDTO> bouquetDTOs;
+    private LocalDateTime creationDate;
 
     /**
      *
