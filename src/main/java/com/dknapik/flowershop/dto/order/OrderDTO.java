@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.dto.order;
 
-import com.dknapik.flowershop.model.order.ShoppingCart;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +17,9 @@ public class OrderDTO {
     @NotBlank
     private String message;
     private LocalDateTime deliveryDate;
-    @NotNull
     private PaymentDTO paymentDTO;
-    @NotNull
     private DeliveryAddressDTO deliveryAddressDTO;
     @NotNull
-    private ShoppingCart shoppingCart;
+    private ShoppingCartDTO shoppingCartDTO;
     private LocalDateTime placementDate;
 }

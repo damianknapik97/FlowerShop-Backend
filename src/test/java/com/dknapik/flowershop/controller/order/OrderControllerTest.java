@@ -1,20 +1,28 @@
 package com.dknapik.flowershop.controller.order;
 
+import com.dknapik.flowershop.constants.OrderMessage;
 import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
+import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
+import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
+import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +44,8 @@ import java.util.List;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
@@ -59,6 +66,18 @@ public class OrderControllerTest {
     private OrderRepository orderRepository;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private ShoppingCartMapper shoppingCartMapper;
+
+    @BeforeEach
+    public void cleanUpBefore() {
+        purgeDatabase();
+    }
+
+    @AfterEach
+    public void cleanUpAfter() {
+        purgeDatabase();
+    }
 
     @Test
     public void createOrderFromShoppingCartTest() throws Exception {
@@ -66,11 +85,13 @@ public class OrderControllerTest {
 
         /* Initialize required entities */
         ShoppingCart shoppingCart = initializeShoppingCartEntity("Testing Shopping Cart", false);
-        Account account = createAccount("Order Testing User", "Order Testing User", shoppingCart);
+        Account account = createAccount("Order Testing User", "Order Testing User",
+                shoppingCart, AccountRole.USER);
+        ShoppingCartDTO shoppingCartDTO = shoppingCartMapper.convertToDTO(shoppingCart);
         OrderDTO expectedResult =  orderMapper.mapToDTO(new Order(shoppingCart));
 
         /* Deserialize required entity */
-        String value = objectMapper.writeValueAsString(shoppingCart);
+        String value = objectMapper.writeValueAsString(shoppingCartDTO);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
@@ -86,14 +107,53 @@ public class OrderControllerTest {
 
         /* Map response */
         OrderDTO resultDTO = objectMapper.readValue(result.getResponse().getContentAsString(), OrderDTO.class);
+        Order resultEntity = orderMapper.mapToEntity(resultDTO);
 
         /* Check if results match */
-        Assertions.assertThat(resultDTO).isEqualToComparingFieldByField(expectedResult);
+        Assertions.assertThat(resultEntity.getShoppingCart())
+                .isEqualToIgnoringGivenFields(shoppingCart, "id", "creationDate");
     }
 
     @Test
-    public void updateOrderTest() {
+    public void updateOrderTest() throws Exception {
+        /* Create test related values and entities */
+        String url = "/order";
+        Order expectedResult = populateDatabaseWithOrderEntities(1).get(0);
+        expectedResult.setShoppingCart(initializeShoppingCartEntity("Testing Order Shopping Cart", false));
+        expectedResult.setMessage("Updated Message");
+        expectedResult.setStatus(OrderStatus.ASSIGNED);
+        Account account = createAccount("Order Testing User", "Order Testing User",
+                null, AccountRole.EMPLOYEE);
+        OrderDTO orderToUpdate =  orderMapper.mapToDTO(expectedResult);
 
+        /* Deserialize required entity */
+        String value = objectMapper.writeValueAsString(orderToUpdate);
+
+        /* Create Request */
+        MockHttpServletRequestBuilder requestBuilder =
+                put(url).content(value).contentType(MediaType.APPLICATION_JSON).with(user(account.getName()));
+
+        /* Perform Request, Check status, Create Documentation */
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        /* Map response */
+        MessageResponseDTO resultDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+
+        /* Check if Response matches */
+        if (!resultDTO.getMessage().contentEquals(OrderMessage.ORDER_UPDATED_SUCCESSFULLY.toString())){
+            throw new RuntimeException("Response message doesn't match expected one");
+        }
+
+        /* Check if results match */
+        Order afterUpdate = orderRepository.findById(expectedResult.getId()).orElseThrow(() ->
+                new RuntimeException("Order entity not found in database"));
+        Assertions.assertThat(afterUpdate).isEqualToComparingFieldByField(expectedResult);
     }
 
     @Test
@@ -102,7 +162,8 @@ public class OrderControllerTest {
 
         /* Initialize required entities */
         Account account =
-                createAccount("Order Testing User", "Order Testing User", initializeShoppingCartEntity("test", false));
+                createAccount("Order Testing User", "Order Testing User",
+                        initializeShoppingCartEntity("test", false), AccountRole.EMPLOYEE);
         List<Order> entityList = populateDatabaseWithOrderEntities(ProductProperties.PAGE_SIZE);
         List<OrderDTO> controlValuesList = new LinkedList<>();
         for (Order order : entityList) {
@@ -116,7 +177,7 @@ public class OrderControllerTest {
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(document("{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
@@ -130,13 +191,14 @@ public class OrderControllerTest {
                 objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
 
         /* Check if results match */
-        //Assertions.assertThat(resultValue.getContent()).containsExactlyInAnyOrder((OrderDTO) controlValuesList);
+        Assertions.assertThat(resultValue.getContent()).containsSequence(controlValuesList);
     }
 
     /**
+     * Create provided number of entities for test
      *
-     * @param numberOfEntities
-     * @return
+     * @param numberOfEntities - how many entities to create
+     * @return List with Orders entities.
      */
     private List<Order> populateDatabaseWithOrderEntities(int numberOfEntities) {
 
@@ -153,14 +215,14 @@ public class OrderControllerTest {
     /**
      * Creates, persists and returns Account entity.
      *
-     * @param userName
-     * @param password
-     * @param shoppingCart
+     * @param userName - account name
+     * @param password - account password
+     * @param shoppingCart - shopping cart that should be saved together with account.
      * @return Persisted Account entity.
      */
-    private Account createAccount(String userName, String password, ShoppingCart shoppingCart) {
+    private Account createAccount(String userName, String password, ShoppingCart shoppingCart, AccountRole accountRole) {
         /* Create new account entity from provided arguments */
-        Account newAccount = new Account(userName, userName + "@test.com", password);
+        Account newAccount = new Account(userName, userName + "@test.com", password, accountRole);
         newAccount.setShoppingCart(shoppingCart);
 
         /* Persist created entity and return it */
@@ -186,4 +248,19 @@ public class OrderControllerTest {
         return shoppingCartEntity;
     }
 
+    /**
+     * Delete all entities related to repositories used in this test to prevent accidental errors, and violations
+     */
+    public void purgeDatabase() {
+        accountRepository.deleteAll();
+        accountRepository.flush();
+
+        orderRepository.deleteAll();
+        orderRepository.flush();
+
+
+        shoppingCartRepository.deleteAll();
+        shoppingCartRepository.flush();
+
+    }
 }

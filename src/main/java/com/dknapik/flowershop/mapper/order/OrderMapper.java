@@ -20,12 +20,17 @@ public final class OrderMapper {
     private final ModelMapper mapper;
     private final DeliveryAddressMapper deliveryAddressMapper;
     private final PaymentMapper paymentMapper;
+    private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public OrderMapper(ModelMapper mapper, DeliveryAddressMapper deliveryAddressMapper, PaymentMapper paymentMapper) {
+    public OrderMapper(ModelMapper mapper,
+                       DeliveryAddressMapper deliveryAddressMapper,
+                       PaymentMapper paymentMapper,
+                       ShoppingCartMapper shoppingCartMapper) {
         this.mapper = mapper;
         this.deliveryAddressMapper = deliveryAddressMapper;
         this.paymentMapper = paymentMapper;
+        this.shoppingCartMapper = shoppingCartMapper;
     }
 
     /**
@@ -44,6 +49,10 @@ public final class OrderMapper {
         }
         if (order.getPayment() != null) {
             mappedDTO.setPaymentDTO(paymentMapper.mapToDTO(order.getPayment()));
+        }
+
+        if (order.getShoppingCart() != null) {
+            mappedDTO.setShoppingCartDTO(shoppingCartMapper.convertToDTO(order.getShoppingCart()));
         }
 
         return mappedDTO;
@@ -65,6 +74,10 @@ public final class OrderMapper {
         }
         if (orderDTO.getPaymentDTO() != null) {
             mappedEntity.setPayment(paymentMapper.mapToEntity(orderDTO.getPaymentDTO()));
+        }
+
+        if (orderDTO.getShoppingCartDTO() != null) {
+            mappedEntity.setShoppingCart(shoppingCartMapper.convertToEntity(orderDTO.getShoppingCartDTO()));
         }
 
         return mappedEntity;

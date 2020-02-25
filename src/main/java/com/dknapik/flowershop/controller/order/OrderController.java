@@ -51,16 +51,18 @@ public final class OrderController {
         return new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
     }
 
+    /* TODO Add Permissions as this action will be only allowed for authorized users */
     @PutMapping
     public ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
         log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
 
-        service.updateExistingOrder(mapper.mapToEntity(orderDTO), principal.getName());
+        service.updateExistingOrder(mapper.mapToEntity(orderDTO));
 
         log.trace("Building response entity");
         return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
+    /* TODO Add Permissions as this action will be only allowed for authorized users */
     @GetMapping("/page")
     public ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(@RequestParam("page") int page) {
         log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());

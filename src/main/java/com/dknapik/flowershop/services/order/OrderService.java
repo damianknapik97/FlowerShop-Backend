@@ -87,11 +87,16 @@ public final class OrderService {
         if (account.getOrderList() == null) {
             log.info("Account doesn't contain order list, initializing...");
             account.setOrderList(new ArrayList<>());
-            accountService.updateAccount(account);
         }
 
         /* Create new Order entity and save it to provided account */
-        Order order = new Order(shoppingCart);
+        Order order = new Order(new ShoppingCart(
+                shoppingCart.getName(),
+                shoppingCart.getOccasionalArticleOrderList(),
+                shoppingCart.getSouvenirOrderList(),
+                shoppingCart.getFlowerOrderList(),
+                shoppingCart.getBouquetList()
+        ));
         account.getOrderList().add(order);
         accountService.updateAccount(account);
 
