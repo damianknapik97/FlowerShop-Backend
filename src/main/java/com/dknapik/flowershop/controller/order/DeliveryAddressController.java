@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/delivery-address")
 @CrossOrigin
 @ToString
 @Log4j2
@@ -31,11 +31,12 @@ public final class DeliveryAddressController {
         this.mapper = mapper;
     }
 
-    @PutMapping()
+    @PostMapping()
     public ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(@Valid @RequestParam("id") UUID orderID,
                                                                             @Valid DeliveryAddressDTO deliveryAddressDTO,
                                                                             Principal principal) {
-        log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
+        log.info(() -> "Processing request: " + new Object() {
+        }.getClass().getEnclosingMethod().getName());
 
         service.addNewDeliveryAddressToOrder(orderID, mapper.mapToEntity(deliveryAddressDTO), principal.getName());
 
