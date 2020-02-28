@@ -32,9 +32,10 @@ public final class DeliveryAddressController {
     }
 
     @PostMapping()
-    public ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(@Valid @RequestParam("id") UUID orderID,
-                                                                            @Valid DeliveryAddressDTO deliveryAddressDTO,
-                                                                            Principal principal) {
+    public ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
+            @Valid @RequestParam("id") UUID orderID,
+            @Valid @RequestBody DeliveryAddressDTO deliveryAddressDTO,
+            Principal principal) {
         log.info(() -> "Processing request: " + new Object() {
         }.getClass().getEnclosingMethod().getName());
 

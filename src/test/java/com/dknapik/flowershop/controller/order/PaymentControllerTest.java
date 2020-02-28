@@ -1,18 +1,19 @@
 package com.dknapik.flowershop.controller.order;
 
 import com.dknapik.flowershop.constants.DeliveryAddressMessage;
+import com.dknapik.flowershop.constants.PaymentMessage;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
-import com.dknapik.flowershop.dto.order.DeliveryAddressDTO;
-import com.dknapik.flowershop.mapper.order.DeliveryAddressMapper;
+import com.dknapik.flowershop.dto.order.PaymentDTO;
+import com.dknapik.flowershop.mapper.order.PaymentMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
-import com.dknapik.flowershop.model.order.DeliveryAddress;
-import com.dknapik.flowershop.model.order.Order;
-import com.dknapik.flowershop.model.order.ShoppingCart;
+import com.dknapik.flowershop.model.order.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.TestPropertySource;
@@ -30,10 +32,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import java.util.LinkedList;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,10 +46,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(value = "build/generated-snippets/delivery-address")
+@AutoConfigureRestDocs(value = "build/generated-snippets/delivery-address" )
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class DeliveryAddressControllerTest {
+public class PaymentControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -54,29 +59,31 @@ public class DeliveryAddressControllerTest {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
-    private DeliveryAddressMapper deliveryAddressMapper;
+    private PaymentMapper paymentMapper;
+    @Autowired
+    private Environment env;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         purgeDatabase();
     }
 
     @AfterEach
-    public void afterEach() {
-        purgeDatabase();
+    void afterEach() {
+
     }
 
     @Test
-    public void createDeliveryAddressForOrder() throws Exception {
-        String url = "/delivery-address";
+    void createPaymentForOrder() throws Exception {
+        String url = "/payment";
+        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Initialize required entities */
         Order order = createOrder("Testing Order", new ShoppingCart(), false);
-        Account account = createAccountWithOrder("Delivery Address User", "Delivery Address User",
+        Account account = createAccountWithOrder("Payment User", "Payment User",
                 order, AccountRole.USER);
-        DeliveryAddress controlValue = new DeliveryAddress("Testing City", "40-400",
-                "Testing Street", "100");
-        DeliveryAddressDTO dto = deliveryAddressMapper.mapToDTO(controlValue);
+        Payment controlValue = new Payment(money, PaymentType.BLIK);
+        PaymentDTO dto = paymentMapper.mapToDTO(controlValue);
 
         /* Deserialize required entity */
         String value = objectMapper.writeValueAsString(dto);
@@ -101,15 +108,15 @@ public class DeliveryAddressControllerTest {
 
         /* Check if Response matches */
         if (!resultDTO.getMessage()
-                .contentEquals(DeliveryAddressMessage.DELIVERY_ADDRESS_ADDED_SUCCESSFULLY.toString())) {
+                .contentEquals(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY.toString())) {
             throw new RuntimeException("Response message doesn't match expected one");
         }
 
         /* Check if results match */
         Order orderAfterUpdate = orderRepository.findById(order.getId()).orElseThrow(() ->
                 new RuntimeException("Order entity not found in database"));
-        DeliveryAddress expectedDeliveryAddress = orderAfterUpdate.getDeliveryAddress();
-        Assertions.assertThat(expectedDeliveryAddress).isEqualToIgnoringGivenFields(controlValue,
+        Payment expectedPayment = orderAfterUpdate.getPayment();
+        Assertions.assertThat(expectedPayment).isEqualToIgnoringGivenFields(controlValue,
                 "id");
     }
 

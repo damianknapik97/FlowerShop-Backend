@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.UUID;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/payment")
 @CrossOrigin
 @ToString
 @Log4j2
@@ -33,13 +33,13 @@ public final class PaymentController {
 
     @PostMapping
     public ResponseEntity<MessageResponseDTO> createPaymentForOrder(@Valid @RequestParam("id") UUID orderID,
-                                                                    @Valid PaymentDTO paymentDTO,
+                                                                    @Valid @RequestBody PaymentDTO paymentDTO,
                                                                     Principal principal) {
-        log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
+        log.traceEntry();
 
         service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName());
 
-        log.trace("Building response entity");
+        log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY),
                 HttpStatus.CREATED);
     }
