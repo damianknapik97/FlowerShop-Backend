@@ -15,14 +15,14 @@ import javax.money.Monetary;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class MoneyUtilsTest {
+final class MoneyUtilsTest {
     @Autowired
     private MoneyUtils moneyUtils;
     @Autowired
     private Environment environment;
 
     @Test
-    public void getApplicationCurrencyUnitTest() {
+    void getApplicationCurrencyUnitTest() {
         CurrencyUnit retrievedCurrencyUnit = moneyUtils.getApplicationCurrencyUnit();
         CurrencyUnit expectedCurrencyUnit = Monetary.getCurrency(environment.getProperty("app-monetary-currency"));
         Assertions.assertThat(retrievedCurrencyUnit).isEqualTo(expectedCurrencyUnit);

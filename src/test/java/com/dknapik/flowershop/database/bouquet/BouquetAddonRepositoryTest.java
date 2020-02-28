@@ -23,7 +23,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class BouquetAddonRepositoryTest {
+final class BouquetAddonRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -37,7 +37,7 @@ public class BouquetAddonRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Addon product = createAddonEntity();
         BouquetAddon order = new BouquetAddon(product);
@@ -54,7 +54,7 @@ public class BouquetAddonRepositoryTest {
      * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         Addon product = createAddonEntity();
         BouquetAddon order = new BouquetAddon(product);
 
@@ -70,7 +70,7 @@ public class BouquetAddonRepositoryTest {
      * Check if product entities are eagerly extracted from order entity
      */
     @Test
-    public void fetchProductTest() throws NoSuchElementException {
+    void fetchProductTest() throws NoSuchElementException {
         Addon product = createAddonEntity();
         BouquetAddon order = new BouquetAddon(product);
 
@@ -87,7 +87,7 @@ public class BouquetAddonRepositoryTest {
      * product entity.
      */
     @Test
-    public void saveMultipleEntitiesUsingOneProduct() {
+    void saveMultipleEntitiesUsingOneProduct() {
         /* Create multiple entities */
         Addon product = createAddonEntity();
         BouquetAddon[] orderArray = {
@@ -122,6 +122,4 @@ public class BouquetAddonRepositoryTest {
         productRepository.saveAndFlush(newAddon);
         return productRepository.findById(newAddon.getId()).get();
     }
-
-
 }

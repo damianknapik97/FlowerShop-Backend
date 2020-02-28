@@ -19,7 +19,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class PaymentRepositoryTest {
+final class PaymentRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -31,7 +31,7 @@ public class PaymentRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create entity */
@@ -49,7 +49,7 @@ public class PaymentRepositoryTest {
      * Check if entity can be extracted from database using repository.
      */
     @Test
-    public void retrieveFromDatabase() {
+    void retrieveFromDatabase() {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create  entity */

@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.controller.order;
 
-import com.dknapik.flowershop.constants.DeliveryAddressMessage;
 import com.dknapik.flowershop.constants.PaymentMessage;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
@@ -9,8 +8,10 @@ import com.dknapik.flowershop.dto.order.PaymentDTO;
 import com.dknapik.flowershop.mapper.order.PaymentMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
-import com.dknapik.flowershop.model.order.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.Payment;
+import com.dknapik.flowershop.model.order.PaymentType;
+import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -38,7 +39,6 @@ import java.util.LinkedList;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,10 +46,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(value = "build/generated-snippets/delivery-address" )
+@AutoConfigureRestDocs(value = "build/generated-snippets/delivery-address")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class PaymentControllerTest {
+final class PaymentControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -164,9 +164,6 @@ public class PaymentControllerTest {
      */
     private void purgeDatabase() {
         accountRepository.deleteAll();
-        accountRepository.flush();
-
         orderRepository.deleteAll();
-        orderRepository.flush();
     }
 }

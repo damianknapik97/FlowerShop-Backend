@@ -19,7 +19,7 @@ import java.util.Arrays;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class AddonRepositoryTest {
+final class AddonRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -32,7 +32,7 @@ public class AddonRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         String name = "Test Addon";
         AddonColour colour = AddonColour.BLUE;
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
@@ -48,7 +48,7 @@ public class AddonRepositoryTest {
     }
 
     @Test
-    public void findByNameTest() {
+    void findByNameTest() {
         String name = "Test1";
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Addon[] addonArray = {
@@ -78,7 +78,7 @@ public class AddonRepositoryTest {
     }
 
     @Test
-    public void findByNameAndColourTest() {
+    void findByNameAndColourTest() {
         String name = "Test1";
         AddonColour colour = AddonColour.BLUE;
         Money price = Money.of(2, Monetary.getCurrency(env.getProperty("app-monetary-currency")));

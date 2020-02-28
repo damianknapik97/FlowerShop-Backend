@@ -6,6 +6,7 @@ import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class ShoppingCartRepositoryTest {
+final class ShoppingCartRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -41,22 +42,24 @@ public class ShoppingCartRepositoryTest {
      * Ensure database is empty before of each test
      */
     @BeforeEach
-    public void purgeDatabase() {
+    void purgeDatabaseBefore() {
         shoppingCartRepository.deleteAll();
-        shoppingCartRepository.flush();
-
         orderRepository.deleteAll();
-        orderRepository.flush();
-
         productRepository.deleteAll();
-        productRepository.flush();
+    }
+
+    @AfterEach
+    void purgeDatabaseAfter() {
+        shoppingCartRepository.deleteAll();
+        orderRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     /**
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create entity */
         String name = "Test Shopping Cart";
         ShoppingCart shoppingCart = new ShoppingCart(name);
@@ -73,7 +76,7 @@ public class ShoppingCartRepositoryTest {
      * Check if entity can be extracted from database using repository.
      */
     @Test
-    public void retrieveFromDatabase() {
+    void retrieveFromDatabase() {
         /* Create  entity */
         String name = "Test Shopping Cart";
         ShoppingCart shoppingCart = new ShoppingCart(name);
@@ -91,7 +94,7 @@ public class ShoppingCartRepositoryTest {
      * and can be retrieved later separately.
      */
     @Test
-    public void occasionalArticleOrderCascadePersistTest() {
+    void occasionalArticleOrderCascadePersistTest() {
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Get product entity */
@@ -118,7 +121,7 @@ public class ShoppingCartRepositoryTest {
      * Check if associated order entities will also be deleted when shopping cart entity is deleted.
      */
     @Test
-    public void occasionalArticleOrderCascadeRemoveTest() {
+    void occasionalArticleOrderCascadeRemoveTest() {
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Get product entity */

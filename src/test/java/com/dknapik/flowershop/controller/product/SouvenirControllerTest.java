@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(value = "build/generated-snippets/souvenir")
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-class SouvenirControllerTest {
+final class SouvenirControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -54,12 +54,12 @@ class SouvenirControllerTest {
 
 
     @BeforeEach
-    public void purgeDatabase() {
+    void purgeDatabase() {
         repository.deleteAll();
     }
 
     @Test
-    public void getSouvenirsTest() throws Exception {
+    void getSouvenirsTest() throws Exception {
         int numberOfEntities = 45;
         String prefix = "TestingSouvenir";
         int page = 1;
@@ -69,7 +69,7 @@ class SouvenirControllerTest {
         /* Initialize testing entities and create List representation of page that should be returned */
         List<Souvenir> designatedEntities = initializeSouvenirs(prefix, numberOfEntities);
         designatedEntities = designatedEntities.subList(ProductProperties.PAGE_SIZE * page,
-                        ProductProperties.PAGE_SIZE * page + ProductProperties.PAGE_SIZE);
+                ProductProperties.PAGE_SIZE * page + ProductProperties.PAGE_SIZE);
 
         /* Create control value by mapping designated entities into dto*/
         for (Souvenir souvenir : designatedEntities) {
@@ -121,7 +121,6 @@ class SouvenirControllerTest {
 
         return souvenirList;
     }
-
 
     /**
      * Convert Souvenir Entity to Dto using Model Mapper

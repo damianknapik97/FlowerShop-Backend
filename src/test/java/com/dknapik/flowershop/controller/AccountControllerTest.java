@@ -3,8 +3,8 @@ package com.dknapik.flowershop.controller;
 import com.dknapik.flowershop.constants.AccountMessage;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
-import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.AccountDTO;
+import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc()
 @AutoConfigureRestDocs(value = "build/generated-snippets/account")
-public class AccountControllerTest {
+final class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -54,8 +54,8 @@ public class AccountControllerTest {
 
 
     @BeforeEach
-    public void setup(WebApplicationContext webApplicationContext,
-                      RestDocumentationContextProvider restDocumentation) {
+    void setup(WebApplicationContext webApplicationContext,
+               RestDocumentationContextProvider restDocumentation) {
 
         /* Check if provided Account entity exists, and remove it if true */
         Optional<Account> account = accountRepository.findByName(username);
@@ -64,7 +64,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void createAccount() throws Exception {
+    void createAccount() throws Exception {
         /* Create DTO and map it to JSON request */
         //MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         AccountDTO accountDto =
@@ -90,7 +90,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void retrieveAccount() throws Exception {
+    void retrieveAccount() throws Exception {
         /* Prepare Account and Control Object  test */
         Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
         accountRepository.saveAndFlush(newEntity);
@@ -115,7 +115,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void updateAccount() throws Exception {
+    void updateAccount() throws Exception {
         /* Prepare Account and payload */
         Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
         accountRepository.saveAndFlush(newEntity);
@@ -144,7 +144,7 @@ public class AccountControllerTest {
      * This test requires encoded password
      */
     @Test
-    public void updatePassword() throws Exception {
+    void updatePassword() throws Exception {
         /* Prepare Account by encoding password and saving entity to database */
         String password = "TestPassword1@";
         String newPassword = "TestPassword2!@#";
@@ -176,7 +176,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void deleteAccount() throws Exception {
+    void deleteAccount() throws Exception {
         /* Prepare Account entity by saving it to database */
         String password = "TestPassword!@#";
         PasswordEncoder encoder = context.getBean(PasswordEncoder.class);

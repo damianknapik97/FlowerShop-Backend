@@ -21,7 +21,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class SouvenirOrderRepositoryTest {
+final class SouvenirOrderRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -36,7 +36,7 @@ public class SouvenirOrderRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Souvenir product = createSouvenirEntity();
         SouvenirOrder order = new SouvenirOrder(5, product);
@@ -53,7 +53,7 @@ public class SouvenirOrderRepositoryTest {
      * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         /* Create order entity using product entity */
         Souvenir product = createSouvenirEntity();
         SouvenirOrder order = new SouvenirOrder(5, product);
@@ -70,7 +70,7 @@ public class SouvenirOrderRepositoryTest {
      * Check if product entities are eagerly extracted from order entity
      */
     @Test
-    public void fetchProductTest() throws NoSuchElementException {
+    void fetchProductTest() throws NoSuchElementException {
         /* Create order entity using product entity */
         Souvenir product = createSouvenirEntity();
         SouvenirOrder order = new SouvenirOrder(5, product);
@@ -86,7 +86,7 @@ public class SouvenirOrderRepositoryTest {
     /**
      * Create, save to database and retrieve from database product entity
      */
-    public Souvenir createSouvenirEntity() {
+    private Souvenir createSouvenirEntity() {
         Money price = Money.of(5.55, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Souvenir souvenir = new Souvenir("Test Souvenir Entity", price, "Exemplary description @!@#$%^'&Y*UI()+}{?>\"");
         productRepository.saveAndFlush(souvenir);

@@ -18,7 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.money.Monetary;
-import javax.money.MonetaryAmount;
 import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class BouquetRepositoryTest {
+final class BouquetRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -40,7 +39,7 @@ public class BouquetRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Bouquet bouquet = new Bouquet();
         bouquet.setProductionCost(Money.of(0.00, "PLN"));
@@ -58,7 +57,7 @@ public class BouquetRepositoryTest {
      * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         /* Create order entity using product entity */
         Bouquet bouquet = new Bouquet();
         bouquet.setProductionCost(Money.of(0, "PLN"));  // Price is disallowed to be null;
@@ -73,7 +72,7 @@ public class BouquetRepositoryTest {
     }
 
     @Test
-    public void deleteTest() {
+    void deleteTest() {
         /* Initialize entities that will be part of this entity */
         List<BouquetFlower> bouquetFlowerList =
                 createFlowerOrderEntities(createFlowerEntities("Test Flower", 10), 5);
@@ -181,6 +180,4 @@ public class BouquetRepositoryTest {
 
         return addonEntityList;
     }
-
-
 }

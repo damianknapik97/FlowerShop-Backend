@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-public class AccountRepositoryTest {
+final class AccountRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -24,7 +24,7 @@ public class AccountRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create new entity */
         Account account =
                 new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
@@ -41,7 +41,7 @@ public class AccountRepositoryTest {
      * Check if entity can be retrieved from database
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         /* Create new entity */
         Account account =
                 new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
@@ -58,7 +58,7 @@ public class AccountRepositoryTest {
      * Check if entity can retrieved from database using only name parameter
      */
     @Test
-    public void findByNameTest() {
+    void findByNameTest() {
         /* Create new entity */
         String name = "TEST_NAME";
         Account account =
@@ -76,7 +76,7 @@ public class AccountRepositoryTest {
      * Check if entity exists in database using only name parameter.
      */
     @Test
-    public void existsByNameTest() {
+    void existsByNameTest() {
         /* Create new entity */
         String name = "TEST_NAME";
         Account account =

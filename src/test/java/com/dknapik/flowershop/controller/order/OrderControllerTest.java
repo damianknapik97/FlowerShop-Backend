@@ -9,7 +9,6 @@ import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
-import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
@@ -17,7 +16,6 @@ import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.ShoppingCart;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
@@ -50,10 +48,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs(value = "build/generated-snippets/order" )
+@AutoConfigureRestDocs(value = "build/generated-snippets/order")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class OrderControllerTest {
+final class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -70,17 +68,17 @@ public class OrderControllerTest {
     private ShoppingCartMapper shoppingCartMapper;
 
     @BeforeEach
-    public void cleanUpBefore() {
+    void cleanUpBefore() {
         purgeDatabase();
     }
 
     @AfterEach
-    public void cleanUpAfter() {
+    void cleanUpAfter() {
         purgeDatabase();
     }
 
     @Test
-    public void createOrderFromShoppingCartTest() throws Exception {
+    void createOrderFromShoppingCartTest() throws Exception {
         String url = "/order";
 
         /* Initialize required entities */
@@ -88,7 +86,7 @@ public class OrderControllerTest {
         Account account = createAccount("Order Testing User", "Order Testing User",
                 shoppingCart, AccountRole.USER);
         ShoppingCartDTO shoppingCartDTO = shoppingCartMapper.convertToDTO(shoppingCart);
-        OrderDTO expectedResult =  orderMapper.mapToDTO(new Order(shoppingCart));
+        OrderDTO expectedResult = orderMapper.mapToDTO(new Order(shoppingCart));
 
         /* Deserialize required entity */
         String value = objectMapper.writeValueAsString(shoppingCartDTO);
@@ -115,7 +113,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void updateOrderTest() throws Exception {
+    void updateOrderTest() throws Exception {
         /* Create test related values and entities */
         String url = "/order";
         Order expectedResult = populateDatabaseWithOrderEntities(1).get(0);
@@ -124,7 +122,7 @@ public class OrderControllerTest {
         expectedResult.setStatus(OrderStatus.ASSIGNED);
         Account account = createAccount("Order Testing User", "Order Testing User",
                 null, AccountRole.EMPLOYEE);
-        OrderDTO orderToUpdate =  orderMapper.mapToDTO(expectedResult);
+        OrderDTO orderToUpdate = orderMapper.mapToDTO(expectedResult);
 
         /* Deserialize required entity */
         String value = objectMapper.writeValueAsString(orderToUpdate);
@@ -146,7 +144,7 @@ public class OrderControllerTest {
                 objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
 
         /* Check if Response matches */
-        if (!resultDTO.getMessage().contentEquals(OrderMessage.ORDER_UPDATED_SUCCESSFULLY.toString())){
+        if (!resultDTO.getMessage().contentEquals(OrderMessage.ORDER_UPDATED_SUCCESSFULLY.toString())) {
             throw new RuntimeException("Response message doesn't match expected one");
         }
 
@@ -157,7 +155,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void retrieveOrdersPage() throws Exception {
+    void retrieveOrdersPage() throws Exception {
         String url = "/order/page";
 
         /* Initialize required entities */
@@ -215,8 +213,8 @@ public class OrderControllerTest {
     /**
      * Creates, persists and returns Account entity.
      *
-     * @param userName - account name
-     * @param password - account password
+     * @param userName     - account name
+     * @param password     - account password
      * @param shoppingCart - shopping cart that should be saved together with account.
      * @return Persisted Account entity.
      */
@@ -233,8 +231,8 @@ public class OrderControllerTest {
     /**
      * Create and return Shopping Cart entity.
      *
-     * @param name - name of the shopping cart to create.
-     * @param saveToDatabase    - if shopping cart should be saved through repository to database.
+     * @param name           - name of the shopping cart to create.
+     * @param saveToDatabase - if shopping cart should be saved through repository to database.
      * @return - ShoppingCart Entity
      */
     private ShoppingCart initializeShoppingCartEntity(String name, boolean saveToDatabase) {
@@ -251,16 +249,9 @@ public class OrderControllerTest {
     /**
      * Delete all entities related to repositories used in this test to prevent accidental errors, and violations
      */
-    public void purgeDatabase() {
+    private void purgeDatabase() {
         accountRepository.deleteAll();
-        accountRepository.flush();
-
         orderRepository.deleteAll();
-        orderRepository.flush();
-
-
         shoppingCartRepository.deleteAll();
-        shoppingCartRepository.flush();
-
     }
 }

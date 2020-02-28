@@ -9,8 +9,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(value = "build/generated-snippets/souvenir")
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class FlowerControllerTest {
+final class FlowerControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -54,13 +54,18 @@ public class FlowerControllerTest {
     private ModelMapper modelMapper;
 
     @BeforeEach
-    public void purgeDatabase() {
+    void purgeDatabaseBefore() {
+        repository.deleteAll();
+    }
+
+    @AfterEach
+    void purgeDatabaseAfter() {
         repository.deleteAll();
     }
 
     /* TODO: Values returned are not the ones that are expected (around 2 pages later) - investigate  */
     //@Test
-    public void getFlowersTest() throws Exception {
+    void getFlowersTest() throws Exception {
         int numberOfEntities = 45;
         String prefix = "Testing Flower";
         int page = 0;

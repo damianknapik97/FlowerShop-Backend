@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(value = "build/generated-snippets/occasional-article")
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-class OccasionalArticleControllerTest {
+final class OccasionalArticleControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -58,14 +58,14 @@ class OccasionalArticleControllerTest {
     private ModelMapper modelMapper;
 
     @BeforeEach
-    public void purgeDatabase() {
+    void purgeDatabase() {
         /* Initialized by Seeders, order entities must be deleted for products to be removable */
         orderRepository.deleteAll();
         repository.deleteAll();
     }
 
     @AfterEach
-    public void purgeDatabase2() {
+    void purgeDatabase2() {
         /* Initialized by Seeders, order entities must be deleted for products to be removable */
         orderRepository.deleteAll();
         repository.deleteAll();
@@ -73,7 +73,7 @@ class OccasionalArticleControllerTest {
 
 
     @Test
-    public void getOccasionalArticlesTest() throws Exception {
+    void getOccasionalArticlesTest() throws Exception {
         int numberOfEntities = 45;
         String prefix = "Testing Flower";
         int page = 0;

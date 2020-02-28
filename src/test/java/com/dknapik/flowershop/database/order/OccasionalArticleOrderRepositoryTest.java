@@ -21,7 +21,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class OccasionalArticleOrderRepositoryTest {
+final class OccasionalArticleOrderRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -33,29 +33,10 @@ public class OccasionalArticleOrderRepositoryTest {
 
 
     /**
-     * Check if OccasionalArticle with provided parameters exists already in database and create new entity if not.
-     *
-     * @return OccasionalArticle entity from database
-     */
-    private OccasionalArticle retrieveOccasionalArticle(String name, Money price, String description, String theme) {
-        Optional<OccasionalArticle> occasionalArticle =
-                occasionalArticleRepository.findByNameAndDescriptionAndTheme(name, description, theme);
-
-        /* Check if article already exists in database and create it and save if false */
-        if (!occasionalArticle.isPresent()) {
-            occasionalArticle = Optional.of(new OccasionalArticle(name, price, description, theme));
-            entityManager.persist(occasionalArticle.get());
-            entityManager.flush();
-        }
-
-        return occasionalArticle.get();
-    }
-
-    /**
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Retrieve OccasionalArticle that will be part of the new entity from database */
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         OccasionalArticle occasionalArticle =
@@ -84,7 +65,7 @@ public class OccasionalArticleOrderRepositoryTest {
      * @throws NoSuchElementException
      */
     @Test
-    public void fetchOccasionalArticleTest() throws NoSuchElementException {
+    void fetchOccasionalArticleTest() throws NoSuchElementException {
         /* Retrieve OccasionalArticle that will be part of the new entity from database */
         Money price = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         OccasionalArticle occasionalArticle =
@@ -104,4 +85,22 @@ public class OccasionalArticleOrderRepositoryTest {
         Assertions.assertThat(occasionalArticle).isEqualTo(searchResult.getOccasionalArticle());
     }
 
+    /**
+     * Check if OccasionalArticle with provided parameters exists already in database and create new entity if not.
+     *
+     * @return OccasionalArticle entity from database
+     */
+    private OccasionalArticle retrieveOccasionalArticle(String name, Money price, String description, String theme) {
+        Optional<OccasionalArticle> occasionalArticle =
+                occasionalArticleRepository.findByNameAndDescriptionAndTheme(name, description, theme);
+
+        /* Check if article already exists in database and create it and save if false */
+        if (!occasionalArticle.isPresent()) {
+            occasionalArticle = Optional.of(new OccasionalArticle(name, price, description, theme));
+            entityManager.persist(occasionalArticle.get());
+            entityManager.flush();
+        }
+
+        return occasionalArticle.get();
+    }
 }

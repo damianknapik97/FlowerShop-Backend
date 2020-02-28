@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(value = "build/generated-snippets/delivery-address")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class DeliveryAddressControllerTest {
+final class DeliveryAddressControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -57,17 +57,17 @@ public class DeliveryAddressControllerTest {
     private DeliveryAddressMapper deliveryAddressMapper;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         purgeDatabase();
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         purgeDatabase();
     }
 
     @Test
-    public void createDeliveryAddressForOrder() throws Exception {
+    void createDeliveryAddressForOrder() throws Exception {
         String url = "/delivery-address";
 
         /* Initialize required entities */
@@ -157,9 +157,6 @@ public class DeliveryAddressControllerTest {
      */
     private void purgeDatabase() {
         accountRepository.deleteAll();
-        accountRepository.flush();
-
         orderRepository.deleteAll();
-        orderRepository.flush();
     }
 }

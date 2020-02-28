@@ -20,7 +20,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class BouquetFlowerRepositoryTest {
+final class BouquetFlowerRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -34,7 +34,7 @@ public class BouquetFlowerRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create bouquet flower using product entity */
         Flower product = createFlowerEntity();
         BouquetFlower bouquetFlower = new BouquetFlower(5, product);
@@ -51,7 +51,7 @@ public class BouquetFlowerRepositoryTest {
      * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         /* Create bouquet flower using product entity */
         Flower product = createFlowerEntity();
         BouquetFlower bouquetFlower = new BouquetFlower(5, product);
