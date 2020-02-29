@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @ToString
 @Component
-public class AddonSeeder implements SeederInt {
+class AddonSeeder implements SeederInt {
     private final MoneyUtils moneyUtils;               // Money currency retrieved from application context
     private final AddonRepository addonRepository;           // Repository for database retrieving/saving entities
     private static final boolean ONLY_FOR_DEBUG = true;  // To check if class should be always instantiated and used

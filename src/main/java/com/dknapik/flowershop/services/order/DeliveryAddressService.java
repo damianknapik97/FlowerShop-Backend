@@ -8,6 +8,7 @@ import com.dknapik.flowershop.model.order.Order;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,16 +41,20 @@ public final class DeliveryAddressService {
     public void addNewDeliveryAddressToOrder(@NonNull UUID orderID,
                                              @NonNull DeliveryAddress deliveryAddress,
                                              @NonNull String accountName) {
-        log.trace("Adding new delivery address to existing order");
+        log.traceEntry("Adding new delivery address to existing order");
+
         /* Search for order entity */
         Order order = orderService.retrieveOrderFromAccount(orderID, accountName);
 
         /* Check if delivery order is already set, set delivery address to order and save it to database */
         if (order.getDeliveryAddress() != null) {
-            log.warn("Invalid operation, Delivery Address is already assigned to this order");
-            throw new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED);
+            log.throwing(Level.WARN,
+                    new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED));
+
         }
         order.setDeliveryAddress(deliveryAddress);
         orderService.updateExistingOrder(order);
+
+        log.traceExit();
     }
 }

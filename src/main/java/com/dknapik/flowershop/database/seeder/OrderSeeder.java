@@ -11,7 +11,7 @@ import org.springframework.data.domain.Example;
 import java.time.LocalDateTime;
 
 @ToString
-public class OrderSeeder implements SeederInt {
+class OrderSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = false;
     private final MoneyUtils moneyUtils;
     private final OrderRepository orderRepository;

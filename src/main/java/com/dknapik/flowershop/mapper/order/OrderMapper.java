@@ -40,7 +40,7 @@ public final class OrderMapper {
      * @return - dto
      */
     public OrderDTO mapToDTO(Order order) {
-        log.trace(() -> "Mapping " + order.getClass().getSimpleName() + " to " + OrderDTO.class.getSimpleName());
+        log.traceEntry(() -> "Mapping " + order.getClass().getSimpleName() + " to " + OrderDTO.class.getSimpleName());
         OrderDTO mappedDTO = mapper.map(order, OrderDTO.class);
 
         /* Manually map embedded entities because Jackson Model Mapper doesn't handle them well  */
@@ -55,6 +55,7 @@ public final class OrderMapper {
             mappedDTO.setShoppingCartDTO(shoppingCartMapper.convertToDTO(order.getShoppingCart()));
         }
 
+        log.traceExit();
         return mappedDTO;
     }
 
@@ -65,7 +66,7 @@ public final class OrderMapper {
      * @return - entity
      */
     public Order mapToEntity(OrderDTO orderDTO) {
-        log.trace(() -> "Mapping " + orderDTO.getClass().getSimpleName() + " to " + Order.class.getSimpleName());
+        log.traceEntry(() -> "Mapping " + orderDTO.getClass().getSimpleName() + " to " + Order.class.getSimpleName());
         Order mappedEntity = mapper.map(orderDTO, Order.class);
 
         /* Manually map embedded DTO's because Jackson Model Mapper doesn't handle them well */
@@ -80,6 +81,7 @@ public final class OrderMapper {
             mappedEntity.setShoppingCart(shoppingCartMapper.convertToEntity(orderDTO.getShoppingCartDTO()));
         }
 
+        log.traceExit();
         return mappedEntity;
     }
 
@@ -90,6 +92,8 @@ public final class OrderMapper {
      * @return
      */
     public RestResponsePage<OrderDTO> mapPageToDTO(PageImpl<Order> orderPage) {
+        log.traceEntry();
+
         List<Order> currentContent = orderPage.getContent();
         List<OrderDTO> mappedContent = new LinkedList<>();
 
@@ -97,6 +101,7 @@ public final class OrderMapper {
             mappedContent.add(mapToDTO(order));
         }
 
+        log.traceExit();
         return new RestResponsePage<>(mappedContent, orderPage.getPageable(), orderPage.getTotalElements());
     }
 

@@ -18,13 +18,13 @@ import java.util.List;
 @RequestMapping("/product/souvenir")
 @CrossOrigin
 @Log4j2
-public final class SouvenirController {
+final class SouvenirController {
     private final SouvenirService service;
     private final ProductMapper productMapper;
 
 
     @Autowired
-    public SouvenirController(SouvenirService service, ProductMapper productMapper) {
+    SouvenirController(SouvenirService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
@@ -36,10 +36,11 @@ public final class SouvenirController {
      * @return Page with Souvenir products
      */
     @GetMapping
-    public ResponseEntity<RestResponsePage<SouvenirDTO>> getSouvenirs(
+    ResponseEntity<RestResponsePage<SouvenirDTO>> getSouvenirs(
             @RequestParam(value = "page", defaultValue = "0") int page) {
+        log.traceEntry();
+
         /* Retrieve Page of Souvenir entities */
-        log.info("Processing getSouvenirs request");
         RestResponsePage<Souvenir> souvenirs = service.retrieveSouvenirPage(page);
 
         /* Convert content to Dto */
@@ -50,8 +51,9 @@ public final class SouvenirController {
         }
 
         /* Build Response entity and respond */
-        log.info("Building response");
         RestResponsePage<SouvenirDTO> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
+
+        log.traceExit();
         return new ResponseEntity<>(souvenirDtos, HttpStatus.OK);
     }
 }

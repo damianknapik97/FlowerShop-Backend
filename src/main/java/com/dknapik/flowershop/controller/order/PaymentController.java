@@ -21,20 +21,20 @@ import java.util.UUID;
 @CrossOrigin
 @ToString
 @Log4j2
-public final class PaymentController {
+final class PaymentController {
     private final PaymentService service;
     private final PaymentMapper mapper;
 
     @Autowired
-    public PaymentController(PaymentService service, PaymentMapper mapper) {
+    PaymentController(PaymentService service, PaymentMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponseDTO> createPaymentForOrder(@Valid @RequestParam("id") UUID orderID,
-                                                                    @Valid @RequestBody PaymentDTO paymentDTO,
-                                                                    Principal principal) {
+    ResponseEntity<MessageResponseDTO> createPaymentForOrder(@Valid @RequestParam("id") UUID orderID,
+                                                             @Valid @RequestBody PaymentDTO paymentDTO,
+                                                             Principal principal) {
         log.traceEntry();
 
         service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName());

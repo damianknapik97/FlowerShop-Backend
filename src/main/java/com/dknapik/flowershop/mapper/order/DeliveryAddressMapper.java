@@ -26,7 +26,7 @@ public final class DeliveryAddressMapper {
      * @return - dto
      */
     public DeliveryAddressDTO mapToDTO(DeliveryAddress deliveryAddress) {
-        log.trace("Mapping " + deliveryAddress.getClass().getSimpleName() + " to "
+        log.traceEntry("Mapping " + deliveryAddress.getClass().getSimpleName() + " to "
                 + DeliveryAddressDTO.class.getSimpleName());
         return mapper.map(deliveryAddress, DeliveryAddressDTO.class);
     }
@@ -38,7 +38,7 @@ public final class DeliveryAddressMapper {
      * @return - entity
      */
     public DeliveryAddress mapToEntity(DeliveryAddressDTO deliveryAddressDTO) {
-        log.trace(() -> "Mapping " + deliveryAddressDTO.getClass().getSimpleName() +
+        log.traceEntry(() -> "Mapping " + deliveryAddressDTO.getClass().getSimpleName() +
                 " to " + DeliveryAddress.class.getSimpleName());
         return mapper.map(deliveryAddressDTO, DeliveryAddress.class);
     }

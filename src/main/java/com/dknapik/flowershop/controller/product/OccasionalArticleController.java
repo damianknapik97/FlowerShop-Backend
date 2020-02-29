@@ -18,21 +18,22 @@ import java.util.List;
 @RequestMapping("/product/occasional-article")
 @CrossOrigin
 @Log4j2
-public final class OccasionalArticleController {
+final class OccasionalArticleController {
     private final OccasionalArticleService service;
     private final ProductMapper productMapper;
 
     @Autowired
-    public OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
+    OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
 
     @GetMapping
-    public ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
+    ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         /* Retrieve desired page */
-        log.info("Processing getOccasionalArticles request");
+        log.traceEntry();
+
         RestResponsePage<OccasionalArticle> occasionalArticleRestResponsePage =
                 service.retrieveOccasionalArticlePage(page);
 
@@ -43,9 +44,10 @@ public final class OccasionalArticleController {
             occasionalArticleDtoList.add(productMapper.convertToDto(occasionalArticle, OccasionalArticleDTO.class));
         }
 
-        log.info("Building response");
         RestResponsePage<OccasionalArticleDTO> dtoRestResponsePage =
                 new RestResponsePage<>(occasionalArticleDtoList, occasionalArticleRestResponsePage);
+
+        log.traceExit();
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }
 }

@@ -21,27 +21,26 @@ import java.util.UUID;
 @CrossOrigin
 @ToString
 @Log4j2
-public final class DeliveryAddressController {
+final class DeliveryAddressController {
     private final DeliveryAddressService service;
     private final DeliveryAddressMapper mapper;
 
     @Autowired
-    public DeliveryAddressController(DeliveryAddressService service, DeliveryAddressMapper mapper) {
+    DeliveryAddressController(DeliveryAddressService service, DeliveryAddressMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
 
     @PostMapping()
-    public ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
+    ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
             @Valid @RequestParam("id") UUID orderID,
             @Valid @RequestBody DeliveryAddressDTO deliveryAddressDTO,
             Principal principal) {
-        log.info(() -> "Processing request: " + new Object() {
-        }.getClass().getEnclosingMethod().getName());
+        log.traceEntry();
 
         service.addNewDeliveryAddressToOrder(orderID, mapper.mapToEntity(deliveryAddressDTO), principal.getName());
 
-        log.trace("Building response entity");
+        log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(DeliveryAddressMessage.DELIVERY_ADDRESS_ADDED_SUCCESSFULLY),
                 HttpStatus.CREATED);
     }

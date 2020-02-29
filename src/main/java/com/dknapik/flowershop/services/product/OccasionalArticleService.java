@@ -6,6 +6,7 @@ import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Log4j2
 public final class OccasionalArticleService {
     private final OccasionalArticleRepository repository;
 
@@ -32,7 +34,11 @@ public final class OccasionalArticleService {
      * @return Occasional Article entity with provided id;
      */
     public OccasionalArticle retrieveSingleOccasionalArticle(UUID id) {
+        log.traceEntry();
+
         Optional<OccasionalArticle> retrievedEntity = repository.findById(id);
+
+        log.traceExit();
         return retrievedEntity.orElseThrow(() -> new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
     }
 
@@ -41,6 +47,8 @@ public final class OccasionalArticleService {
      * Retrieve page of products
      */
     public RestResponsePage<OccasionalArticle> retrieveOccasionalArticlePage(int pageNumber) {
+        log.traceEntry();
+
         /* Create Page request for repository */
         Pageable pageable = PageRequest.of(pageNumber, ProductProperties.PAGE_SIZE);
 
@@ -48,6 +56,7 @@ public final class OccasionalArticleService {
         List<OccasionalArticle> content = repository.findAll(pageable).getContent();
 
         /* Return collection of products ready for trasnport/serialization/mapping */
+        log.traceExit();
         return new RestResponsePage<>(content, pageable, repository.count());
     }
 

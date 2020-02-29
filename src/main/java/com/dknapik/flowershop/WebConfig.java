@@ -22,7 +22,7 @@ public class WebConfig {
 
     @Primary
     @Bean(name = "ObjectMapper")
-    public ObjectMapper objectMapper() {
+    protected ObjectMapper objectMapper() {
         return new ObjectMapper()
                 .registerModule(new ParameterNamesModule())
                 .registerModule(new Jdk8Module())
@@ -32,7 +32,7 @@ public class WebConfig {
     }
 
     @Bean(name = "ModelMapper")
-    public ModelMapper modelMapper() {
+    protected ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setAmbiguityIgnored(true);
         return mapper;
@@ -44,7 +44,7 @@ public class WebConfig {
      * @return configured filter allowing only data exchanges with front end application.
      */
     @Bean
-    public CorsFilter corsFilter() {
+    protected CorsFilter corsFilter() {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();

@@ -25,52 +25,52 @@ import java.security.Principal;
 @CrossOrigin
 @ToString
 @Log4j2
-public final class OrderController {
-    public final OrderService service;
-    public final OrderMapper mapper;
-    public final ShoppingCartMapper shoppingCartMapper;
+final class OrderController {
+    private final OrderService service;
+    private final OrderMapper mapper;
+    private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public OrderController(OrderService service, OrderMapper mapper, ShoppingCartMapper shoppingCartMapper) {
+    OrderController(OrderService service, OrderMapper mapper, ShoppingCartMapper shoppingCartMapper) {
         this.service = service;
         this.mapper = mapper;
         this.shoppingCartMapper = shoppingCartMapper;
     }
 
     @PostMapping()
-    public ResponseEntity<OrderDTO> createOrderFromShoppingCart(@Valid @RequestBody ShoppingCartDTO shoppingCartDTO,
-                                                                Principal principal) {
-        log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
+    ResponseEntity<OrderDTO> createOrderFromShoppingCart(@Valid @RequestBody ShoppingCartDTO shoppingCartDTO,
+                                                         Principal principal) {
+        log.traceEntry();
 
         /* Create new Order, Save it to account, Cast it To DTO */
         Order order = service.addNewOrderFromShoppingCart(shoppingCartMapper.convertToEntity(shoppingCartDTO),
                 principal.getName());
         OrderDTO orderDTO = mapper.mapToDTO(order);
 
-        log.trace("Building response entity");
+        log.traceExit();
         return new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
     }
 
     /* TODO Add Permissions as this action will be only allowed for authorized users */
     @PutMapping
-    public ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
-        log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
+    ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
+        log.traceEntry();
 
         service.updateExistingOrder(mapper.mapToEntity(orderDTO));
 
-        log.trace("Building response entity");
+        log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
     /* TODO Add Permissions as this action will be only allowed for authorized users */
     @GetMapping("/page")
-    public ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(@RequestParam("page") int page) {
-        log.info(() -> "Processing request: " + new Object() {}.getClass().getEnclosingMethod().getName());
+    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(@RequestParam("page") int page) {
+        log.traceEntry();
 
         RestResponsePage<Order> orderPage = service.retrieveOrdersPage(page, ProductProperties.PAGE_SIZE);
         RestResponsePage<OrderDTO> ordeDTOPage = mapper.mapPageToDTO(orderPage);
 
-        log.trace("Building response entity");
+        log.traceExit();
         return new ResponseEntity<>(ordeDTOPage, HttpStatus.OK);
     }
 }

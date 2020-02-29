@@ -18,21 +18,22 @@ import java.util.List;
 @RequestMapping("/product/flower")
 @CrossOrigin
 @Log4j2
-public final class FlowerController {
+final class FlowerController {
     private final FlowerService service;
     private final ProductMapper productMapper;
 
 
     @Autowired
-    public FlowerController(FlowerService service, ProductMapper productMapper) {
+    FlowerController(FlowerService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
 
     @GetMapping
-    public ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
+    ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
             @RequestParam(value = "page", defaultValue = "0") int page) {
-        log.info("Processing getFlowers request");
+        log.traceEntry();
+
         /* Retrieve desired page */
         RestResponsePage<Flower> flowerResponsePage = service.retrieveFlowerPage(page);
 
@@ -43,8 +44,9 @@ public final class FlowerController {
             flowerDtoList.add(productMapper.convertToDto(f, FlowerDTO.class));
         }
 
-        log.info("Building response");
         RestResponsePage<FlowerDTO> dtoRestResponsePage = new RestResponsePage<>(flowerDtoList, flowerResponsePage);
+
+        log.traceExit();
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }
 }

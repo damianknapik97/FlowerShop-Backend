@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @ToString
 @Transactional
-public class ShoppingCartSeeder implements SeederInt {
+class ShoppingCartSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
     private final MoneyUtils moneyUtils;
     private final OccasionalArticleRepository occasionalArticleRepository;

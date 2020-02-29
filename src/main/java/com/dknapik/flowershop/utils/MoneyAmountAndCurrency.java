@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.utils;
 
+import lombok.ToString;
 import org.jadira.usertype.moneyandcurrency.legacyjdk.columnmapper.BigDecimalBigDecimalColumnMapper;
 import org.jadira.usertype.moneyandcurrency.moneta.columnmapper.StringColumnCurrencyUnitMapper;
 import org.jadira.usertype.spi.shared.AbstractMultiColumnUserType;
@@ -10,6 +11,7 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
 
+@ToString
 public final class MoneyAmountAndCurrency extends AbstractMultiColumnUserType<MonetaryAmount> {
 
     private static final ColumnMapper<?, ?>[] COLUMN_MAPPERS =

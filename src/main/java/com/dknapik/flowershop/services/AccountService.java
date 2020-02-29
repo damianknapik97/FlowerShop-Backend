@@ -29,6 +29,10 @@ import java.util.Optional;
  * -Retrieving current account informations
  * -Deleting account
  *
+ * TODO : Refactor this class: Replace Exceptions with RuntimeExceptions,
+ *        Return only entities - convert to DTO in controller
+ *
+ *
  * @author Damian
  */
 @Service
@@ -58,6 +62,8 @@ public final class AccountService {
     public void createNewUser(@Valid AccountDTO accountDto,
                               BindingResult bindingResult)
             throws BindingException, DataProcessingException {
+        log.traceEntry();
+
         if (bindingResult.hasErrors()) {
             log.error(AccountMessage.NEW_ENTITY_CREATION_ERROR.toString());
             throw new BindingException(AccountMessage.NEW_ENTITY_CREATION_ERROR, accountDto.getClass());
@@ -71,6 +77,8 @@ public final class AccountService {
         accountDto.setPassword(
                 context.getBean(PasswordEncoder.class).encode(accountDto.getPassword()));  // Encode password
         this.accountRepo.saveAndFlush(mapper.map(accountDto, Account.class));
+
+        log.traceExit();
     }
 
     /**
@@ -80,7 +88,11 @@ public final class AccountService {
      * @return single Account entity
      */
     public Account retrieveAccountByName(String accountName) {
+        log.traceEntry();
+
         Optional<Account> account = accountRepo.findByName(accountName);
+
+        log.traceExit();
         return account.orElseThrow(() ->
                 new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
     }
@@ -94,9 +106,12 @@ public final class AccountService {
      */
     public AccountDetailsDTO retrieveAccountDetails(Principal principal)
             throws DataProcessingException {
+        log.traceEntry();
+
         Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
                 () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
 
+        log.traceExit();
         return this.mapper.map(acc, AccountDetailsDTO.class);
     }
 
@@ -113,6 +128,8 @@ public final class AccountService {
                               BindingResult bindingResult,
                               Principal principal)
             throws BindingException, DataProcessingException {
+        log.traceEntry();
+
         if (bindingResult.hasErrors()) {
             log.error(AccountMessage.ENTITY_UPDATE_ERROR.toString());
             throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR,
@@ -124,6 +141,8 @@ public final class AccountService {
 
         this.mapper.map(accDetailsDto, acc);
         this.accountRepo.saveAndFlush(acc);
+
+        log.traceExit();
     }
 
     /**
@@ -132,12 +151,16 @@ public final class AccountService {
      * @param account - Account Entity that will be saved in database if exists
      */
     public void updateAccount(Account account) {
+        log.traceEntry();
+
         /* Check if account exists, if not, we are not performing update but save so throw an exception */
         if (!accountRepo.existsById(account.getId())) {
             throw new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
         } else {
             accountRepo.saveAndFlush(account);
         }
+
+        log.traceExit();
     }
 
     /**
@@ -153,6 +176,8 @@ public final class AccountService {
                                BindingResult bindingResult,
                                Principal principal)
             throws BindingException, DataProcessingException {
+        log.traceEntry();
+
         if (bindingResult.hasErrors()) {
             log.error(AccountMessage.ENTITY_UPDATE_ERROR.toString());
             throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR,
@@ -171,6 +196,8 @@ public final class AccountService {
 
         acc.setPassword(encoder.encode(passwordChangeDto.getNewPassword()));
         this.accountRepo.saveAndFlush(acc);
+
+        log.traceExit();
     }
 
     /**
@@ -183,6 +210,8 @@ public final class AccountService {
     public void deleteAccount(String password,
                               Principal principal)
             throws DataProcessingException {
+        log.traceEntry();
+
         if (password != null) {
             Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
                     () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR)
@@ -197,5 +226,6 @@ public final class AccountService {
             }
         }
 
+        log.traceExit();
     }
 }

@@ -26,7 +26,8 @@ public final class PaymentMapper {
      * @return - dto
      */
     public PaymentDTO mapToDTO(Payment payment) {
-        log.trace(() -> "Mapping " + payment.getClass().getSimpleName() + " to " + PaymentDTO.class.getSimpleName());
+        log.traceEntry(() -> "Mapping " + payment.getClass().getSimpleName() +
+                " to " + PaymentDTO.class.getSimpleName());
         return mapper.map(payment, PaymentDTO.class);
     }
 
@@ -37,7 +38,8 @@ public final class PaymentMapper {
      * @return - entity
      */
     public Payment mapToEntity(PaymentDTO paymentDTO) {
-        log.trace(() -> "Mapping " + paymentDTO.getClass().getSimpleName() + " to " + Payment.class.getSimpleName());
+        log.traceEntry(() -> "Mapping " + paymentDTO.getClass().getSimpleName() +
+                " to " + Payment.class.getSimpleName());
         return mapper.map(paymentDTO, Payment.class);
     }
 }

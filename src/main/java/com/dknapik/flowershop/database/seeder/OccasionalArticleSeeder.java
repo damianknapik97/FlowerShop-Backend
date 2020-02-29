@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ToString
-public class OccasionalArticleSeeder implements SeederInt {
+class OccasionalArticleSeeder implements SeederInt {
     private final MoneyUtils moneyUtils;                  // Money currency retrieved from application context
     private final OccasionalArticleRepository occasionalArticleRepository;  // Repository for retrieving/saving entities
     private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used

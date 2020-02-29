@@ -51,6 +51,8 @@ public final class ShoppingCartService {
      * @return - Detailed shopping cart dto
      */
     public ShoppingCart retrieveSingleShoppingCart(String accountName) {
+        log.traceEntry();
+
         Account account = accountService.retrieveAccountByName(accountName);
         ShoppingCart shoppingCart = account.getShoppingCart();
 
@@ -60,6 +62,7 @@ public final class ShoppingCartService {
             shoppingCart = createNewShoppingCart(accountName);
         }
 
+        log.traceExit();
         return shoppingCart;
     }
 
@@ -70,12 +73,15 @@ public final class ShoppingCartService {
      * @return - Newly assigned Shopping Cart entity
      */
     public ShoppingCart createNewShoppingCart(String accountName) {
+        log.traceEntry();
+
         Account account = accountService.retrieveAccountByName(accountName);
         ShoppingCart shoppingCart = new ShoppingCart();
         account.setShoppingCart(shoppingCart);
 
         accountService.updateAccount(account);
 
+        log.traceExit();
         return shoppingCart;
     }
 
@@ -86,6 +92,8 @@ public final class ShoppingCartService {
      * @return integer with number of products in shopping cart
      */
     public int countNumberOfProducts(UUID shoppingCartId) {
+        log.traceEntry();
+
         log.debug(() -> "Counting number of products in shopping cart with following id: " + shoppingCartId.toString());
         Optional<ShoppingCart> searchResults = repository.findById(shoppingCartId);
         int numberOfProducts = 0;
@@ -115,6 +123,7 @@ public final class ShoppingCartService {
         }
 
         log.debug("Counted following number of products: ", numberOfProducts);
+        log.traceExit();
         return numberOfProducts;
     }
 
@@ -126,6 +135,8 @@ public final class ShoppingCartService {
      * @param flowerID    - product id to add to shopping cart
      */
     public void addFlowerToShoppingCart(String accountName, UUID flowerID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -153,6 +164,7 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -164,6 +176,8 @@ public final class ShoppingCartService {
      * @param occasionalArticleID - product id to add to shopping cart
      */
     public void addOccasionalArticleToShoppingCart(String accountName, UUID occasionalArticleID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -191,6 +205,8 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -202,6 +218,8 @@ public final class ShoppingCartService {
      * @param souvenirID  - product id to add to shopping cart
      */
     public void addSouvenirToShoppingCart(String accountName, UUID souvenirID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -229,6 +247,7 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -240,6 +259,8 @@ public final class ShoppingCartService {
      * @param flowerOrderID - product ORDER id to remove from shopping cart
      */
     public void removeFlowerOrderFromShoppingCart(String accountName, UUID flowerOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -258,6 +279,7 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -269,6 +291,8 @@ public final class ShoppingCartService {
      * @param occasionalArticleOrderID - product ORDER id to remove from shopping cart
      */
     public void removeOccasionalArticleFromShoppingCart(String accountName, UUID occasionalArticleOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -287,6 +311,7 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -298,6 +323,8 @@ public final class ShoppingCartService {
      * @param souvenirOrderID - product ORDER id to remove from shopping cart
      */
     public void removeSouvenirArticleFromShoppingCart(String accountName, UUID souvenirOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -316,6 +343,7 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -325,6 +353,8 @@ public final class ShoppingCartService {
      * @param accountName - account login in which following actions should be performed.
      */
     public void clearShoppingCart(@NonNull String accountName) {
+        log.traceEntry();
+
         /* Retrieve shopping cart  */
         log.debug(() -> "Clearing shopping cart");
         Account account = accountService.retrieveAccountByName(accountName);
@@ -337,5 +367,7 @@ public final class ShoppingCartService {
         /* Remove old shopping cart */
         repository.delete(oldShoppingCart);
         repository.flush();
+
+        log.traceExit();
     }
 }

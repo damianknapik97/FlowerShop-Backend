@@ -12,12 +12,12 @@ package com.dknapik.flowershop.database.seeder;
  *
  * @author Damian
  */
-public interface SeederInt {
+interface SeederInt {
 
     /**
      * Main method where objects are instantiated and saved through repository into database.
      */
-    public void seed();
+    void seed();
 
     /**
      * Some data might be crucial for application and need to always be in database.
@@ -27,6 +27,6 @@ public interface SeederInt {
      * @see AccountSeeder
      * @return true if application should invoke data only in debug/development mode
      */
-    public boolean isOnlyForDebug();
+    boolean isOnlyForDebug();
 
 }

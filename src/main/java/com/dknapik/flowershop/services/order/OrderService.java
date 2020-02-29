@@ -11,6 +11,7 @@ import com.dknapik.flowershop.services.AccountService;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,29 +47,29 @@ public final class OrderService {
      * @return - Order entity matching provided ID and account
      */
     public Order retrieveOrderFromAccount(UUID orderID, String accountName) {
-        log.trace("Retrieving Order Entity from Account ");
+        log.traceEntry("Retrieving Order Entity from Account ");
         Account account = accountService.retrieveAccountByName(accountName);
 
         /* Check if Account even have initialized list */
         if (account.getOrderList() == null) {
-            log.warn(() -> "Couldn't update Order entity because provided account doesn't contain any orders");
-            throw new ResourceNotFoundException(OrderMessage.NO_ORDERS);
+            log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.NO_ORDERS));
         }
 
         /* Search account for provided order id */
         Order order = null;
         for (Order accountOrder : account.getOrderList()) {
             if (accountOrder.getId().equals(orderID)) {
+                log.trace("Order id matches with the one inside provided account...");
                 order = accountOrder;
             }
         }
 
         /* Check if order was found */
         if (order == null) {
-            log.warn("Couldn't find order with provided ID, assigned to provided user");
-            throw new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID);
+            log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID));
         }
 
+        log.traceExit();
         return order;
     }
 
@@ -80,7 +81,7 @@ public final class OrderService {
      * @return - Preserved Order entity
      */
     public Order addNewOrderFromShoppingCart(@NonNull ShoppingCart shoppingCart, @NonNull String accountName) {
-        log.trace("Creating new order");
+        log.traceEntry("Creating new order");
         Account account = accountService.retrieveAccountByName(accountName);
 
         /* Check if Account even have initialized list */
@@ -103,6 +104,7 @@ public final class OrderService {
         /* Create new shopping cart, co the old one will be detached from account */
         shoppingCartService.createNewShoppingCart(accountName);
 
+        log.traceExit();
         return order;
     }
 
@@ -115,7 +117,7 @@ public final class OrderService {
      */
     public void updateExistingOrder(@NonNull Order order, @NonNull String accountName) {
         /* Retrieve Order for provided account */
-        log.trace("Updating existing order");
+        log.traceEntry("Updating existing order");
 
         /* Checking if we are able to find Order entity in provided account without throwing any error */
         retrieveOrderFromAccount(order.getId(), accountName);
@@ -123,6 +125,8 @@ public final class OrderService {
         /* Update entity and save it to database */
         log.debug(() -> "Saving following Order entity - " + order.toString() + " for following user " + accountName);
         repository.saveAndFlush(order);
+
+        log.traceExit();
     }
 
     /**
@@ -131,13 +135,15 @@ public final class OrderService {
      * @param order - entity to update
      */
     public void updateExistingOrder(@NonNull Order order) {
-        log.trace("Updating existing order");
+        log.traceEntry("Updating existing order");
+
         if (repository.existsById(order.getId())) {
             repository.saveAndFlush(order);
         } else {
-            log.warn("Couldn't update order because it couldn't be found in database");
-            throw new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED);
+            log.throwing(Level.WARN,new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED));
         }
+
+        log.traceExit();
     }
 
     /**
@@ -149,7 +155,7 @@ public final class OrderService {
      * @return - RestResponsePage with Order entities.
      */
     public RestResponsePage<Order> retrieveOrdersPage(int pageNumber, int pageSize) {
-        log.trace("Retrieving page of orders");
+        log.traceEntry("Retrieving page of orders");
 
         /* Create Page request for repository */
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -158,6 +164,7 @@ public final class OrderService {
         List<Order> content = repository.findAll(pageable).getContent();
 
         /* Return collection of products ready for transport/serialization/mapping */
+        log.traceExit();
         return new RestResponsePage<>(content, pageable, repository.count());
 
     }

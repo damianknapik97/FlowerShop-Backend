@@ -27,7 +27,7 @@ public final class ProductMapper {
      * @return dto created from provided entity
      */
     public <T extends ProductDTO> T convertToDto(Product entity, Class<T> type) {
-        log.trace(() -> "Mapping " + entity.getProductClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + entity.getProductClass().getSimpleName() + " to " + type.getSimpleName());
         return type.cast(modelMapper.map(entity, type));
     }
 
@@ -38,7 +38,8 @@ public final class ProductMapper {
      * @return - mapped entity
      */
     public <T extends Product> T convertToEntity(ProductDTO productDto, Class<T> type) {
-        log.trace(() -> "Mapping " + productDto.getProductDTOClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + productDto.getProductDTOClass().getSimpleName() +
+                " to " + type.getSimpleName());
         return type.cast(modelMapper.map(productDto, type));
     }
 }

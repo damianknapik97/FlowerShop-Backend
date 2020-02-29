@@ -36,7 +36,7 @@ public final class ShoppingCartMapper {
     }
 
     public ShoppingCartDTO convertToDTO(ShoppingCart entity) {
-        log.trace(() -> "Mapping " + ShoppingCart.class.getSimpleName() +
+        log.traceEntry(() -> "Mapping " + ShoppingCart.class.getSimpleName() +
                 " to " + ShoppingCartDTO.class.getSimpleName());
         ShoppingCartDTO returnDTO = mapper.map(entity, ShoppingCartDTO.class);
 
@@ -53,6 +53,7 @@ public final class ShoppingCartMapper {
             returnDTO.setSouvenirOrderDTOs(convertSouvenirOrdersToDTO(entity.getSouvenirOrderList()));
         }
 
+        log.traceExit();
         return returnDTO;
     }
 
@@ -63,10 +64,10 @@ public final class ShoppingCartMapper {
      * @return - mapped entity
      */
     public ShoppingCart convertToEntity(ShoppingCartDTO dto) {
-        log.trace(() -> "Mapping " + ShoppingCartDTO.class.getSimpleName() +
+        log.traceEntry(() -> "Mapping " + ShoppingCartDTO.class.getSimpleName() +
                 " to " + ShoppingCartDTO.class.getSimpleName());
-        ShoppingCart returnDTO = mapper.map(dto, ShoppingCart.class);
 
+        ShoppingCart returnDTO = mapper.map(dto, ShoppingCart.class);
         /* Map products */
         if (dto.getFlowerOrderDTOs() != null) {
             returnDTO.setFlowerOrderList(convertFlowerOrdersToEntity(dto.getFlowerOrderDTOs()));
@@ -79,6 +80,7 @@ public final class ShoppingCartMapper {
             returnDTO.setSouvenirOrderList(convertSouvenirOrdersToEntity(dto.getSouvenirOrderDTOs()));
         }
 
+        log.traceExit();
         return returnDTO;
     }
 
@@ -90,10 +92,10 @@ public final class ShoppingCartMapper {
      */
     private List<OccasionalArticleOrderDTO> convertOccasionalArticleOrdersToDTO(
             Iterable<OccasionalArticleOrder> occasionalArticleOrders) {
-        log.debug(() ->
-                "Casting " + OccasionalArticleOrder.class.toString() + " iterables to List with its DTO equivalents");
-        List<OccasionalArticleOrderDTO> convertedDTOs = null;
+        log.debug(() -> "Casting " + OccasionalArticleOrder.class.getSimpleName() +
+                " iterables to List with its DTO equivalents");
 
+        List<OccasionalArticleOrderDTO> convertedDTOs = null;
         /* Check if there are any Order entities to convert to DTO and convert them. */
         if (occasionalArticleOrders != null) {
             convertedDTOs = new LinkedList<>();
@@ -102,6 +104,7 @@ public final class ShoppingCartMapper {
                         productOrderMapper.convertToDto(occasionalArticleOrder, OccasionalArticleOrderDTO.class));
             }
         }
+
         return convertedDTOs;
     }
 
@@ -113,9 +116,9 @@ public final class ShoppingCartMapper {
      */
     private List<FlowerOrderDTO> convertFlowerOrdersToDTO(
             Iterable<FlowerOrder> flowerOrders) {
-        log.debug(() -> "Casting " + FlowerOrder.class.toString() + " iterables to List with its DTO equivalents");
-        List<FlowerOrderDTO> convertedDTOs = null;
+        log.debug(() -> "Casting " + FlowerOrder.class.getSimpleName() + " iterables to List with its DTO equivalents");
 
+        List<FlowerOrderDTO> convertedDTOs = null;
         /* Check if there are any Order entities to convert to DTO and convert them. */
         if (flowerOrders != null) {
             convertedDTOs = new LinkedList<>();
@@ -134,9 +137,10 @@ public final class ShoppingCartMapper {
      */
     private List<SouvenirOrderDTO> convertSouvenirOrdersToDTO(
             Iterable<SouvenirOrder> souvenirOrders) {
-        log.debug(() -> "Casting " + SouvenirOrder.class.toString() + " iterables to List with its DTO equivalents");
-        List<SouvenirOrderDTO> convertedDTOs = null;
+        log.debug(() -> "Casting " + SouvenirOrder.class.getSimpleName() +
+                " iterables to List with its DTO equivalents");
 
+        List<SouvenirOrderDTO> convertedDTOs = null;
         /* Check if there are any Order entities to convert to DTO and convert them. */
         if (souvenirOrders != null) {
             convertedDTOs = new LinkedList<>();
@@ -154,6 +158,9 @@ public final class ShoppingCartMapper {
      * @return null if provided argument is null, mapped list with Entities otherwise
      */
     private List<FlowerOrder> convertFlowerOrdersToEntity(Iterable<FlowerOrderDTO> flowerOrderDTOs) {
+        log.debug(() -> "Casting " + FlowerOrderDTO.class.getSimpleName() +
+                " iterables to List with its Entity equivalents");
+
         List<FlowerOrder> returnList = null;
 
         /* Check if there are any Order DTOs to convert to Entity and convert them. */
@@ -176,6 +183,8 @@ public final class ShoppingCartMapper {
     private List<OccasionalArticleOrder> convertOccasionalArticleOrdersToEntity(
             Iterable<OccasionalArticleOrderDTO> occasionalArticleOrderDTOs) {
         List<OccasionalArticleOrder> returnList = null;
+        log.debug(() -> "Casting " + OccasionalArticleOrderDTO.class.getSimpleName() +
+                " iterables to List with its Entity equivalents");
 
         /* Check if there are any Order DTOs to convert to Entity and convert them. */
         if (occasionalArticleOrderDTOs != null) {
@@ -194,8 +203,10 @@ public final class ShoppingCartMapper {
      * @return null if provided argument is null, mapped list with Entities otherwise
      */
     private List<SouvenirOrder> convertSouvenirOrdersToEntity(Iterable<SouvenirOrderDTO> souvenirOrderDTOs) {
-        List<SouvenirOrder> returnList = null;
+        log.debug(() -> "Casting " + SouvenirOrderDTO.class.getSimpleName() +
+                " iterables to List with its Entity equivalents");
 
+        List<SouvenirOrder> returnList = null;
         /* Check if there are any Order DTOs to convert to Entity and convert them. */
         if (souvenirOrderDTOs != null) {
             returnList = new LinkedList<>();
