@@ -42,7 +42,7 @@ final class ShoppingCartController {
 
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
         log.trace("Casting retrieved results to dto");
-        ShoppingCartDTO shoppingCartDto = mapper.convertToDTO(shoppingCart);
+        ShoppingCartDTO shoppingCartDto = mapper.mapToDTO(shoppingCart);
 
         log.traceExit();
         return new ResponseEntity<>(shoppingCartDto, HttpStatus.OK);

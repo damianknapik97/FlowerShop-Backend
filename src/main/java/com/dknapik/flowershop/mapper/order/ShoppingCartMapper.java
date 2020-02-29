@@ -4,7 +4,9 @@ import com.dknapik.flowershop.dto.productorder.FlowerOrderDTO;
 import com.dknapik.flowershop.dto.productorder.OccasionalArticleOrderDTO;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.dto.productorder.SouvenirOrderDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.Mapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductOrderMapper;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
 import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
@@ -22,7 +24,7 @@ import java.util.List;
 @Service
 @ToString
 @Log4j2
-public final class ShoppingCartMapper {
+public final class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDTO> {
     private final ModelMapper mapper;
     private final ProductMapper productMapper;
     private final ProductOrderMapper productOrderMapper;
@@ -35,7 +37,8 @@ public final class ShoppingCartMapper {
         this.productOrderMapper = productOrderMapper;
     }
 
-    public ShoppingCartDTO convertToDTO(ShoppingCart entity) {
+    @Override
+    public ShoppingCartDTO mapToDTO(ShoppingCart entity) {
         log.traceEntry(() -> "Mapping " + ShoppingCart.class.getSimpleName() +
                 " to " + ShoppingCartDTO.class.getSimpleName());
         ShoppingCartDTO returnDTO = mapper.map(entity, ShoppingCartDTO.class);
@@ -63,7 +66,8 @@ public final class ShoppingCartMapper {
      * @param dto - dto to map to entity
      * @return - mapped entity
      */
-    public ShoppingCart convertToEntity(ShoppingCartDTO dto) {
+    @Override
+    public ShoppingCart mapToEntity(ShoppingCartDTO dto) {
         log.traceEntry(() -> "Mapping " + ShoppingCartDTO.class.getSimpleName() +
                 " to " + ShoppingCartDTO.class.getSimpleName());
 

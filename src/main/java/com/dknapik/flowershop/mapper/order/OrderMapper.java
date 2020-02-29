@@ -2,6 +2,7 @@ package com.dknapik.flowershop.mapper.order;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
+import com.dknapik.flowershop.mapper.Mapper;
 import com.dknapik.flowershop.model.order.Order;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +17,7 @@ import java.util.List;
 @Service
 @Log4j2
 @ToString
-public final class OrderMapper {
+public final class OrderMapper implements Mapper<Order, OrderDTO> {
     private final ModelMapper mapper;
     private final DeliveryAddressMapper deliveryAddressMapper;
     private final PaymentMapper paymentMapper;
@@ -40,7 +41,7 @@ public final class OrderMapper {
      * @return - dto
      */
     public OrderDTO mapToDTO(Order order) {
-        log.traceEntry(() -> "Mapping " + order.getClass().getSimpleName() + " to " + OrderDTO.class.getSimpleName());
+        log.traceEntry();
         OrderDTO mappedDTO = mapper.map(order, OrderDTO.class);
 
         /* Manually map embedded entities because Jackson Model Mapper doesn't handle them well  */
@@ -52,7 +53,7 @@ public final class OrderMapper {
         }
 
         if (order.getShoppingCart() != null) {
-            mappedDTO.setShoppingCartDTO(shoppingCartMapper.convertToDTO(order.getShoppingCart()));
+            mappedDTO.setShoppingCartDTO(shoppingCartMapper.mapToDTO(order.getShoppingCart()));
         }
 
         log.traceExit();
@@ -65,8 +66,9 @@ public final class OrderMapper {
      * @param orderDTO - dto
      * @return - entity
      */
+    @Override
     public Order mapToEntity(OrderDTO orderDTO) {
-        log.traceEntry(() -> "Mapping " + orderDTO.getClass().getSimpleName() + " to " + Order.class.getSimpleName());
+        log.traceEntry();
         Order mappedEntity = mapper.map(orderDTO, Order.class);
 
         /* Manually map embedded DTO's because Jackson Model Mapper doesn't handle them well */
@@ -78,7 +80,7 @@ public final class OrderMapper {
         }
 
         if (orderDTO.getShoppingCartDTO() != null) {
-            mappedEntity.setShoppingCart(shoppingCartMapper.convertToEntity(orderDTO.getShoppingCartDTO()));
+            mappedEntity.setShoppingCart(shoppingCartMapper.mapToEntity(orderDTO.getShoppingCartDTO()));
         }
 
         log.traceExit();

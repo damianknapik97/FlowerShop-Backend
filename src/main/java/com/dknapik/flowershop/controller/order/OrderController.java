@@ -43,7 +43,7 @@ final class OrderController {
         log.traceEntry();
 
         /* Create new Order, Save it to account, Cast it To DTO */
-        Order order = service.addNewOrderFromShoppingCart(shoppingCartMapper.convertToEntity(shoppingCartDTO),
+        Order order = service.addNewOrderFromShoppingCart(shoppingCartMapper.mapToEntity(shoppingCartDTO),
                 principal.getName());
         OrderDTO orderDTO = mapper.mapToDTO(order);
 

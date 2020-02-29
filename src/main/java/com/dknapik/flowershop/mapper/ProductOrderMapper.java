@@ -1,11 +1,11 @@
-package com.dknapik.flowershop.mapper.order;
+package com.dknapik.flowershop.mapper;
 
 import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
 import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.dto.product.SouvenirDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
 import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.OccasionalArticle;

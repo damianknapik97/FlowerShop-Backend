@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.mapper.product;
+package com.dknapik.flowershop.mapper;
 
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.model.product.Product;

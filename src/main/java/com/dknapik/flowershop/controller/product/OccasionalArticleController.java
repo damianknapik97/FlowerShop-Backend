@@ -2,7 +2,7 @@ package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import lombok.extern.log4j.Log4j2;

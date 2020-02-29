@@ -85,7 +85,7 @@ final class OrderControllerTest {
         ShoppingCart shoppingCart = initializeShoppingCartEntity("Testing Shopping Cart", false);
         Account account = createAccount("Order Testing User", "Order Testing User",
                 shoppingCart, AccountRole.USER);
-        ShoppingCartDTO shoppingCartDTO = shoppingCartMapper.convertToDTO(shoppingCart);
+        ShoppingCartDTO shoppingCartDTO = shoppingCartMapper.mapToDTO(shoppingCart);
         OrderDTO expectedResult = orderMapper.mapToDTO(new Order(shoppingCart));
 
         /* Deserialize required entity */

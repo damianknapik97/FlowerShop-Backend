@@ -99,7 +99,7 @@ final class ShoppingCartControllerTest {
         /* Initialize entities needed in database */
         ShoppingCart shoppingCart = initializeShoppingCartEntity(prefix, numberOfProducts, false);
         Account account = createAccount("GetShoppingCartTest", "GetShoppingCartTest", shoppingCart);
-        controlObject = shoppingCartMapper.convertToDTO(shoppingCart);
+        controlObject = shoppingCartMapper.mapToDTO(shoppingCart);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
