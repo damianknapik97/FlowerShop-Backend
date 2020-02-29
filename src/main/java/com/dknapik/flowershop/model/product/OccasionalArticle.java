@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.product;
 
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class OccasionalArticle implements Product, Comparable<OccasionalArticle> {
+public final class OccasionalArticle implements Model, Product, Comparable<OccasionalArticle> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

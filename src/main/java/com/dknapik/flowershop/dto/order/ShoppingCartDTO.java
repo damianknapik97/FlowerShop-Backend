@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.order;
 
+import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.dto.bouquet.BouquetDTO;
 import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShoppingCartDTO {
+public class ShoppingCartDTO implements DTO {
     @NotNull
     private UUID id;
     private String name;

@@ -1,6 +1,8 @@
 package com.dknapik.flowershop.dto.product;
 
-public interface ProductDTO {
+import com.dknapik.flowershop.dto.DTO;
+
+public interface ProductDTO extends DTO {
 
     /**
      * Retrieves original class of the products

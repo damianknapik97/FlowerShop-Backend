@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @NoArgsConstructor
-public class MessageResponseDTO {
+public final class MessageResponseDTO implements DTO {
     @NotNull
     private @Valid String message;
 

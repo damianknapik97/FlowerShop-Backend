@@ -1,4 +1,6 @@
 package com.dknapik.flowershop.dto.bouquet;
 
-public class BouquetDTO {
+import com.dknapik.flowershop.dto.DTO;
+
+public class BouquetDTO implements DTO {
 }

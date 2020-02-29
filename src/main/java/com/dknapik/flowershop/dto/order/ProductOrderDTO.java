@@ -1,8 +1,9 @@
 package com.dknapik.flowershop.dto.order;
 
+import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 
-public interface ProductOrderDTO {
+public interface ProductOrderDTO extends DTO {
 
     /**
      * Retrieves original class of the product order

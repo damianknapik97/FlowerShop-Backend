@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.Model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Table(name = "order_table")
 @Data
 @NoArgsConstructor
-public final class Order {
+public final class Order implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

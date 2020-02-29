@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.dto.order;
 
-import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.dto.product.SouvenirDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;

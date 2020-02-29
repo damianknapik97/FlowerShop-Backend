@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public final class Payment {
+public final class Payment implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -41,5 +42,5 @@ public final class Payment {
         this.totalPrice = totalPrice;
         this.paymentType = paymentType;
     }
-    
+
 }
