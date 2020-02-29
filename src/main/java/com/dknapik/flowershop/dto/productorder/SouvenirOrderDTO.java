@@ -1,7 +1,8 @@
-package com.dknapik.flowershop.dto.order;
+package com.dknapik.flowershop.dto.productorder;
 
-import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
+import com.dknapik.flowershop.dto.product.SouvenirDTO;
+import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,12 +17,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OccasionalArticleOrderDTO implements ProductOrderDTO {
+public class SouvenirOrderDTO implements ProductOrderDTO {
     private UUID id;
     @Min(1)
     private @Valid int itemCount;
     @NotNull
-    private @Valid OccasionalArticleDTO occasionalArticleDTO;
+    private @Valid SouvenirDTO souvenirDTO;
 
     /**
      * Retrieves original class of the product order
@@ -65,7 +66,7 @@ public class OccasionalArticleOrderDTO implements ProductOrderDTO {
     @JsonIgnore
     @Override
     public ProductDTO getProductDTO() {
-        return occasionalArticleDTO;
+        return souvenirDTO;
     }
 
     /**
@@ -77,13 +78,13 @@ public class OccasionalArticleOrderDTO implements ProductOrderDTO {
     @Override
     public void setProductDTO(ProductDTO productDTO) {
         ProductDTO product = Objects.requireNonNull(productDTO);
-        if (product.compareClass(OccasionalArticleDTO.class)) {
-            occasionalArticleDTO = (OccasionalArticleDTO) product;
+        if (product.compareClass(SouvenirDTO.class)) {
+            souvenirDTO = (SouvenirDTO) product;
         } else {
             throw new IllegalArgumentException("Provided product dto class - " +
                     product.getProductDTOClass().toString() +
                     " - doesn't match the one inside product order dto -" +
-                    OccasionalArticleDTO.class.toString());
+                    SouvenirDTO.class.toString());
         }
     }
 }

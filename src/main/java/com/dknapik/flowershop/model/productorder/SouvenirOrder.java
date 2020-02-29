@@ -1,8 +1,9 @@
-package com.dknapik.flowershop.model.order;
+package com.dknapik.flowershop.model.productorder;
 
 import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.model.product.Product;
 import com.dknapik.flowershop.model.product.Souvenir;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;

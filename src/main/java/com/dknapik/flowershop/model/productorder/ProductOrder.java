@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.model.order;
+package com.dknapik.flowershop.model.productorder;
 
 
 import com.dknapik.flowershop.model.product.Product;

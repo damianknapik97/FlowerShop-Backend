@@ -1,14 +1,14 @@
 package com.dknapik.flowershop.mapper.order;
 
-import com.dknapik.flowershop.dto.order.FlowerOrderDTO;
-import com.dknapik.flowershop.dto.order.OccasionalArticleOrderDTO;
+import com.dknapik.flowershop.dto.productorder.FlowerOrderDTO;
+import com.dknapik.flowershop.dto.productorder.OccasionalArticleOrderDTO;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
-import com.dknapik.flowershop.dto.order.SouvenirOrderDTO;
+import com.dknapik.flowershop.dto.productorder.SouvenirOrderDTO;
 import com.dknapik.flowershop.mapper.product.ProductMapper;
-import com.dknapik.flowershop.model.order.FlowerOrder;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
-import com.dknapik.flowershop.model.order.SouvenirOrder;
+import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;

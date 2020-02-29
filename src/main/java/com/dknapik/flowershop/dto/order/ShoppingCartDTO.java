@@ -2,7 +2,11 @@ package com.dknapik.flowershop.dto.order;
 
 import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.dto.bouquet.BouquetDTO;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.dto.productorder.FlowerOrderDTO;
+import com.dknapik.flowershop.dto.productorder.OccasionalArticleOrderDTO;
+import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
+import com.dknapik.flowershop.dto.productorder.SouvenirOrderDTO;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

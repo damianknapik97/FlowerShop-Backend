@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.model.bouquet;
 
 import com.dknapik.flowershop.model.Model;
-import com.dknapik.flowershop.model.order.ProductOrder;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;

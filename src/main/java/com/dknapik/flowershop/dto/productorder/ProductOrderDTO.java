@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.dto.order;
+package com.dknapik.flowershop.dto.productorder;
 
 import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;

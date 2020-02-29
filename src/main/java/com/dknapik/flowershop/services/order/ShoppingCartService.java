@@ -2,10 +2,10 @@ package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.model.Account;
-import com.dknapik.flowershop.model.order.FlowerOrder;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
-import com.dknapik.flowershop.model.order.SouvenirOrder;
+import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;

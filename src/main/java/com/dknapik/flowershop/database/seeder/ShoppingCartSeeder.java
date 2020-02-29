@@ -6,7 +6,7 @@ import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
