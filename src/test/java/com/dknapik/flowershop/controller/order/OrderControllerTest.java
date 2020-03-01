@@ -29,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -84,7 +85,7 @@ final class OrderControllerTest {
         /* Initialize required entities */
         ShoppingCart shoppingCart = initializeShoppingCartEntity("Testing Shopping Cart", false);
         Account account = createAccount("Order Testing User", "Order Testing User",
-                shoppingCart, AccountRole.USER);
+                shoppingCart, AccountRole.ROLE_USER);
         ShoppingCartDTO shoppingCartDTO = shoppingCartMapper.mapToDTO(shoppingCart);
         OrderDTO expectedResult = orderMapper.mapToDTO(new Order(shoppingCart));
 
@@ -121,7 +122,7 @@ final class OrderControllerTest {
         expectedResult.setMessage("Updated Message");
         expectedResult.setStatus(OrderStatus.ASSIGNED);
         Account account = createAccount("Order Testing User", "Order Testing User",
-                null, AccountRole.EMPLOYEE);
+                null, AccountRole.ROLE_EMPLOYEE);
         OrderDTO orderToUpdate = orderMapper.mapToDTO(expectedResult);
 
         /* Deserialize required entity */
@@ -129,7 +130,9 @@ final class OrderControllerTest {
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
-                put(url).content(value).contentType(MediaType.APPLICATION_JSON).with(user(account.getName()));
+                put(url).content(value).contentType(MediaType.APPLICATION_JSON)
+                        .with(user(account.getName()).authorities(
+                                new SimpleGrantedAuthority(account.getRole().toString())));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)
@@ -161,17 +164,18 @@ final class OrderControllerTest {
         /* Initialize required entities */
         Account account =
                 createAccount("Order Testing User", "Order Testing User",
-                        initializeShoppingCartEntity("test", false), AccountRole.EMPLOYEE);
+                        initializeShoppingCartEntity("test", false), AccountRole.ROLE_EMPLOYEE);
         List<Order> entityList = populateDatabaseWithOrderEntities(ProductProperties.PAGE_SIZE);
         List<OrderDTO> controlValuesList = new LinkedList<>();
         for (Order order : entityList) {
             controlValuesList.add(orderMapper.mapToDTO(order));
         }
 
+        System.out.println(account.getRole().toString());
 
         /* Create Request */
-        MockHttpServletRequestBuilder requestBuilder =
-                get(url).param("page", "0").with(user(account.getName()));
+        MockHttpServletRequestBuilder requestBuilder = get(url).param("page", "0")
+                .with(user(account.getName()).authorities(new SimpleGrantedAuthority(account.getRole().toString())));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)

@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +26,7 @@ import java.security.Principal;
 @CrossOrigin
 @ToString
 @Log4j2
-final class OrderController {
+class OrderController {
     private final OrderService service;
     private final OrderMapper mapper;
     private final ShoppingCartMapper shoppingCartMapper;
@@ -51,7 +52,7 @@ final class OrderController {
         return new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
     }
 
-    /* TODO Add Permissions as this action will be only allowed for authorized users */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PutMapping
     ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
         log.traceEntry();
@@ -62,7 +63,7 @@ final class OrderController {
         return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
-    /* TODO Add Permissions as this action will be only allowed for authorized users */
+    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/page")
     ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(@RequestParam("page") int page) {
         log.traceEntry();

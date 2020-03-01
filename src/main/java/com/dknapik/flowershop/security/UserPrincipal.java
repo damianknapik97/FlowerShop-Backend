@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public final class UserPrincipal implements UserDetails {
@@ -20,9 +19,9 @@ public final class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.add(new SimpleGrantedAuthority(this.account.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority(this.account.getRole().toString()));
 
         return authorities;
     }

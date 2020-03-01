@@ -137,7 +137,7 @@ class ShoppingCartSeeder implements SeederInt {
             toReturn = new Account(accountName,
                     encoder.encode(accountName),
                     "user@test.pl",
-                    AccountRole.USER);
+                    AccountRole.ROLE_USER);
             accountRepository.saveAndFlush(toReturn);
         } else {
             toReturn = this.accountRepository.findByName(accountName).get();

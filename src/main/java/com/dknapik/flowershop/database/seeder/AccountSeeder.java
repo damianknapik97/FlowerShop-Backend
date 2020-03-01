@@ -37,14 +37,14 @@ class AccountSeeder implements SeederInt {
             accountRepository.save(new Account("root",
                     encoder.encode("root"),
                     "root@test.pl",
-                    AccountRole.ADMIN));
+                    AccountRole.ROLE_ADMIN));
         }
 
         if (!this.accountRepository.existsByName("employee")) {
             accountRepository.save(new Account("employee",
                     encoder.encode("employee"),
                     "employee@test.pl",
-                    AccountRole.EMPLOYEE));
+                    AccountRole.ROLE_EMPLOYEE));
         }
 
         this.accountRepository.flush();

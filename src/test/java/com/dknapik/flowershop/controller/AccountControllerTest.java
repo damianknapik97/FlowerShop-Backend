@@ -68,7 +68,7 @@ final class AccountControllerTest {
         /* Create DTO and map it to JSON request */
         //MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         AccountDTO accountDto =
-                new AccountDTO(username, "example@test.pl", "Password12345!", AccountRole.USER);
+                new AccountDTO(username, "example@test.pl", "Password12345!", AccountRole.ROLE_USER);
         String jsonRequest = objectMapper.writeValueAsString(accountDto);
 
         /* Create request*/
@@ -92,7 +92,7 @@ final class AccountControllerTest {
     @Test
     void retrieveAccount() throws Exception {
         /* Prepare Account and Control Object  test */
-        Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
+        Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.ROLE_USER);
         accountRepository.saveAndFlush(newEntity);
         AccountDTO controlObject = new AccountDTO(newEntity.getId(), newEntity.getName(), newEntity.getEmail(),
                 newEntity.getPassword(), newEntity.getRole());
@@ -117,7 +117,7 @@ final class AccountControllerTest {
     @Test
     void updateAccount() throws Exception {
         /* Prepare Account and payload */
-        Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.USER);
+        Account newEntity = new Account(username, "TestPassword", "Test@TestMail.com", AccountRole.ROLE_USER);
         accountRepository.saveAndFlush(newEntity);
         AccountDetailsDTO accountDetailsDto = new AccountDetailsDTO("NewEmail@Test.com");
 
@@ -149,7 +149,7 @@ final class AccountControllerTest {
         String password = "TestPassword1@";
         String newPassword = "TestPassword2!@#";
         PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-        Account newEntity = new Account(username, encoder.encode(password), "Test@TestMail.com", AccountRole.USER);
+        Account newEntity = new Account(username, encoder.encode(password), "Test@TestMail.com", AccountRole.ROLE_USER);
         accountRepository.saveAndFlush(newEntity);
 
         /* Prepare dto for request */
@@ -180,7 +180,7 @@ final class AccountControllerTest {
         /* Prepare Account entity by saving it to database */
         String password = "TestPassword!@#";
         PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-        Account newEntity = new Account(username, encoder.encode(password), "Test@TestMail.com", AccountRole.USER);
+        Account newEntity = new Account(username, encoder.encode(password), "Test@TestMail.com", AccountRole.ROLE_USER);
         accountRepository.saveAndFlush(newEntity);
 
         /* Create request */

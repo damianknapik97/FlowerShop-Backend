@@ -81,7 +81,7 @@ final class PaymentControllerTest {
         /* Initialize required entities */
         Order order = createOrder("Testing Order", new ShoppingCart(), false);
         Account account = createAccountWithOrder("Payment User", "Payment User",
-                order, AccountRole.USER);
+                order, AccountRole.ROLE_USER);
         Payment controlValue = new Payment(money, PaymentType.BLIK);
         PaymentDTO dto = paymentMapper.mapToDTO(controlValue);
 

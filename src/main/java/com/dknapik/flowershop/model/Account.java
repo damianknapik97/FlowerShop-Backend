@@ -29,7 +29,7 @@ public final class Account implements Model {
     private String email;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AccountRole role = AccountRole.USER;
+    private AccountRole role = AccountRole.ROLE_USER;
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart = new ShoppingCart();

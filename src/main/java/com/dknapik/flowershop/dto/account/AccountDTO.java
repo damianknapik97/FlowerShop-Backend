@@ -34,7 +34,7 @@ public class AccountDTO implements DTO {
     @Size(min = 8)
     @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
     private @Valid String password;
-    private AccountRole role = AccountRole.USER;
+    private AccountRole role = AccountRole.ROLE_USER;
     private ShoppingCart shoppingCartList;
 
 

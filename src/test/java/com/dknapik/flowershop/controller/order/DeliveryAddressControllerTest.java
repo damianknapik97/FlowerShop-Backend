@@ -73,7 +73,7 @@ final class DeliveryAddressControllerTest {
         /* Initialize required entities */
         Order order = createOrder("Testing Order", new ShoppingCart(), false);
         Account account = createAccountWithOrder("Delivery Address User", "Delivery Address User",
-                order, AccountRole.USER);
+                order, AccountRole.ROLE_USER);
         DeliveryAddress controlValue = new DeliveryAddress("Testing City", "40-400",
                 "Testing Street", "100");
         DeliveryAddressDTO dto = deliveryAddressMapper.mapToDTO(controlValue);

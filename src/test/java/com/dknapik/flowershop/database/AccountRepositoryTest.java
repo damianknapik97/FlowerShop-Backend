@@ -27,7 +27,7 @@ final class AccountRepositoryTest {
     void saveToDatabaseTest() {
         /* Create new entity */
         Account account =
-                new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
+                new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.ROLE_EMPLOYEE);
 
         /* Save new entity to database using repository */
         accountRepository.saveAndFlush(account);
@@ -44,7 +44,7 @@ final class AccountRepositoryTest {
     void retrieveFromDatabaseTest() {
         /* Create new entity */
         Account account =
-                new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
+                new Account("TEST_NAME", "Test_Password", "Test_mail@test.pl", AccountRole.ROLE_EMPLOYEE);
 
         /* Save new entity to database with Test Entity Manager */
         entityManager.persistAndFlush(account);
@@ -62,7 +62,7 @@ final class AccountRepositoryTest {
         /* Create new entity */
         String name = "TEST_NAME";
         Account account =
-                new Account(name, "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
+                new Account(name, "Test_Password", "Test_mail@test.pl", AccountRole.ROLE_EMPLOYEE);
 
         /* Save new entity to database with Test Entity Manager */
         entityManager.persistAndFlush(account);
@@ -80,7 +80,7 @@ final class AccountRepositoryTest {
         /* Create new entity */
         String name = "TEST_NAME";
         Account account =
-                new Account(name, "Test_Password", "Test_mail@test.pl", AccountRole.EMPLOYEE);
+                new Account(name, "Test_Password", "Test_mail@test.pl", AccountRole.ROLE_EMPLOYEE);
 
         /* Save new entity to database with Test Entity Manager */
         entityManager.persistAndFlush(account);
