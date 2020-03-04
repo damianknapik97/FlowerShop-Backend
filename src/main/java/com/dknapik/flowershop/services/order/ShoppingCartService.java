@@ -370,4 +370,27 @@ public final class ShoppingCartService {
 
         log.traceExit();
     }
+
+    /**
+     * Checks if provided shopping cart contains any Order entities inside it.
+     *
+     * @param shoppingCart - Shopping cart Entity to check
+     * @return true if Shopping Cart is empty
+     */
+    public boolean isEmpty(ShoppingCart shoppingCart) {
+        if (shoppingCart.getFlowerOrderList() != null && !shoppingCart.getFlowerOrderList().isEmpty()) {
+            return false;
+        }
+
+        if (shoppingCart.getOccasionalArticleOrderList() != null &&
+                !shoppingCart.getOccasionalArticleOrderList().isEmpty()) {
+            return false;
+        }
+
+        if (shoppingCart.getSouvenirOrderList() != null && !shoppingCart.getSouvenirOrderList().isEmpty()) {
+            return false;
+        }
+
+        return shoppingCart.getBouquetList() == null || shoppingCart.getBouquetList().isEmpty();
+    }
 }

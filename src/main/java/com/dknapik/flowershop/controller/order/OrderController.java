@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/order")
@@ -39,17 +40,13 @@ class OrderController {
     }
 
     @PostMapping()
-    ResponseEntity<OrderDTO> createOrderFromShoppingCart(@Valid @RequestBody ShoppingCartDTO shoppingCartDTO,
-                                                         Principal principal) {
+    ResponseEntity<MessageResponseDTO> createOrderFromCurrentShoppingCart(Principal principal) {
         log.traceEntry();
 
-        /* Create new Order, Save it to account, Cast it To DTO */
-        Order order = service.addNewOrderFromShoppingCart(shoppingCartMapper.mapToEntity(shoppingCartDTO),
-                principal.getName());
-        OrderDTO orderDTO = mapper.mapToDTO(order);
+        UUID orderID = service.createOrderFromCurrentShoppingCart(principal.getName());
 
         log.traceExit();
-        return new ResponseEntity<>(orderDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(new MessageResponseDTO(orderID.toString()), HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})

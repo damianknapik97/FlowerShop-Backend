@@ -3,6 +3,7 @@ package com.dknapik.flowershop.services.order;
 import com.dknapik.flowershop.constants.OrderMessage;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.Order;
@@ -38,6 +39,42 @@ public final class OrderService {
         this.shoppingCartService = shoppingCartService;
     }
 
+
+    /**
+     * Retrieving account, detach shopping cart from retrieved account, save it to new Order entity,
+     * add new Order entity to account, return created order ID.
+     *
+     * @param accountName  - to which account add this new order entity
+     * @return - ID of preserved entity
+     */
+    public UUID createOrderFromCurrentShoppingCart(String accountName) {
+        log.traceEntry();
+        Account account = accountService.retrieveAccountByName(accountName);
+
+        /* Check if Account even have initialized list */
+        if (account.getOrderList() == null) {
+            log.info("Account doesn't contain order list, initializing...");
+            account.setOrderList(new ArrayList<>());
+        }
+
+        /* Retrieve shopping cart from account, detach it and create new shopping cart */
+        ShoppingCart cart = account.getShoppingCart();
+
+        if (shoppingCartService.isEmpty(cart)) {
+            log.throwing(Level.ERROR, new InvalidOperationException("No products added to shopping cart"));
+        }
+
+        shoppingCartService.createNewShoppingCart(accountName);
+
+        /* Create new Order entity from retrieved Shopping Cart and save it to account*/
+        Order order = new Order(cart);
+        account.getOrderList().add(order);
+        accountService.updateAccount(account);
+
+        log.traceExit();
+        return order.getId();
+    }
+
     /**
      * Search for provided account using account name, check if account contains provided Order ID,
      * validate it and return.
@@ -68,41 +105,6 @@ public final class OrderService {
         if (order == null) {
             log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID));
         }
-
-        log.traceExit();
-        return order;
-    }
-
-    /**
-     * Retrieving account, create order from shopping cart, and save it.
-     *
-     * @param shoppingCart - products that shall be inside a new order
-     * @param accountName  - to which account add this new order entity
-     * @return - Preserved Order entity
-     */
-    public Order addNewOrderFromShoppingCart(@NonNull ShoppingCart shoppingCart, @NonNull String accountName) {
-        log.traceEntry("Creating new order");
-        Account account = accountService.retrieveAccountByName(accountName);
-
-        /* Check if Account even have initialized list */
-        if (account.getOrderList() == null) {
-            log.info("Account doesn't contain order list, initializing...");
-            account.setOrderList(new ArrayList<>());
-        }
-
-        /* Create new Order entity and save it to provided account */
-        Order order = new Order(new ShoppingCart(
-                shoppingCart.getName(),
-                shoppingCart.getOccasionalArticleOrderList(),
-                shoppingCart.getSouvenirOrderList(),
-                shoppingCart.getFlowerOrderList(),
-                shoppingCart.getBouquetList()
-        ));
-        account.getOrderList().add(order);
-        accountService.updateAccount(account);
-
-        /* Create new shopping cart, co the old one will be detached from account */
-        shoppingCartService.createNewShoppingCart(accountName);
 
         log.traceExit();
         return order;

@@ -30,7 +30,7 @@ public final class Account implements Model {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountRole role = AccountRole.ROLE_USER;
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart = new ShoppingCart();
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})

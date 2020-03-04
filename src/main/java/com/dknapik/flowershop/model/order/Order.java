@@ -27,7 +27,7 @@ public final class Order implements Model {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
     private DeliveryAddress deliveryAddress;
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart;
     @CreatedDate
