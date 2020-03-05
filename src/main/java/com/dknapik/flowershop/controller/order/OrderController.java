@@ -5,7 +5,6 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
-import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.Order;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -43,7 +43,7 @@ class OrderController {
     ResponseEntity<MessageResponseDTO> createOrderFromCurrentShoppingCart(Principal principal) {
         log.traceEntry();
 
-        UUID orderID = service.createOrderFromCurrentShoppingCart(principal.getName());
+        UUID orderID = service.createOrderFromCurrentShoppingCart(principal.getName(), LocalDateTime.now());
 
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(orderID.toString()), HttpStatus.CREATED);

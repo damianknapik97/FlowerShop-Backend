@@ -1,8 +1,10 @@
 package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
+import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.exceptions.runtime.InternalServerException;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
@@ -18,9 +20,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @ToString
@@ -29,6 +33,8 @@ public final class OrderService {
     private final OrderRepository repository;
     private final AccountService accountService;
     private final ShoppingCartService shoppingCartService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Autowired
     public OrderService(OrderRepository repository,
@@ -47,13 +53,13 @@ public final class OrderService {
      * @param accountName  - to which account add this new order entity
      * @return - ID of preserved entity
      */
-    public UUID createOrderFromCurrentShoppingCart(String accountName) {
+    public UUID createOrderFromCurrentShoppingCart(String accountName, LocalDateTime creationDate) {
         log.traceEntry();
         Account account = accountService.retrieveAccountByName(accountName);
 
         /* Check if Account even have initialized list */
         if (account.getOrderList() == null) {
-            log.info("Account doesn't contain order list, initializing...");
+            log.warn("Account doesn't contain order list, initializing...");
             account.setOrderList(new ArrayList<>());
         }
 
@@ -61,18 +67,25 @@ public final class OrderService {
         ShoppingCart cart = account.getShoppingCart();
 
         if (shoppingCartService.isEmpty(cart)) {
-            log.throwing(Level.ERROR, new InvalidOperationException("No products added to shopping cart"));
+            log.throwing(Level.ERROR, new InvalidOperationException(OrderMessage.NO_PRODUCTS_IN_SHOPPING_CART));
         }
 
         shoppingCartService.createNewShoppingCart(accountName);
 
         /* Create new Order entity from retrieved Shopping Cart and save it to account*/
         Order order = new Order(cart);
+        order.setPlacementDate(creationDate);
         account.getOrderList().add(order);
         accountService.updateAccount(account);
 
+        /* Retrieve Order from database to access its ID that was generated when saving to database*/
+        Optional<Order> savedOrder = repository.findOrderByAccountIDAndPlacementDate(account.getId(), creationDate);
+        if (!savedOrder .isPresent()) {
+           log.throwing(Level.ERROR, new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID));
+        }
+
         log.traceExit();
-        return order.getId();
+        return savedOrder.get().getId();
     }
 
     /**
