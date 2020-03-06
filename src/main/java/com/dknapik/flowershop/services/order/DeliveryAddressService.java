@@ -50,6 +50,7 @@ public final class DeliveryAddressService {
         if (order.getDeliveryAddress() != null) {
             log.throwing(Level.WARN,
                     new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED));
+            throw new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED);
 
         }
         order.setDeliveryAddress(deliveryAddress);

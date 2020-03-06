@@ -11,6 +11,7 @@ import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,15 +40,20 @@ import java.util.Optional;
 @ToString
 @Log4j2
 public final class AccountService {
-    private final ModelMapper mapper;             // less messy dto - model mapping
+    private final ModelMapper mapper;            // less messy dto - model mapping
     private final AccountRepository accountRepo; // database access
     private final ApplicationContext context;    // retrieve existing beans
+    private final PasswordEncoder encoder;       // Encode Account passwords in database
 
     @Autowired
-    public AccountService(AccountRepository accountRepo, ApplicationContext context, ModelMapper modelMapper) {
+    public AccountService(ModelMapper mapper,
+                          AccountRepository accountRepo,
+                          ApplicationContext context,
+                          PasswordEncoder encoder) {
+        this.mapper = mapper;
         this.accountRepo = accountRepo;
         this.context = context;
-        this.mapper = modelMapper;
+        this.encoder = encoder;
     }
 
     /**
@@ -65,17 +71,17 @@ public final class AccountService {
         log.traceEntry();
 
         if (bindingResult.hasErrors()) {
-            log.error(AccountMessage.NEW_ENTITY_CREATION_ERROR.toString());
+            log.throwing(Level.ERROR,
+                    new BindingException(AccountMessage.NEW_ENTITY_CREATION_ERROR, accountDto.getClass()));
             throw new BindingException(AccountMessage.NEW_ENTITY_CREATION_ERROR, accountDto.getClass());
         }
 
         if (this.accountRepo.existsByName(accountDto.getName())) {
-            log.warn(AccountMessage.ALREADY_EXISTS.toString());
+            log.throwing(Level.WARN, new DataProcessingException(AccountMessage.ALREADY_EXISTS));
             throw new DataProcessingException(AccountMessage.ALREADY_EXISTS);
         }
 
-        accountDto.setPassword(
-                context.getBean(PasswordEncoder.class).encode(accountDto.getPassword()));  // Encode password
+        accountDto.setPassword(encoder.encode(accountDto.getPassword()));  // Encode password
         this.accountRepo.saveAndFlush(mapper.map(accountDto, Account.class));
 
         log.traceExit();
@@ -91,10 +97,13 @@ public final class AccountService {
         log.traceEntry();
 
         Optional<Account> account = accountRepo.findByName(accountName);
+        if (!account.isPresent()) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+            throw new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+        }
 
         log.traceExit();
-        return account.orElseThrow(() ->
-                new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+        return account.get();
     }
 
     /**
@@ -108,17 +117,20 @@ public final class AccountService {
             throws DataProcessingException {
         log.traceEntry();
 
-        Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+        Optional<Account> acc = this.accountRepo.findByName(principal.getName());
+        if (!acc.isPresent()) {
+            log.throwing(Level.ERROR, new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+            throw new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+        }
 
         log.traceExit();
-        return this.mapper.map(acc, AccountDetailsDTO.class);
+        return this.mapper.map(acc.get(), AccountDetailsDTO.class);
     }
 
     /**
      * Update account side details - ones that doesn't change how provided account is accessed.
      *
-     * @param accDetailsDto
+     * @param accDetailsDto - DTO object containing details that will be updated in account.
      * @param bindingResult - request to dto mapping results.`
      * @param principal     - handle used to access spring security context to retrieve account name sending request.
      * @throws BindingException        - mapping request to dto failed.
@@ -131,16 +143,19 @@ public final class AccountService {
         log.traceEntry();
 
         if (bindingResult.hasErrors()) {
-            log.error(AccountMessage.ENTITY_UPDATE_ERROR.toString());
-            throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR,
-                    accDetailsDto.getClass());
+            log.throwing(Level.ERROR,
+                    new BindingException(AccountMessage.ENTITY_UPDATE_ERROR, accDetailsDto.getClass()));
+            throw new BindingException(AccountMessage.ENTITY_UPDATE_ERROR, accDetailsDto.getClass());
         }
 
-        Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+        Optional<Account> acc = this.accountRepo.findByName(principal.getName());
+        if (!acc.isPresent()) {
+            log.throwing(Level.ERROR, new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+            throw new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+        }
 
-        this.mapper.map(accDetailsDto, acc);
-        this.accountRepo.saveAndFlush(acc);
+        this.mapper.map(accDetailsDto, acc.get());
+        this.accountRepo.saveAndFlush(acc.get());
 
         log.traceExit();
     }
@@ -155,6 +170,7 @@ public final class AccountService {
 
         /* Check if account exists, if not, we are not performing update but save so throw an exception */
         if (!accountRepo.existsById(account.getId())) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
             throw new ResourceNotFoundException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
         } else {
             accountRepo.saveAndFlush(account);
@@ -168,7 +184,7 @@ public final class AccountService {
      *
      * @param passwordChangeDto - dto containing actual password, new password and confirmation password.
      * @param bindingResult     - request to dto mapping results.
-     * @param principal         - handle used to access spring security context to retrieve account name sending request.
+     * @param principal        - handle used to access spring security context to retrieve account name sending request.
      * @throws BindingException        - mapping request to dto failed.
      * @throws DataProcessingException - thrown when provided passwords doesn't match.
      */
@@ -184,18 +200,19 @@ public final class AccountService {
                     passwordChangeDto.getClass());
         }
 
-        Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR)
-        );
+        Optional<Account> acc = this.accountRepo.findByName(principal.getName());
+        if (!acc.isPresent()) {
+            log.throwing(Level.ERROR, new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+            throw new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+        }
 
-        PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
         if (!passwordChangeDto.getNewPassword().contentEquals(passwordChangeDto.getNewPasswordConfirmation())) {
-            log.warn(AccountMessage.PASSWORD_UPDATE_ERROR.toString());
+            log.throwing(Level.WARN, new DataProcessingException(AccountMessage.PASSWORD_UPDATE_ERROR));
             throw new DataProcessingException(AccountMessage.PASSWORD_UPDATE_ERROR);
         }
 
-        acc.setPassword(encoder.encode(passwordChangeDto.getNewPassword()));
-        this.accountRepo.saveAndFlush(acc);
+        acc.get().setPassword(encoder.encode(passwordChangeDto.getNewPassword()));
+        this.accountRepo.saveAndFlush(acc.get());
 
         log.traceExit();
     }
@@ -205,7 +222,8 @@ public final class AccountService {
      *
      * @param password  - user input.
      * @param principal - handle used to access spring security context to retrieve account name sending request.
-     * @throws DataProcessingException - Either provided password doesn't match or currently logged user couldn't be found.
+     * @throws DataProcessingException - Either provided password doesn't match
+     * or currently logged user couldn't be found.
      */
     public void deleteAccount(String password,
                               Principal principal)
@@ -213,15 +231,16 @@ public final class AccountService {
         log.traceEntry();
 
         if (password != null) {
-            Account acc = this.accountRepo.findByName(principal.getName()).orElseThrow(
-                    () -> new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR)
-            );
+            Optional<Account> acc = this.accountRepo.findByName(principal.getName());
+            if (!acc.isPresent()) {
+                log.throwing(Level.ERROR, new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR));
+                throw new DataProcessingException(AccountMessage.ENTITY_DETAILS_RETRIEVAL_ERROR);
+            }
 
-            PasswordEncoder encoder = context.getBean(PasswordEncoder.class);
-
-            if (encoder.matches(password, acc.getPassword())) {
-                this.accountRepo.delete(acc);
+            if (encoder.matches(password, acc.get().getPassword())) {
+                this.accountRepo.delete(acc.get());
             } else {
+                log.throwing(Level.ERROR, new DataProcessingException(AccountMessage.ENTITY_DELETE_ERROR));
                 throw new DataProcessingException(AccountMessage.ENTITY_DELETE_ERROR);
             }
         }

@@ -7,6 +7,7 @@ import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.product.Souvenir;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +37,13 @@ public final class SouvenirService {
         log.traceEntry();
 
         Optional<Souvenir> retrievedEntity = repository.findById(id);
+        if (!retrievedEntity.isPresent()) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
+            throw new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND);
+        }
 
         log.traceExit();
-        return retrievedEntity.orElseThrow(() -> new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
+        return retrievedEntity.get();
     }
 
     /**

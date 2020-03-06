@@ -44,6 +44,7 @@ public final class PaymentService {
         /* Check if payment is already assigned */
         if (order.getPayment() != null) {
             log.throwing(Level.WARN, new InvalidOperationException(PaymentMessage.PAYMENT_ALREADY_ASSIGNED));
+            throw new InvalidOperationException(PaymentMessage.PAYMENT_ALREADY_ASSIGNED);
         }
 
         /* Set Payment for provided order and save it */

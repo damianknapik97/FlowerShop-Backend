@@ -67,7 +67,8 @@ public final class OrderService {
         ShoppingCart cart = account.getShoppingCart();
 
         if (shoppingCartService.isEmpty(cart)) {
-            log.throwing(Level.ERROR, new InvalidOperationException(OrderMessage.NO_PRODUCTS_IN_SHOPPING_CART));
+            log.throwing(Level.WARN, new InvalidOperationException(OrderMessage.NO_PRODUCTS_IN_SHOPPING_CART));
+            throw new InvalidOperationException(OrderMessage.NO_PRODUCTS_IN_SHOPPING_CART);
         }
 
         shoppingCartService.createNewShoppingCart(accountName);
@@ -82,6 +83,7 @@ public final class OrderService {
         Optional<Order> savedOrder = repository.findOrderByAccountIDAndPlacementDate(account.getId(), creationDate);
         if (!savedOrder .isPresent()) {
            log.throwing(Level.ERROR, new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID));
+           throw new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID);
         }
 
         log.traceExit();
@@ -103,6 +105,7 @@ public final class OrderService {
         /* Check if Account even have initialized list */
         if (account.getOrderList() == null) {
             log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.NO_ORDERS));
+            throw new ResourceNotFoundException(OrderMessage.NO_ORDERS);
         }
 
         /* Search account for provided order id */
@@ -117,6 +120,7 @@ public final class OrderService {
         /* Check if order was found */
         if (order == null) {
             log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID));
+            throw new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID);
         }
 
         log.traceExit();
@@ -155,7 +159,8 @@ public final class OrderService {
         if (repository.existsById(order.getId())) {
             repository.saveAndFlush(order);
         } else {
-            log.throwing(Level.WARN,new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED));
+            log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED));
+            throw new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED);
         }
 
         log.traceExit();
