@@ -5,12 +5,16 @@ import com.dknapik.flowershop.database.order.PaymentRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.Payment;
+import com.dknapik.flowershop.model.order.PaymentType;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -52,5 +56,9 @@ public final class PaymentService {
         orderService.updateExistingOrder(order);
 
         log.traceExit();
+    }
+
+    public Set<PaymentType> retrieveAllPaymentOptions() {
+        return EnumSet.allOf(PaymentType.class);
     }
 }

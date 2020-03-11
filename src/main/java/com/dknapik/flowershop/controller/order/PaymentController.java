@@ -4,6 +4,7 @@ import com.dknapik.flowershop.constants.PaymentMessage;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.order.PaymentDTO;
 import com.dknapik.flowershop.mapper.order.PaymentMapper;
+import com.dknapik.flowershop.model.order.PaymentType;
 import com.dknapik.flowershop.services.order.PaymentService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -42,5 +44,16 @@ final class PaymentController {
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY),
                 HttpStatus.CREATED);
+    }
+
+    // TODO: Add Test
+    @GetMapping("/types")
+    ResponseEntity<Set<PaymentType>> getPaymentTypes() {
+        log.traceEntry();
+
+        Set<PaymentType> paymentTypes = service.retrieveAllPaymentOptions();
+
+        log.traceExit();
+        return new ResponseEntity<>(paymentTypes, HttpStatus.OK);
     }
 }
