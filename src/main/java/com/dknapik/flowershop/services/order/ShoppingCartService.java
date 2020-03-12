@@ -1,6 +1,9 @@
 package com.dknapik.flowershop.services.order;
 
+import com.dknapik.flowershop.constants.ShoppingCartMessage;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
+import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
 import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
@@ -10,11 +13,18 @@ import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import com.dknapik.flowershop.services.product.SouvenirService;
+import com.dknapik.flowershop.services.productorder.FlowerOrderService;
+import com.dknapik.flowershop.services.productorder.OccasionalArticleOrderService;
+import com.dknapik.flowershop.services.productorder.SouvenirOrderService;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.money.MonetaryAmount;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,22 +36,36 @@ import java.util.UUID;
 public final class ShoppingCartService {
     private final ShoppingCartRepository repository;
     private final AccountService accountService;
+    private final FlowerOrderService flowerOrderService;
     private final FlowerService flowerService;
+    private final OccasionalArticleOrderService occasionalArticleOrderService;
     private final OccasionalArticleService occasionalArticleService;
+    private final SouvenirOrderService souvenirOrderService;
     private final SouvenirService souvenirService;
+    private final MoneyUtils moneyUtils;
+
 
     @Autowired
     public ShoppingCartService(ShoppingCartRepository repository,
                                AccountService accountService,
+                               FlowerOrderService flowerOrderService,
                                FlowerService flowerService,
+                               OccasionalArticleOrderService occasionalArticleOrderService,
                                OccasionalArticleService occasionalArticleService,
-                               SouvenirService souvenirService) {
+                               SouvenirOrderService souvenirOrderService,
+                               SouvenirService souvenirService,
+                               MoneyUtils moneyUtils) {
         this.repository = repository;
         this.accountService = accountService;
+        this.flowerOrderService = flowerOrderService;
         this.flowerService = flowerService;
+        this.occasionalArticleOrderService = occasionalArticleOrderService;
         this.occasionalArticleService = occasionalArticleService;
+        this.souvenirOrderService = souvenirOrderService;
         this.souvenirService = souvenirService;
+        this.moneyUtils = moneyUtils;
     }
+
 
     /**
      * Retrieves shopping cart for provided account. If shopping cart was not found,
@@ -392,5 +416,62 @@ public final class ShoppingCartService {
         }
 
         return shoppingCart.getBouquetList() == null || shoppingCart.getBouquetList().isEmpty();
+    }
+
+    public MonetaryAmount countTotalPrice(UUID shoppingCartID) {
+        log.traceEntry();
+        Optional<ShoppingCart> shoppingCartOptional = repository.findById(shoppingCartID);
+
+        /* Check if it was even possible to retrieve this shopping cart by ID */
+        if (!shoppingCartOptional.isPresent()) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND));
+            throw new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND);
+        }
+
+        ShoppingCart shoppingCart = shoppingCartOptional.get();
+        MonetaryAmount totalPrice = null;
+        MonetaryAmount orderTotalPrice;
+
+        orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
+        if (orderTotalPrice != null) {
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            }
+        }
+
+        orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
+        if (orderTotalPrice != null) {
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            } else {
+                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
+                    log.throwing(Level.ERROR,
+                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+                }
+                totalPrice.add(orderTotalPrice);
+            }
+        }
+
+        orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
+        if (orderTotalPrice != null) {
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            } else {
+                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
+                    log.throwing(Level.ERROR,
+                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+                }
+                totalPrice.add(orderTotalPrice);
+            }
+        }
+
+        if (totalPrice == null) {
+            totalPrice = Money.zero(moneyUtils.getApplicationCurrencyUnit());
+        }
+
+        log.traceExit();
+        return totalPrice;
     }
 }

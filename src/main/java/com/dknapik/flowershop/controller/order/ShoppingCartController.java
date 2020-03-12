@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.UUID;
@@ -195,6 +196,16 @@ final class ShoppingCartController {
         log.traceExit();
         return new ResponseEntity<>(
                 new MessageResponseDTO(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY), HttpStatus.OK);
+    }
+
+    @GetMapping("/total")
+    ResponseEntity<MonetaryAmount> countTotalPrice(@Valid @RequestParam("id") UUID shoppingCartID) {
+        log.traceEntry();
+
+        MonetaryAmount totalPrice = service.countTotalPrice(shoppingCartID);
+
+        log.traceExit();
+        return new ResponseEntity<>(totalPrice, HttpStatus.OK);
     }
 
 }
