@@ -449,11 +449,11 @@ public final class ShoppingCartService {
                             new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
                     throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
                 }
-                totalPrice.add(orderTotalPrice);
+                totalPrice = totalPrice.add(orderTotalPrice);
             }
         }
 
-        orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
+        orderTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
         if (orderTotalPrice != null) {
             if (totalPrice == null) {
                 totalPrice = orderTotalPrice;
@@ -463,7 +463,7 @@ public final class ShoppingCartService {
                             new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
                     throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
                 }
-                totalPrice.add(orderTotalPrice);
+                totalPrice = totalPrice.add(orderTotalPrice);
             }
         }
 

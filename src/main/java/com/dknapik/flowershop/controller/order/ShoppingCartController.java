@@ -198,7 +198,7 @@ final class ShoppingCartController {
                 new MessageResponseDTO(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY), HttpStatus.OK);
     }
 
-    @GetMapping("/total")
+    @GetMapping("/total-price")
     ResponseEntity<MonetaryAmount> countTotalPrice(@Valid @RequestParam("id") UUID shoppingCartID) {
         log.traceEntry();
 
