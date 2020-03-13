@@ -186,6 +186,27 @@ public final class OrderService {
         /* Return collection of products ready for transport/serialization/mapping */
         log.traceExit();
         return new RestResponsePage<>(content, pageable, repository.count());
+    }
 
+
+    /**
+     * Searches for order with provided id in provided account and returns its shopping cart ID.
+     *
+     * @param orderID - order to retrieve shopping cart from
+     * @param accountName - account to serach for order id in.
+     * @return UUID containg shopping cart ID assigned to provided Order ID.
+     */
+    public UUID retrieveShoppingCartID(UUID orderID, String accountName) {
+        log.traceEntry();
+        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName);
+
+        /* Check if Order contains shopping cart */
+        if (retrievedOrder.getShoppingCart() == null) {
+            log.throwing(Level.ERROR, new InvalidOperationException(OrderMessage.NO_SHOPPING_CART_ASSIGNED));
+            throw new InvalidOperationException(OrderMessage.NO_SHOPPING_CART_ASSIGNED);
+        }
+
+        log.traceExit();
+        return retrievedOrder.getShoppingCart().getId();
     }
 }

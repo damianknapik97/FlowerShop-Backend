@@ -71,4 +71,20 @@ class OrderController {
         log.traceExit();
         return new ResponseEntity<>(ordeDTOPage, HttpStatus.OK);
     }
+
+    /**
+     * Searches currently logged user account for provided order ID and retrieves assigned to id Shopping Cart ID.
+     *
+     * @param orderID   - Order ID to search for in user account.
+     * @param principal - User performing the request.
+     * @return Shopping Cart ID assigned to Order ID.
+     */
+    ResponseEntity<UUID> retrieveShoppingCartID(@Valid @RequestParam("id") UUID orderID, Principal principal) {
+        log.traceEntry();
+
+        UUID shoppingCartID = service.retrieveShoppingCartID(orderID, principal.getName());
+
+        log.traceExit();
+        return new ResponseEntity<>(shoppingCartID, HttpStatus.OK);
+    }
 }
