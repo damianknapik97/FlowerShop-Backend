@@ -28,6 +28,12 @@ final class OccasionalArticleController {
         this.productMapper = productMapper;
     }
 
+    /**
+     * Retrieve Page of Occasional Article entities with number of them defined in ProductProperties class.
+     *
+     * @param page - which page of entities should be recovered
+     * @return Pageable containing Occasional Article entities.
+     */
     @GetMapping
     ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
             @RequestParam(value = "page", defaultValue = "0") int page) {

@@ -29,6 +29,12 @@ final class FlowerController {
         this.productMapper = productMapper;
     }
 
+    /**
+     * Retrieve Page of Flower entities with number of them defined in ProductProperties class.
+     *
+     * @param page - which page of entities should be recovered
+     * @return Pageable containing Flower entities.
+     */
     @GetMapping
     ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
             @RequestParam(value = "page", defaultValue = "0") int page) {

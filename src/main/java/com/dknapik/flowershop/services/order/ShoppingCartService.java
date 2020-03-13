@@ -5,9 +5,9 @@ import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
 import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
-import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
@@ -418,6 +418,17 @@ public final class ShoppingCartService {
         return shoppingCart.getBouquetList() == null || shoppingCart.getBouquetList().isEmpty();
     }
 
+    /**
+     *
+     * Sum up price of all the Product Order entities that are nested inside provided Shopping Cart ID.
+     * This method additionally checks if all of Product entities contain the same Currency and throws exception if not.
+     *
+     * // TODO: This method is too long, refactor it, add unit test.
+     *
+     * @param shoppingCartID - Shopping Cart to count total price from.
+     * @return MonetaryAmount containing equal currencies and summed up product prices or 0 with current application
+     * currency
+     */
     public MonetaryAmount countTotalPrice(UUID shoppingCartID) {
         log.traceEntry();
         Optional<ShoppingCart> shoppingCartOptional = repository.findById(shoppingCartID);
@@ -432,6 +443,7 @@ public final class ShoppingCartService {
         MonetaryAmount totalPrice = null;
         MonetaryAmount orderTotalPrice;
 
+        /* Retrieve sum of nested Flower Order entities initialize return object if sum didn't return null */
         orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
         if (orderTotalPrice != null) {
             if (totalPrice == null) {
@@ -439,34 +451,50 @@ public final class ShoppingCartService {
             }
         }
 
+        /* Retrieve sum of Occasional Article Orders */
         orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
         if (orderTotalPrice != null) {
+
+            /* Check if return object was previously initialized, and initialize it if not */
             if (totalPrice == null) {
                 totalPrice = orderTotalPrice;
             } else {
+
+                /* Check if currency of Occasional Article Order matches currently summed up objects currency */
                 if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
                     log.throwing(Level.ERROR,
                             new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
                     throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
                 }
+
+                /* Add Occasional Article Orders sum to currently summed up object */
                 totalPrice = totalPrice.add(orderTotalPrice);
             }
         }
 
+        /* Retrieve sum of Souvenir Orders */
         orderTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
         if (orderTotalPrice != null) {
+
+            /* Check if return object was previously initialized, and initialize it if not */
             if (totalPrice == null) {
                 totalPrice = orderTotalPrice;
             } else {
+
+                /* Check if currency of Souvenir Order matches currently summed up objects currency */
                 if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
                     log.throwing(Level.ERROR,
                             new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
                     throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
                 }
+
+                /* Add Souvenir Orders sum to currently summed up object */
                 totalPrice = totalPrice.add(orderTotalPrice);
             }
         }
 
+        /* If return object wasn't initialized in any of the previous cases,
+         return 0 as an amount and use application currency */
         if (totalPrice == null) {
             totalPrice = Money.zero(moneyUtils.getApplicationCurrencyUnit());
         }

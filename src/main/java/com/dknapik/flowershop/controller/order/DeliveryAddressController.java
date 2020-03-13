@@ -31,6 +31,15 @@ final class DeliveryAddressController {
         this.mapper = mapper;
     }
 
+    /**
+     * Search account performing this request for provided Order ID, create new DeliveryAddress entity
+     * and assign it to mentioned Order entity.
+     *
+     * @param orderID            - Order to search for
+     * @param deliveryAddressDTO - Delivery Address DTO to cast to entity and save it to found order.
+     * @param principal          - account performing this request and having assigned Order to it.
+     * @return MessageResponseDTO containing information about operation result.
+     */
     @PostMapping()
     ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
             @Valid @RequestParam("id") UUID orderID,

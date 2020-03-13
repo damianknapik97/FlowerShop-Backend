@@ -30,7 +30,7 @@ final class SouvenirController {
     }
 
     /**
-     * Retrieve unsorted page of Souvenir prooducts
+     * Retrieve unsorted page of Souvenir products
      *
      * @param page - number of page to return (By default page contains 20 objects)
      * @return Page with Souvenir products

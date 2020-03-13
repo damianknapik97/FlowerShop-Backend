@@ -198,6 +198,14 @@ final class ShoppingCartController {
                 new MessageResponseDTO(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY), HttpStatus.OK);
     }
 
+    /**
+     * TODO: Add Test
+     * <p>
+     * Add all prices of currently assigned Product Order entities to provided Shopping Cart ID and return them.
+     *
+     * @param shoppingCartID - Shopping ID to count total price from
+     * @return Total price of all the products assigned with currency
+     */
     @GetMapping("/total-price")
     ResponseEntity<MonetaryAmount> countTotalPrice(@Valid @RequestParam("id") UUID shoppingCartID) {
         log.traceEntry();

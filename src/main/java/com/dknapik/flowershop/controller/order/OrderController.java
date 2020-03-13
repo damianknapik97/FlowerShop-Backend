@@ -39,6 +39,12 @@ class OrderController {
         this.shoppingCartMapper = shoppingCartMapper;
     }
 
+    /**
+     * Retrieves Shopping Cart assigned to account performing this request, create order entity from it and clear it.
+     *
+     * @param principal - user performing this request
+     * @return MessageResponseDTO containing information about operation result.
+     */
     @PostMapping()
     ResponseEntity<MessageResponseDTO> createOrderFromCurrentShoppingCart(Principal principal) {
         log.traceEntry();
@@ -49,9 +55,16 @@ class OrderController {
         return new ResponseEntity<>(new MessageResponseDTO(orderID.toString()), HttpStatus.CREATED);
     }
 
+    /**
+     * This end point is available only of authorized accounts.
+     * Updates provided Order entity, regardless of account assigned to it.
+     *
+     * @param orderDTO - DTO to update (ID must match actually existing Order entity)
+     * @return - MessageResponseDTO with information about operation result.
+     */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PutMapping
-    ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO, Principal principal) {
+    ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
         log.traceEntry();
 
         service.updateExistingOrder(mapper.mapToEntity(orderDTO));
@@ -60,9 +73,17 @@ class OrderController {
         return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves one page of orders, regardless of assigned account to it.
+     * This end point can be used only by authorized accounts
+     *
+     * @param page - number of page to retrieve
+     * @return Pageable with number of orders defined in ProductProperties class.
+     */
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @GetMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(@RequestParam("page") int page) {
+    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
+            @RequestParam(value = "page", defaultValue = "0") int page) {
         log.traceEntry();
 
         RestResponsePage<Order> orderPage = service.retrieveOrdersPage(page, ProductProperties.PAGE_SIZE);
