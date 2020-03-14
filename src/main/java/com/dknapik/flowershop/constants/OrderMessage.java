@@ -3,6 +3,7 @@ package com.dknapik.flowershop.constants;
 public enum OrderMessage {
     /* Info */
     ORDER_UPDATED_SUCCESSFULLY("Order was updated successfully"),
+    ORDER_DETAILS_UPDATED_SUCCESSFULLY("Order details were updated successfully"),
 
 
     /* Error */

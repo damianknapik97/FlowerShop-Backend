@@ -5,6 +5,7 @@ import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
+import com.dknapik.flowershop.dto.order.OrderDetailsDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.Order;
@@ -100,6 +101,7 @@ class OrderController {
      * @param principal - User performing the request.
      * @return Shopping Cart ID assigned to Order ID.
      */
+    @GetMapping("/shopping-cart")
     ResponseEntity<UUID> retrieveShoppingCartID(@Valid @RequestParam("id") UUID orderID, Principal principal) {
         log.traceEntry();
 
@@ -108,4 +110,29 @@ class OrderController {
         log.traceExit();
         return new ResponseEntity<>(shoppingCartID, HttpStatus.OK);
     }
+
+    /**
+     * Supplies necessary information to provided Order ID nested inside account performing this request.
+     *
+     * TODO: Add Test
+     *
+     * @param orderID - Order to search for
+     * @param orderDetailsDTO - additional information about order to set.
+     * @param principal - account to find order in
+     * @return MessageResponseDTO with status about operation results
+     */
+    @PutMapping("/details")
+    ResponseEntity<MessageResponseDTO> updateOrderDetails(@Valid @RequestParam("id") UUID orderID,
+                                                          @Valid @RequestBody OrderDetailsDTO orderDetailsDTO,
+                                                          Principal principal) {
+        log.traceEntry();
+
+        service.updateOrderDetails(orderID, principal.getName(),
+                orderDetailsDTO.getMessage(), orderDetailsDTO.getDeliveryDate(), orderDetailsDTO.getAdditionalNote());
+
+        log.traceExit();
+        return new ResponseEntity<>(
+                new MessageResponseDTO(OrderMessage.ORDER_DETAILS_UPDATED_SUCCESSFULLY), HttpStatus.OK);
+    }
+
 }

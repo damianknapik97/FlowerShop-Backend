@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -208,5 +209,28 @@ public final class OrderService {
 
         log.traceExit();
         return retrievedOrder.getShoppingCart().getId();
+    }
+
+    /**
+     * Updates retrieved order from provided account by provided arguments and saves it to database.
+     *
+     * @param orderID - Order to search for
+     * @param accountName - account in which to search for provided Order ID
+     * @param message - String containing message that should be delivered on a note
+     * @param deliveryDate - Date at which Order should be delivered.
+     * @param additionalNote - Additional notes about this order.
+     */
+    public void updateOrderDetails(UUID orderID, String accountName, String message,
+                                   LocalDateTime deliveryDate, String additionalNote) {
+        log.traceEntry();
+        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName);
+
+        /* Set provided argument to retrieved shopping cart and save it */
+        retrievedOrder.setMessage(message);
+        retrievedOrder.setDeliveryDate(deliveryDate);
+        retrievedOrder.setAdditionalNote(additionalNote);
+        repository.saveAndFlush(retrievedOrder);
+
+        log.traceExit();
     }
 }

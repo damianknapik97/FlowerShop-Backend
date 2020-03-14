@@ -33,6 +33,8 @@ public final class Order implements Model {
     @CreatedDate
     @Column
     private LocalDateTime placementDate;
+    @Column
+    private String additionalNote;
     @Enumerated(EnumType.STRING)
     @Column
     private OrderStatus status = OrderStatus.CREATED;
