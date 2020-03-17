@@ -5,6 +5,7 @@ import com.dknapik.flowershop.database.order.DeliveryAddressRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -37,14 +38,16 @@ public final class DeliveryAddressService {
      * @param orderID         - id to search for
      * @param deliveryAddress - entity to save
      * @param accountName     - account to search order for
+     * @param expectedOrderStatus - order verification
      */
     public void addNewDeliveryAddressToOrder(@NonNull UUID orderID,
                                              @NonNull DeliveryAddress deliveryAddress,
-                                             @NonNull String accountName) {
+                                             @NonNull String accountName,
+                                             @NonNull OrderStatus expectedOrderStatus) {
         log.traceEntry("Adding new delivery address to existing order");
 
         /* Search for order entity */
-        Order order = orderService.retrieveOrderFromAccount(orderID, accountName);
+        Order order = orderService.retrieveOrderFromAccount(orderID, accountName, expectedOrderStatus);
 
         /* Check if delivery order is already set, set delivery address to order and save it to database */
         if (order.getDeliveryAddress() != null) {

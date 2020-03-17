@@ -9,6 +9,7 @@ import com.dknapik.flowershop.dto.order.OrderDetailsDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.services.order.OrderService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -104,8 +105,9 @@ class OrderController {
     @GetMapping("/shopping-cart")
     ResponseEntity<UUID> retrieveShoppingCartID(@Valid @RequestParam("id") UUID orderID, Principal principal) {
         log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
 
-        UUID shoppingCartID = service.retrieveShoppingCartID(orderID, principal.getName());
+        UUID shoppingCartID = service.retrieveShoppingCartID(orderID, principal.getName(), expectedStatus);
 
         log.traceExit();
         return new ResponseEntity<>(shoppingCartID, HttpStatus.OK);
@@ -126,13 +128,36 @@ class OrderController {
                                                           @Valid @RequestBody OrderDetailsDTO orderDetailsDTO,
                                                           Principal principal) {
         log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
 
-        service.updateOrderDetails(orderID, principal.getName(),
-                orderDetailsDTO.getMessage(), orderDetailsDTO.getDeliveryDate(), orderDetailsDTO.getAdditionalNote());
+        service.updateOrderDetails(orderID, principal.getName(), orderDetailsDTO.getMessage(),
+                orderDetailsDTO.getDeliveryDate(), orderDetailsDTO.getAdditionalNote(), expectedStatus);
 
         log.traceExit();
         return new ResponseEntity<>(
                 new MessageResponseDTO(OrderMessage.ORDER_DETAILS_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves order entity with provided ID, ensuring that its status is set to CREATED.
+     *
+     * TODO: Add Test
+     *
+     * @param orderID - Order to search for
+     * @param principal - account to search for order in.
+     * @return Order DTO with all its related information.
+     */
+    @GetMapping
+    ResponseEntity<OrderDTO> retrieveCreatedOrderFromAccount(@Valid @RequestParam("id") UUID orderID,
+                                                             Principal principal) {
+        log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
+
+        /* Retrieve order and map it to DTO */
+        Order retrievedOrder = this.service.retrieveOrderFromAccount(orderID, principal.getName(), expectedStatus);
+        OrderDTO responseDTO = mapper.mapToDTO(retrievedOrder);
+
+        log.traceExit();
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

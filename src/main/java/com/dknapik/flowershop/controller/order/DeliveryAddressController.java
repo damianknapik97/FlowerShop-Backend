@@ -4,6 +4,7 @@ import com.dknapik.flowershop.constants.DeliveryAddressMessage;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.order.DeliveryAddressDTO;
 import com.dknapik.flowershop.mapper.order.DeliveryAddressMapper;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.services.order.DeliveryAddressService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -46,8 +47,10 @@ final class DeliveryAddressController {
             @Valid @RequestBody DeliveryAddressDTO deliveryAddressDTO,
             Principal principal) {
         log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
 
-        service.addNewDeliveryAddressToOrder(orderID, mapper.mapToEntity(deliveryAddressDTO), principal.getName());
+        service.addNewDeliveryAddressToOrder(orderID, mapper.mapToEntity(deliveryAddressDTO),
+                principal.getName(), expectedStatus);
 
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(DeliveryAddressMessage.DELIVERY_ADDRESS_ADDED_SUCCESSFULLY),

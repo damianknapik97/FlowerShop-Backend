@@ -4,6 +4,7 @@ import com.dknapik.flowershop.constants.PaymentMessage;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.order.PaymentDTO;
 import com.dknapik.flowershop.mapper.order.PaymentMapper;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.PaymentType;
 import com.dknapik.flowershop.services.order.PaymentService;
 import lombok.ToString;
@@ -46,8 +47,9 @@ final class PaymentController {
                                                              @Valid @RequestBody PaymentDTO paymentDTO,
                                                              Principal principal) {
         log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
 
-        service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName());
+        service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName(), expectedStatus);
 
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY),

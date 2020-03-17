@@ -1,14 +1,15 @@
 package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
-import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.InternalServerException;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
+import com.dknapik.flowershop.exceptions.runtime.UnauthorizedException;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.AccountService;
 import lombok.NonNull;
@@ -20,12 +21,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @ToString
@@ -34,8 +34,6 @@ public final class OrderService {
     private final OrderRepository repository;
     private final AccountService accountService;
     private final ShoppingCartService shoppingCartService;
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     public OrderService(OrderRepository repository,
@@ -51,10 +49,10 @@ public final class OrderService {
      * Retrieving account, detach shopping cart from retrieved account, save it to new Order entity,
      * add new Order entity to account, return created order ID.
      *
-     * @param accountName  - to which account add this new order entity
+     * @param accountName - to which account add this new order entity
      * @return - ID of preserved entity
      */
-    public UUID createOrderFromCurrentShoppingCart(String accountName, LocalDateTime creationDate) {
+    public UUID createOrderFromCurrentShoppingCart(@NonNull String accountName, @NonNull LocalDateTime creationDate) {
         log.traceEntry();
         Account account = accountService.retrieveAccountByName(accountName);
 
@@ -82,9 +80,9 @@ public final class OrderService {
 
         /* Retrieve Order from database to access its ID that was generated when saving to database*/
         Optional<Order> savedOrder = repository.findOrderByAccountIDAndPlacementDate(account.getId(), creationDate);
-        if (!savedOrder .isPresent()) {
-           log.throwing(Level.ERROR, new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID));
-           throw new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID);
+        if (!savedOrder.isPresent()) {
+            log.throwing(Level.ERROR, new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID));
+            throw new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID);
         }
 
         log.traceExit();
@@ -93,13 +91,16 @@ public final class OrderService {
 
     /**
      * Search for provided account using account name, check if account contains provided Order ID,
-     * validate it and return.
+     * validate order status and return.
      *
      * @param orderID     - ID of order that should be contained inside provided account
      * @param accountName - login of account to search for
+     * @param expectedStatus - param to validate and ensure if request is being made to expected Order entity.
      * @return - Order entity matching provided ID and account
      */
-    public Order retrieveOrderFromAccount(UUID orderID, String accountName) {
+    public Order retrieveOrderFromAccount(@NonNull UUID orderID,
+                                          @NonNull String accountName,
+                                          @NonNull OrderStatus expectedStatus) {
         log.traceEntry("Retrieving Order Entity from Account ");
         Account account = accountService.retrieveAccountByName(accountName);
 
@@ -124,29 +125,15 @@ public final class OrderService {
             throw new ResourceNotFoundException(OrderMessage.NO_ORDER_WITH_SPECIFIC_ID);
         }
 
+        /* Check if order status matches expectations */
+        if (!validateOrderStatus(order, expectedStatus)) {
+            log.throwing(Level.ERROR,
+                    new UnauthorizedException("Requested order status doesn't match request expectations"));
+            throw new UnauthorizedException("Requested order status doesn't match request expectations");
+        }
+
         log.traceExit();
         return order;
-    }
-
-    /**
-     * Retrieving account, searching for provided order by utilizing its ID,
-     * and replacing in database existing entity with the one provided in argument.
-     *
-     * @param order       - entity to update
-     * @param accountName - account name from which entity should be taken.
-     */
-    public void updateExistingOrder(@NonNull Order order, @NonNull String accountName) {
-        /* Retrieve Order for provided account */
-        log.traceEntry("Updating existing order");
-
-        /* Checking if we are able to find Order entity in provided account without throwing any error */
-        retrieveOrderFromAccount(order.getId(), accountName);
-
-        /* Update entity and save it to database */
-        log.debug(() -> "Saving following Order entity - " + order.toString() + " for following user " + accountName);
-        repository.saveAndFlush(order);
-
-        log.traceExit();
     }
 
     /**
@@ -193,13 +180,14 @@ public final class OrderService {
     /**
      * Searches for order with provided id in provided account and returns its shopping cart ID.
      *
-     * @param orderID - order to retrieve shopping cart from
+     * @param orderID     - order to retrieve shopping cart from
      * @param accountName - account to serach for order id in.
+     * @param expectedStatus - order verification
      * @return UUID containg shopping cart ID assigned to provided Order ID.
      */
-    public UUID retrieveShoppingCartID(UUID orderID, String accountName) {
+    public UUID retrieveShoppingCartID(@NonNull UUID orderID, String accountName, @NonNull OrderStatus expectedStatus) {
         log.traceEntry();
-        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName);
+        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
 
         /* Check if Order contains shopping cart */
         if (retrievedOrder.getShoppingCart() == null) {
@@ -214,16 +202,18 @@ public final class OrderService {
     /**
      * Updates retrieved order from provided account by provided arguments and saves it to database.
      *
-     * @param orderID - Order to search for
-     * @param accountName - account in which to search for provided Order ID
-     * @param message - String containing message that should be delivered on a note
-     * @param deliveryDate - Date at which Order should be delivered.
+     * @param orderID        - Order to search for
+     * @param accountName    - account in which to search for provided Order ID
+     * @param message        - String containing message that should be delivered on a note
+     * @param deliveryDate   - Date at which Order should be delivered.
      * @param additionalNote - Additional notes about this order.
+     * @param expectedStatus - order verification
      */
-    public void updateOrderDetails(UUID orderID, String accountName, String message,
-                                   LocalDateTime deliveryDate, String additionalNote) {
+    public void updateOrderDetails(@NonNull UUID orderID, String accountName, String message,
+                                   LocalDateTime deliveryDate, String additionalNote,
+                                   @NonNull OrderStatus expectedStatus) {
         log.traceEntry();
-        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName);
+        Order retrievedOrder = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
 
         /* Set provided argument to retrieved shopping cart and save it */
         retrievedOrder.setMessage(message);
@@ -232,5 +222,16 @@ public final class OrderService {
         repository.saveAndFlush(retrievedOrder);
 
         log.traceExit();
+    }
+
+    /**
+     * Check if provided Order matches the expected status
+     *
+     * @param order          - entity to check.
+     * @param expectedStatus - status to compare to.
+     * @return true if order status matches the expected status.
+     */
+    private boolean validateOrderStatus(@NonNull Order order, @NonNull OrderStatus expectedStatus) {
+        return order.getStatus() == expectedStatus;
     }
 }
