@@ -1,6 +1,7 @@
 package com.dknapik.flowershop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -26,9 +27,11 @@ public class WebConfig {
         return new ObjectMapper()
                 .registerModule(new ParameterNamesModule())
                 .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
                 .registerModule(new SimpleModule().addSerializer(BigDecimal.class, new ToStringSerializer()))
-                .registerModule(new MoneyModule());
+                .registerModule(new MoneyModule())
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
     }
 
     @Bean(name = "ModelMapper")
