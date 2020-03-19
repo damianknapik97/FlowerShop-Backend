@@ -12,6 +12,7 @@ import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.services.AccountService;
+import com.dknapik.flowershop.utils.ValidationUtility;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -34,16 +35,18 @@ public final class OrderService {
     private final OrderRepository repository;
     private final AccountService accountService;
     private final ShoppingCartService shoppingCartService;
+    private final ValidationUtility validationUtility;
 
     @Autowired
     public OrderService(OrderRepository repository,
                         AccountService accountService,
-                        ShoppingCartService shoppingCartService) {
+                        ShoppingCartService shoppingCartService,
+                        ValidationUtility validationUtility) {
         this.repository = repository;
         this.accountService = accountService;
         this.shoppingCartService = shoppingCartService;
+        this.validationUtility = validationUtility;
     }
-
 
     /**
      * Retrieving account, detach shopping cart from retrieved account, save it to new Order entity,
@@ -220,6 +223,28 @@ public final class OrderService {
         retrievedOrder.setDeliveryDate(deliveryDate);
         retrievedOrder.setAdditionalNote(additionalNote);
         repository.saveAndFlush(retrievedOrder);
+
+        log.traceExit();
+    }
+
+    public void validateOrderAndChangeItsStatus(@NonNull UUID orderID, @NonNull String accountName, @NonNull OrderStatus expectedStatus) {
+        log.traceEntry();
+        Order order = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
+
+        /* Run all validation on provided order */
+        boolean validationResult = validationUtility.validateOrderEntity(order)
+                && validationUtility.validateShoppingCartEntity(order.getShoppingCart())
+                && validationUtility.validateDeliveryAddressEntity(order.getDeliveryAddress())
+                && validationUtility.validatePaymentEntity(order.getPayment());
+
+        /* Check if validation passed */
+        if (validationResult) {
+            log.throwing(Level.ERROR, new InvalidOperationException(OrderMessage.VALIDATION_FAILURE));
+            throw new InvalidOperationException(OrderMessage.VALIDATION_FAILURE);
+        }
+
+        /* Change status of Order entity to let employees know that it is available for processing  */
+        order.setStatus(OrderStatus.WAITING_FOR_ASSIGNMENT);
 
         log.traceExit();
     }

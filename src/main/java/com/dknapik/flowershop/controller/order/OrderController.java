@@ -160,4 +160,26 @@ class OrderController {
         log.traceExit();
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    /**
+     * Checks if all required details for order to be processed successfully are provided, and changes it status
+     * to the one that lets employee know that order is ready for processing.
+     *
+     * TODO: Add Test
+     *
+     * @param orderID - Order to perform operation on to
+     * @param principal - Account to retrieve order from
+     * @return - MessageResponseDTO containing information about operation results.
+     */
+    @PutMapping
+    ResponseEntity<MessageResponseDTO> validateOrderAndChangeItsStatus(@Valid @RequestParam("id") UUID orderID,
+                                                     Principal principal) {
+        log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
+
+        service.validateOrderAndChangeItsStatus(orderID, principal.getName(), expectedStatus);
+
+        log.traceExit();
+        return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_SUBMITTED_SUCCESSFULLY), HttpStatus.OK);
+    }
 }

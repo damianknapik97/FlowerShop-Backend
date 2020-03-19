@@ -4,6 +4,7 @@ public enum OrderMessage {
     /* Info */
     ORDER_UPDATED_SUCCESSFULLY("Order was updated successfully"),
     ORDER_DETAILS_UPDATED_SUCCESSFULLY("Order details were updated successfully"),
+    ORDER_SUBMITTED_SUCCESSFULLY("Order was submitted successfully"),
 
 
     /* Error */
@@ -12,7 +13,8 @@ public enum OrderMessage {
     ORDER_UPDATE_FAILED("Error updating order informations !"),
     NO_PRODUCTS_IN_SHOPPING_CART("No products added to shopping cart"),
     UNABLE_TO_RETRIEVE_CREATED_ORDER_ID("Saved order entity ID is unable to be retrieved"),
-    NO_SHOPPING_CART_ASSIGNED("Provided order ID doesn't have any shopping cart assigned to it.");
+    NO_SHOPPING_CART_ASSIGNED("Provided order ID doesn't have any shopping cart assigned to it."),
+    VALIDATION_FAILURE("Entity is not valid and therefore cannot be submitted as an Order");
 
 
     final String infoMessage;
