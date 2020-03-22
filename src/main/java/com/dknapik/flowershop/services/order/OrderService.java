@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -82,7 +83,7 @@ public final class OrderService {
         accountService.updateAccount(account);
 
         /* Retrieve Order from database to access its ID that was generated when saving to database*/
-        Optional<Order> savedOrder = repository.findOrderByAccountIDAndPlacementDate(account.getId(), creationDate);
+        Optional<Order> savedOrder = repository.findByAccountIDAndPlacementDate(account.getId(), creationDate);
         if (!savedOrder.isPresent()) {
             log.throwing(Level.ERROR, new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID));
             throw new InternalServerException(OrderMessage.UNABLE_TO_RETRIEVE_CREATED_ORDER_ID);
@@ -227,7 +228,9 @@ public final class OrderService {
         log.traceExit();
     }
 
-    public void validateOrderAndChangeItsStatus(@NonNull UUID orderID, @NonNull String accountName, @NonNull OrderStatus expectedStatus) {
+    public void validateOrderAndChangeItsStatus(@NonNull UUID orderID,
+                                                @NonNull String accountName,
+                                                @NonNull OrderStatus expectedStatus) {
         log.traceEntry();
         Order order = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
 
@@ -238,15 +241,36 @@ public final class OrderService {
                 && validationUtility.validatePaymentEntity(order.getPayment());
 
         /* Check if validation passed */
-        if (validationResult) {
+        if (!validationResult) {
             log.throwing(Level.ERROR, new InvalidOperationException(OrderMessage.VALIDATION_FAILURE));
             throw new InvalidOperationException(OrderMessage.VALIDATION_FAILURE);
         }
 
         /* Change status of Order entity to let employees know that it is available for processing  */
         order.setStatus(OrderStatus.WAITING_FOR_ASSIGNMENT);
+        updateExistingOrder(order);
 
         log.traceExit();
+    }
+
+    /**
+     * Searches provided account for unfinished Order entity containing Created status.
+     * Order entity is considered unfinished when its owner interrupted Order creation process
+     * by either leaving or refreshing website.
+     * If no Order with Created status is found, NULL is returned.
+     *
+     * @param accountName - Current user account
+     * @return NULL if no Order entity with Created status was found. Order entity otherwise.
+     */
+    @Nullable
+    public Order retrieveUnplacedOrder(String accountName) {
+       log.traceEntry();
+
+        Order unfinishedOrder = repository.findByAccountNameAndOrderStatus(accountName, OrderStatus.CREATED.toString())
+                .orElse(null);
+
+        log.traceExit();
+        return unfinishedOrder;
     }
 
     /**

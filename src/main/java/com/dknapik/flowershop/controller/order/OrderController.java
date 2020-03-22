@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -171,9 +172,9 @@ class OrderController {
      * @param principal - Account to retrieve order from
      * @return - MessageResponseDTO containing information about operation results.
      */
-    @PutMapping
+    @PutMapping("/validate")
     ResponseEntity<MessageResponseDTO> validateOrderAndChangeItsStatus(@Valid @RequestParam("id") UUID orderID,
-                                                     Principal principal) {
+                                                                       Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -181,5 +182,33 @@ class OrderController {
 
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_SUBMITTED_SUCCESSFULLY), HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves first encountered unfinished Order entity.
+     * Entity is considered unfinished when its status wasn't changed from Created to something else.
+     * Mentioned state can be archived when user decides to stop progressing in the middle of Order creation process.
+     *
+     * TODO: Add test
+     *
+     * @param principal - account in which to search for unfinished order
+     * @return - NULL if no unfinished order was found. Order DTO from unfinished entity otherwise
+     */
+    @GetMapping("/unfinished")
+    @Nullable
+    ResponseEntity<OrderDTO> retrieveUnfinishedOrder(Principal principal) {
+        log.traceEntry();
+        ResponseEntity<OrderDTO> responseEntity;
+
+        /* Search for order with Created status */
+        Order retrievedOrder = service.retrieveUnplacedOrder(principal.getName());
+        if (retrievedOrder == null) { // If no entity was found, return 204 HTTP CODE
+            responseEntity = new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } else { // Return retrieved entity with 200 HTTP code
+            responseEntity = new ResponseEntity<>(mapper.mapToDTO(retrievedOrder), HttpStatus.OK);
+        }
+
+        log.traceExit();
+        return responseEntity;
     }
 }

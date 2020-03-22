@@ -18,6 +18,5 @@ public class OrderDetailsDTO {
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime deliveryDate;
-    @NotBlank
     private String additionalNote;
 }

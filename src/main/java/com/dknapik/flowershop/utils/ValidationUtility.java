@@ -6,6 +6,7 @@ import com.dknapik.flowershop.model.order.Payment;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @ToString
+@Log4j2
 public final class ValidationUtility {
 
     /**
@@ -25,7 +27,8 @@ public final class ValidationUtility {
      * @return true if all required fields for order processing are present
      */
     public boolean validateOrderEntity(@NonNull Order order) {
-        return order.getId() != null
+        log.traceEntry();
+        boolean returnValue = order.getId() != null
                 && order.getMessage() != null
                 && !order.getMessage().isEmpty()
                 && order.getDeliveryDate() != null
@@ -34,6 +37,10 @@ public final class ValidationUtility {
                 && order.getShoppingCart() != null
                 && order.getPlacementDate() != null
                 && order.getStatus() != null;
+        log.info(() -> "Order validation results: " + returnValue);
+
+        log.traceExit();
+        return returnValue;
     }
 
     /**
@@ -43,11 +50,17 @@ public final class ValidationUtility {
      * @return true if object contains ID and at least one collection with product orders
      */
     public boolean validateShoppingCartEntity(@NonNull ShoppingCart shoppingCart) {
-        return shoppingCart.getId() != null
+        log.traceEntry();
+        boolean returnValue = shoppingCart.getId() != null
                 && (shoppingCart.getOccasionalArticleOrderList() != null
                         || shoppingCart.getSouvenirOrderList() != null
                         || shoppingCart.getFlowerOrderList() != null
                         || shoppingCart.getBouquetList() != null);
+
+        log.info(() -> "Shopping cart validation results: " + returnValue);
+
+        log.traceExit();
+        return returnValue;
     }
 
     /**
@@ -57,10 +70,16 @@ public final class ValidationUtility {
      * @return true if id, total price and payment type are present inside provided object
      */
     public boolean validatePaymentEntity(@NonNull Payment payment) {
-        return payment.getId() != null
+        log.traceEntry();
+
+        boolean returnValue = payment.getId() != null
                 && payment.getTotalPrice() != null
                 && payment.getTotalPrice().isPositive()
                 && payment.getPaymentType() != null;
+        log.info(() -> "Payment validation results: " + returnValue);
+
+        log.traceExit();
+        return returnValue;
     }
 
 
@@ -72,10 +91,16 @@ public final class ValidationUtility {
      * @return true if all required field for successful order delivery are present and not empty.
      */
     public boolean validateDeliveryAddressEntity(@NonNull DeliveryAddress deliveryAddress) {
-        return deliveryAddress.getId() != null
+        log.traceEntry();
+
+        boolean returnValue = deliveryAddress.getId() != null
                 && deliveryAddress.getCityName() != null && !deliveryAddress.getCityName().isEmpty()
                 && deliveryAddress.getZipCode() != null && !deliveryAddress.getZipCode().isEmpty()
                 && deliveryAddress.getStreetName() != null && !deliveryAddress.getStreetName().isEmpty()
                 && deliveryAddress.getHouseNumber() != null && !deliveryAddress.getHouseNumber().isEmpty();
+        log.info(() -> "Delivery Address validation results: " + returnValue);
+
+        log.traceExit();
+        return returnValue;
     }
 }
