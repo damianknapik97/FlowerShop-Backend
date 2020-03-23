@@ -1,17 +1,24 @@
-package com.dknapik.flowershop.controller.order;
+package com.dknapik.flowershop.controller.administration;
 
+import com.dknapik.flowershop.constants.OrderMessage;
+import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
+import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
+import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -24,7 +31,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,12 +44,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
@@ -48,7 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(value = "build/generated-snippets/order")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-final class OrderControllerTest {
+public class OrderAdministrationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -79,34 +91,109 @@ final class OrderControllerTest {
     }
 
     @Test
-    void createOrderFromCurrentShoppingCart() throws Exception {
-        String url = "/order";
+    void updateOrderTest() throws Exception {
+        String url = "/order-administration";
         MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
-        /* Initialize required entities */
+        /* Create test related values and entities */
         Flower product = initializeFlowerEntity("TestingFlower", money);
-        ShoppingCart shoppingCart =
-                initializeShoppingCartEntity("Testing Shopping Cart", false, product);
+        Order expectedResult = populateDatabaseWithOrderEntities(1).get(0);
+        expectedResult.setShoppingCart(initializeShoppingCartEntity("Testing Order Shopping Cart",
+                false, product));
+        expectedResult.setMessage("Updated Message");
+        expectedResult.setStatus(OrderStatus.ASSIGNED);
         Account account = createAccount("Order Testing User", "Order Testing User",
-                shoppingCart, AccountRole.ROLE_USER);
+                null, AccountRole.ROLE_EMPLOYEE);
+        OrderDTO orderToUpdate = orderMapper.mapToDTO(expectedResult);
+
+        /* Deserialize required entity */
+        String value = objectMapper.writeValueAsString(orderToUpdate);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
-                post(url).with(user(account.getName()));
+                put(url).content(value).contentType(MediaType.APPLICATION_JSON)
+                        .with(user(account.getName()).authorities(
+                                new SimpleGrantedAuthority(account.getRole().toString())));
 
         /* Perform Request, Check status, Create Documentation */
         MvcResult result = mockMvc.perform(requestBuilder)
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(document("{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())))
                 .andReturn();
 
         /* Map response */
-        MessageResponseDTO resultID = objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+        MessageResponseDTO resultDTO =
+                objectMapper.readValue(result.getResponse().getContentAsString(), MessageResponseDTO.class);
+
+        /* Check if Response matches */
+        if (!resultDTO.getMessage().contentEquals(OrderMessage.ORDER_UPDATED_SUCCESSFULLY.toString())) {
+            throw new RuntimeException("Response message doesn't match expected one");
+        }
+
+        /* Check if results match */
+        Order afterUpdate = orderRepository.findById(expectedResult.getId()).orElseThrow(() ->
+                new RuntimeException("Order entity not found in database"));
+        Assertions.assertThat(afterUpdate).isEqualToComparingFieldByField(expectedResult);
+    }
+
+    @Test
+    void retrieveOrdersPage() throws Exception {
+        String url = "/order-administration/page";
+        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
 
-        Assertions.assertThat(resultID.getMessage().isEmpty()).isFalse();
+        /* Initialize required entities */
+        Flower product = initializeFlowerEntity("TestingFlower", money);
+        Account account =
+                createAccount("Order Testing User", "Order Testing User",
+                        initializeShoppingCartEntity("test", false, product), AccountRole.ROLE_EMPLOYEE);
+        List<Order> entityList = populateDatabaseWithOrderEntities(ProductProperties.PAGE_SIZE);
+        List<OrderDTO> controlValuesList = new LinkedList<>();
+        for (Order order : entityList) {
+            controlValuesList.add(orderMapper.mapToDTO(order));
+        }
+
+        /* Create Request */
+        MockHttpServletRequestBuilder requestBuilder = get(url).param("page", "0")
+                .with(user(account.getName()).authorities(new SimpleGrantedAuthority(account.getRole().toString())));
+
+        /* Perform Request, Check status, Create Documentation */
+        MvcResult result = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andDo(document("{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andReturn();
+
+        /* Map response */
+        TypeReference<RestResponsePage<OrderDTO>> typeReference =
+                new TypeReference<RestResponsePage<OrderDTO>>() {
+                };
+        RestResponsePage<OrderDTO> resultValue =
+                objectMapper.readValue(result.getResponse().getContentAsString(), typeReference);
+
+        /* Check if results match */
+        Assertions.assertThat(resultValue.getContent()).containsSequence(controlValuesList);
+    }
+
+    /**
+     * Create provided number of entities for test
+     *
+     * @param numberOfEntities - how many entities to create
+     * @return List with Orders entities.
+     */
+    private List<Order> populateDatabaseWithOrderEntities(int numberOfEntities) {
+
+        List<Order> entitiesList = new LinkedList<>();
+        for (int i = 0; i < numberOfEntities; i++) {
+            entitiesList.add(new Order());
+        }
+
+        orderRepository.saveAll(entitiesList);
+        orderRepository.flush();
+        return entitiesList;
     }
 
     /**

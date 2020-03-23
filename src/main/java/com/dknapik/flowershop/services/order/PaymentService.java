@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +27,8 @@ public final class PaymentService {
     private final OrderService orderService;
 
     @Autowired
-    public PaymentService(PaymentRepository repository, OrderService orderService) {
+    public PaymentService(PaymentRepository repository,
+                          OrderService orderService) {
         this.repository = repository;
         this.orderService = orderService;
     }
@@ -38,9 +38,9 @@ public final class PaymentService {
      * check if payment entity is already assigned to this order,
      * save the provided payment entity if the previous was false.
      *
-     * @param orderID     - id to search for
-     * @param payment     - entity to save
-     * @param accountName - account to search order for
+     * @param orderID             - id to search for
+     * @param payment             - entity to save
+     * @param accountName         - account to search order for
      * @param expectedOrderStatus - order verification
      */
     public void addNewPaymentToOrder(@NonNull UUID orderID,
@@ -64,6 +64,11 @@ public final class PaymentService {
         log.traceExit();
     }
 
+    /**
+     * Create Set collection from Enum containing all available payment options
+     *
+     * @return Set with Payment options.
+     */
     public Set<PaymentType> retrieveAllPaymentOptions() {
         return EnumSet.allOf(PaymentType.class);
     }

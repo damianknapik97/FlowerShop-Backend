@@ -35,9 +35,9 @@ public final class DeliveryAddressService {
      * check if delivery address is already assigned to this order,
      * save the provided delivery address if the previous was false.
      *
-     * @param orderID         - id to search for
-     * @param deliveryAddress - entity to save
-     * @param accountName     - account to search order for
+     * @param orderID             - id to search for
+     * @param deliveryAddress     - entity to save
+     * @param accountName         - account to search order for
      * @param expectedOrderStatus - order verification
      */
     public void addNewDeliveryAddressToOrder(@NonNull UUID orderID,

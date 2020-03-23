@@ -35,7 +35,7 @@ final class PaymentRepositoryTest {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create entity */
-        Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
+        Payment payment = new Payment(money, PaymentType.BANK_TRANSFER);
 
         /* Save entity to database using repository */
         paymentRepository.saveAndFlush(payment);
@@ -53,7 +53,7 @@ final class PaymentRepositoryTest {
         Money money = Money.of(32.32, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
 
         /* Create  entity */
-        Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
+        Payment payment = new Payment(money, PaymentType.BANK_TRANSFER);
 
         /* Save entity to database */
         entityManager.persistAndFlush(payment);

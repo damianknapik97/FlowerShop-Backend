@@ -1,9 +1,7 @@
 package com.dknapik.flowershop.controller.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
-import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
-import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.dto.order.OrderDetailsDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,44 +56,6 @@ class OrderController {
     }
 
     /**
-     * This end point is available only of authorized accounts.
-     * Updates provided Order entity, regardless of account assigned to it.
-     *
-     * @param orderDTO - DTO to update (ID must match actually existing Order entity)
-     * @return - MessageResponseDTO with information about operation result.
-     */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @PutMapping
-    ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        log.traceEntry();
-
-        service.updateExistingOrder(mapper.mapToEntity(orderDTO));
-
-        log.traceExit();
-        return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
-    }
-
-    /**
-     * Retrieves one page of orders, regardless of assigned account to it.
-     * This end point can be used only by authorized accounts
-     *
-     * @param page - number of page to retrieve
-     * @return Pageable with number of orders defined in ProductProperties class.
-     */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @GetMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        log.traceEntry();
-
-        RestResponsePage<Order> orderPage = service.retrieveOrdersPage(page, ProductProperties.PAGE_SIZE);
-        RestResponsePage<OrderDTO> ordeDTOPage = mapper.mapPageToDTO(orderPage);
-
-        log.traceExit();
-        return new ResponseEntity<>(ordeDTOPage, HttpStatus.OK);
-    }
-
-    /**
      * Searches currently logged user account for provided order ID and retrieves assigned to id Shopping Cart ID.
      *
      * @param orderID   - Order ID to search for in user account.
@@ -116,12 +75,12 @@ class OrderController {
 
     /**
      * Supplies necessary information to provided Order ID nested inside account performing this request.
-     *
+     * <p>
      * TODO: Add Test
      *
-     * @param orderID - Order to search for
+     * @param orderID         - Order to search for
      * @param orderDetailsDTO - additional information about order to set.
-     * @param principal - account to find order in
+     * @param principal       - account to find order in
      * @return MessageResponseDTO with status about operation results
      */
     @PutMapping("/details")
@@ -141,10 +100,10 @@ class OrderController {
 
     /**
      * Retrieves order entity with provided ID, ensuring that its status is set to CREATED.
-     *
+     * <p>
      * TODO: Add Test
      *
-     * @param orderID - Order to search for
+     * @param orderID   - Order to search for
      * @param principal - account to search for order in.
      * @return Order DTO with all its related information.
      */
@@ -165,10 +124,10 @@ class OrderController {
     /**
      * Checks if all required details for order to be processed successfully are provided, and changes it status
      * to the one that lets employee know that order is ready for processing.
-     *
+     * <p>
      * TODO: Add Test
      *
-     * @param orderID - Order to perform operation on to
+     * @param orderID   - Order to perform operation on to
      * @param principal - Account to retrieve order from
      * @return - MessageResponseDTO containing information about operation results.
      */
@@ -188,7 +147,7 @@ class OrderController {
      * Retrieves first encountered unfinished Order entity.
      * Entity is considered unfinished when its status wasn't changed from Created to something else.
      * Mentioned state can be archived when user decides to stop progressing in the middle of Order creation process.
-     *
+     * <p>
      * TODO: Add test
      *
      * @param principal - account in which to search for unfinished order
@@ -215,7 +174,9 @@ class OrderController {
     /**
      * Removes provided order id from account performing the request. It is expected for order to have status "created".
      *
-     * @param orderID - Order to remove
+     * TODO: Add Test
+     *
+     * @param orderID   - Order to remove
      * @param principal - Account to remove order from
      * @return - MessageResponseDTO containing information about operation results.
      */
@@ -229,4 +190,5 @@ class OrderController {
         log.traceExit();
         return null;
     }
+    
 }

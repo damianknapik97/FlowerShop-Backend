@@ -2,7 +2,6 @@ package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
 import com.dknapik.flowershop.database.order.OrderRepository;
-import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.InternalServerException;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
@@ -18,14 +17,11 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -141,47 +137,6 @@ public final class OrderService {
     }
 
     /**
-     * Check if provided order exists in database by id, and update it
-     *
-     * @param order - entity to update
-     */
-    public void updateExistingOrder(@NonNull Order order) {
-        log.traceEntry("Updating existing order");
-
-        if (repository.existsById(order.getId())) {
-            repository.saveAndFlush(order);
-        } else {
-            log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED));
-            throw new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED);
-        }
-
-        log.traceExit();
-    }
-
-    /**
-     * Retrieves page of Orders from repository.
-     * By default
-     *
-     * @param pageNumber - which page should be retrieved
-     * @param pageSize   - how large should the page be.
-     * @return - RestResponsePage with Order entities.
-     */
-    public RestResponsePage<Order> retrieveOrdersPage(int pageNumber, int pageSize) {
-        log.traceEntry("Retrieving page of orders");
-
-        /* Create Page request for repository */
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        /* Retrieve page of orders from repository and cast it to list */
-        List<Order> content = repository.findAll(pageable).getContent();
-
-        /* Return collection of products ready for transport/serialization/mapping */
-        log.traceExit();
-        return new RestResponsePage<>(content, pageable, repository.count());
-    }
-
-
-    /**
      * Searches for order with provided id in provided account and returns its shopping cart ID.
      *
      * @param orderID        - order to retrieve shopping cart from
@@ -287,6 +242,24 @@ public final class OrderService {
         Order order = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
         repository.delete(order);
         repository.flush();
+
+        log.traceExit();
+    }
+
+    /**
+     * Check if provided order exists in database by id, and update it
+     *
+     * @param order - entity to update
+     */
+    public void updateExistingOrder(@NonNull Order order) {
+        log.traceEntry("Updating existing order");
+
+        if (repository.existsById(order.getId())) {
+            repository.saveAndFlush(order);
+        } else {
+            log.throwing(Level.WARN, new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED));
+            throw new ResourceNotFoundException(OrderMessage.ORDER_UPDATE_FAILED);
+        }
 
         log.traceExit();
     }
