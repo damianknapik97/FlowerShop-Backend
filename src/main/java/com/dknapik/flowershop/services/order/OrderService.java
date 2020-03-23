@@ -1,7 +1,9 @@
 package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
+import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.order.OrderRepository;
+import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.InternalServerException;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
@@ -17,11 +19,14 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -262,6 +267,24 @@ public final class OrderService {
         }
 
         log.traceExit();
+    }
+
+    /**
+     * Retrieves a page of Order entities assigned to provided account name
+     *
+     * @param pageNumber -
+     * @param pageSize -
+     * @param accountName - Account to retrieved Orders page from
+     * @return RestResponsePage containing Order entities depending on provided arguments.
+     */
+    public RestResponsePage<Order> retrieveOrdersPageFromAccount(int pageNumber, int pageSize, String accountName) {
+
+        /* Create Page request for repository */
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        /* Retrieve List of Orders and return RestResponsePage created from this List. */
+        List<Order> orderList = repository.findAllByAccountName(accountName, pageRequest).getContent();
+        return new RestResponsePage<>(orderList, pageRequest, repository.countAllByAccountName(accountName));
     }
 
     /**

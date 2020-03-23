@@ -1,7 +1,9 @@
 package com.dknapik.flowershop.controller.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
+import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
+import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.dto.order.OrderDetailsDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
@@ -173,7 +175,7 @@ class OrderController {
 
     /**
      * Removes provided order id from account performing the request. It is expected for order to have status "created".
-     *
+     * <p>
      * TODO: Add Test
      *
      * @param orderID   - Order to remove
@@ -190,5 +192,27 @@ class OrderController {
         log.traceExit();
         return null;
     }
-    
+
+    /**
+     * Retrieves page of Orders assigned to account performing this request
+     *
+     * TODO: Add Test
+     *
+     * @param page - which page to retrieve
+     * @param principal - account from which to retrieve page
+     * @return RestResponsePage with content containing OrderDTOs.
+     */
+    @GetMapping("/page")
+    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPageFromAccount(@Valid @RequestParam("page") int page,
+                                                                             Principal principal) {
+        log.traceEntry();
+        int pageSize = ProductProperties.PAGE_SIZE;
+
+        RestResponsePage<Order> orderPage = service.retrieveOrdersPageFromAccount(page, pageSize, principal.getName());
+        RestResponsePage<OrderDTO> orderDTOPage = mapper.mapPageToDTO(orderPage);
+
+        log.traceExit();
+        return new ResponseEntity<>(orderDTOPage, HttpStatus.OK);
+    }
+
 }
