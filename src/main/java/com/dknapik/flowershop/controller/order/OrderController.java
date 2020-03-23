@@ -211,4 +211,22 @@ class OrderController {
         log.traceExit();
         return responseEntity;
     }
+
+    /**
+     * Removes provided order id from account performing the request. It is expected for order to have status "created".
+     *
+     * @param orderID - Order to remove
+     * @param principal - Account to remove order from
+     * @return - MessageResponseDTO containing information about operation results.
+     */
+    @DeleteMapping
+    ResponseEntity<MessageResponseDTO> cancelOrder(@Valid @RequestParam("id") UUID orderID, Principal principal) {
+        log.traceEntry();
+        OrderStatus expectedStatus = OrderStatus.CREATED;
+
+        service.removeOrder(orderID, principal.getName(), expectedStatus);
+
+        log.traceExit();
+        return null;
+    }
 }

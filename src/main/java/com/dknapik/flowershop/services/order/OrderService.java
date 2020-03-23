@@ -97,8 +97,8 @@ public final class OrderService {
      * Search for provided account using account name, check if account contains provided Order ID,
      * validate order status and return.
      *
-     * @param orderID     - ID of order that should be contained inside provided account
-     * @param accountName - login of account to search for
+     * @param orderID        - ID of order that should be contained inside provided account
+     * @param accountName    - login of account to search for
      * @param expectedStatus - param to validate and ensure if request is being made to expected Order entity.
      * @return - Order entity matching provided ID and account
      */
@@ -184,8 +184,8 @@ public final class OrderService {
     /**
      * Searches for order with provided id in provided account and returns its shopping cart ID.
      *
-     * @param orderID     - order to retrieve shopping cart from
-     * @param accountName - account to serach for order id in.
+     * @param orderID        - order to retrieve shopping cart from
+     * @param accountName    - account to serach for order id in.
      * @param expectedStatus - order verification
      * @return UUID containg shopping cart ID assigned to provided Order ID.
      */
@@ -264,13 +264,31 @@ public final class OrderService {
      */
     @Nullable
     public Order retrieveUnplacedOrder(String accountName) {
-       log.traceEntry();
+        log.traceEntry();
 
         Order unfinishedOrder = repository.findByAccountNameAndOrderStatus(accountName, OrderStatus.CREATED.toString())
                 .orElse(null);
 
         log.traceExit();
         return unfinishedOrder;
+    }
+
+    /**
+     * Removes provided Order ID from provided account. For this operation to be successfully performed,
+     * Order entity must match provided status
+     *
+     * @param orderID        - Order to search for
+     * @param accountName    - account to search in
+     * @param expectedStatus - expected status of removed order
+     */
+    public void removeOrder(UUID orderID, String accountName, OrderStatus expectedStatus) {
+        log.traceEntry();
+
+        Order order = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
+        repository.delete(order);
+        repository.flush();
+
+        log.traceExit();
     }
 
     /**
