@@ -2,7 +2,7 @@ package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import lombok.extern.log4j.Log4j2;
@@ -18,21 +18,28 @@ import java.util.List;
 @RequestMapping("/product/occasional-article")
 @CrossOrigin
 @Log4j2
-public class OccasionalArticleController {
+final class OccasionalArticleController {
     private final OccasionalArticleService service;
     private final ProductMapper productMapper;
 
     @Autowired
-    public OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
+    OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
 
+    /**
+     * Retrieve Page of Occasional Article entities with number of them defined in ProductProperties class.
+     *
+     * @param page - which page of entities should be recovered
+     * @return Pageable containing Occasional Article entities.
+     */
     @GetMapping
-    public ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
+    ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         /* Retrieve desired page */
-        log.info("Processing getOccasionalArticles request");
+        log.traceEntry();
+
         RestResponsePage<OccasionalArticle> occasionalArticleRestResponsePage =
                 service.retrieveOccasionalArticlePage(page);
 
@@ -43,9 +50,10 @@ public class OccasionalArticleController {
             occasionalArticleDtoList.add(productMapper.convertToDto(occasionalArticle, OccasionalArticleDTO.class));
         }
 
-        log.info("Building response");
         RestResponsePage<OccasionalArticleDTO> dtoRestResponsePage =
                 new RestResponsePage<>(occasionalArticleDtoList, occasionalArticleRestResponsePage);
+
+        log.traceExit();
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }
 }

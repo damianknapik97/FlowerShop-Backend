@@ -2,7 +2,7 @@ package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.FlowerDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.services.product.FlowerService;
 import lombok.extern.log4j.Log4j2;
@@ -18,21 +18,28 @@ import java.util.List;
 @RequestMapping("/product/flower")
 @CrossOrigin
 @Log4j2
-public class FlowerController {
+final class FlowerController {
     private final FlowerService service;
     private final ProductMapper productMapper;
 
 
     @Autowired
-    public FlowerController(FlowerService service, ProductMapper productMapper) {
+    FlowerController(FlowerService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
 
+    /**
+     * Retrieve Page of Flower entities with number of them defined in ProductProperties class.
+     *
+     * @param page - which page of entities should be recovered
+     * @return Pageable containing Flower entities.
+     */
     @GetMapping
-    public ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
+    ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
             @RequestParam(value = "page", defaultValue = "0") int page) {
-        log.info("Processing getFlowers request");
+        log.traceEntry();
+
         /* Retrieve desired page */
         RestResponsePage<Flower> flowerResponsePage = service.retrieveFlowerPage(page);
 
@@ -43,8 +50,9 @@ public class FlowerController {
             flowerDtoList.add(productMapper.convertToDto(f, FlowerDTO.class));
         }
 
-        log.info("Building response");
         RestResponsePage<FlowerDTO> dtoRestResponsePage = new RestResponsePage<>(flowerDtoList, flowerResponsePage);
+
+        log.traceExit();
         return new ResponseEntity<>(dtoRestResponsePage, HttpStatus.OK);
     }
 }

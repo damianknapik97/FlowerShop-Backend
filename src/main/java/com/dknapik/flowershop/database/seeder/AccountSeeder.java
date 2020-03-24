@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
  */
 @ToString
 @Component
-public class AccountSeeder implements SeederInt {
+class AccountSeeder implements SeederInt {
     private ApplicationContext applicationContext;      // To retrieve application password encoder
     private AccountRepository accountRepository;        // To save/retrieve entities from database
     private static final boolean ONLY_FOR_DEBUG = false;  // To check if class should be always instantiated and used
 
 
     @Autowired
-    public AccountSeeder(ApplicationContext applicationContext, AccountRepository accountRepository) {
+    AccountSeeder(ApplicationContext applicationContext, AccountRepository accountRepository) {
         this.applicationContext = applicationContext;
         this.accountRepository = accountRepository;
     }
@@ -37,14 +37,14 @@ public class AccountSeeder implements SeederInt {
             accountRepository.save(new Account("root",
                     encoder.encode("root"),
                     "root@test.pl",
-                    AccountRole.ADMIN));
+                    AccountRole.ROLE_ADMIN));
         }
 
         if (!this.accountRepository.existsByName("employee")) {
             accountRepository.save(new Account("employee",
                     encoder.encode("employee"),
                     "employee@test.pl",
-                    AccountRole.EMPLOYEE));
+                    AccountRole.ROLE_EMPLOYEE));
         }
 
         this.accountRepository.flush();

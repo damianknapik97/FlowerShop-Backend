@@ -15,9 +15,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource(properties = {"app-debug-mode=true"})  // Turn on debug mode so seeder will initialize all test data
-public class SeederRunnerTest {
+final class SeederRunnerTest {
 
     @Test
-    public void seedPostgreSQLDatabase() {
+    void seedPostgreSQLDatabase() {
     }
 }

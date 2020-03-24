@@ -1,12 +1,12 @@
-package com.dknapik.flowershop.mapper.order;
+package com.dknapik.flowershop.mapper;
 
-import com.dknapik.flowershop.dto.order.ProductOrderDTO;
+import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
 import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.dto.product.SouvenirDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
-import com.dknapik.flowershop.model.order.ProductOrder;
+import com.dknapik.flowershop.mapper.ProductMapper;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.model.product.Product;
@@ -22,7 +22,7 @@ import java.util.Objects;
 @Service
 @ToString
 @Log4j2
-public class ProductOrderMapper {
+public final class ProductOrderMapper {
     private final ModelMapper modelMapper;
     private final ProductMapper productMapper;
 
@@ -39,11 +39,14 @@ public class ProductOrderMapper {
      * @return dto created from provided entity
      */
     public <T extends ProductOrderDTO> T convertToDto(ProductOrder entity, Class<T> type) {
-        log.trace(() -> "Mapping " + entity.getProductOrderClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + entity.getProductOrderClass().getSimpleName() +
+                " to " + type.getSimpleName());
         T productOrderDTO = type.cast(modelMapper.map(entity, type));
 
         /* Map product to product DTO because model mapper doesn't handle this correctly */
         productOrderDTO.setProductDTO(convertProductToDTO(entity.getProduct()));
+
+        log.traceExit();
         return productOrderDTO;
     }
 
@@ -54,12 +57,13 @@ public class ProductOrderMapper {
      * @return - mapped entity
      */
     public <T extends ProductOrder> T convertToEntity(ProductOrderDTO productOrderDto, Class<T> type) {
-        log.trace(() ->
-                "Mapping " + productOrderDto.getProductOrderDTOClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + productOrderDto.getProductOrderDTOClass().getSimpleName() +
+                " to " + type.getSimpleName());
         T productOrder = type.cast(modelMapper.map(productOrderDto, type));
 
         productOrder.setProduct(convertProductDTOToEntity(productOrderDto.getProductDTO()));
 
+        log.traceExit();
         return productOrder;
     }
 
@@ -67,6 +71,7 @@ public class ProductOrderMapper {
      * Converts Product entity from within the Product Order cause model mapper sometimes have troubles with this.
      */
     private ProductDTO convertProductToDTO(Product product) {
+        log.traceEntry();
         Product toConvert = Objects.requireNonNull(product);
         ProductDTO mappedProduct = null;
 
@@ -79,6 +84,7 @@ public class ProductOrderMapper {
             mappedProduct = productMapper.convertToDto(toConvert, SouvenirDTO.class);
         }
 
+        log.traceExit();
         return mappedProduct;
     }
 
@@ -86,6 +92,7 @@ public class ProductOrderMapper {
      * Converts Product DTO  from within the Product Order DTO cause model mapper sometimes have troubles with this.
      */
     private Product convertProductDTOToEntity(ProductDTO productDTO) {
+        log.traceEntry();
         ProductDTO toConvert = Objects.requireNonNull(productDTO);
         Product mappedProduct = null;
 
@@ -98,6 +105,7 @@ public class ProductOrderMapper {
             mappedProduct = productMapper.convertToEntity(toConvert, Souvenir.class);
         }
 
+        log.traceExit();
         return mappedProduct;
     }
 

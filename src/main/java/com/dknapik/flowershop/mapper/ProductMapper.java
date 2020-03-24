@@ -1,4 +1,4 @@
-package com.dknapik.flowershop.mapper.product;
+package com.dknapik.flowershop.mapper;
 
 import com.dknapik.flowershop.dto.product.ProductDTO;
 import com.dknapik.flowershop.model.product.Product;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @ToString
 @Log4j2
-public class ProductMapper {
+public final class ProductMapper {
     private final ModelMapper modelMapper;
 
 
@@ -27,7 +27,7 @@ public class ProductMapper {
      * @return dto created from provided entity
      */
     public <T extends ProductDTO> T convertToDto(Product entity, Class<T> type) {
-        log.trace(() -> "Mapping " + entity.getProductClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + entity.getProductClass().getSimpleName() + " to " + type.getSimpleName());
         return type.cast(modelMapper.map(entity, type));
     }
 
@@ -38,7 +38,8 @@ public class ProductMapper {
      * @return - mapped entity
      */
     public <T extends Product> T convertToEntity(ProductDTO productDto, Class<T> type) {
-        log.trace(() -> "Mapping " + productDto.getProductDTOClass().getSimpleName() + " to " + type.getSimpleName());
+        log.traceEntry(() -> "Mapping " + productDto.getProductDTOClass().getSimpleName() +
+                " to " + type.getSimpleName());
         return type.cast(modelMapper.map(productDto, type));
     }
 }

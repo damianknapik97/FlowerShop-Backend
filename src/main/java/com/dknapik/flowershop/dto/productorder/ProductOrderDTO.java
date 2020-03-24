@@ -1,17 +1,16 @@
-package com.dknapik.flowershop.model.order;
+package com.dknapik.flowershop.dto.productorder;
 
-
+import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
-import com.dknapik.flowershop.model.product.Product;
 
-public interface ProductOrder {
+public interface ProductOrderDTO extends DTO {
 
     /**
      * Retrieves original class of the product order
      *
      * @return Class instance of class implementing this interface
      */
-    public Class<?> getProductOrderClass();
+    public Class<?> getProductOrderDTOClass();
 
     /**
      * Compare given product original class with this products class.
@@ -22,23 +21,23 @@ public interface ProductOrder {
     public boolean compareClass(Class<?> classToCompare);
 
     /**
-     * Cast class implementing this interface to ProductOrder interface
+     * Cast class implementing this interface to ProductOrderDTO interface
      *
      * @return Class
      */
-    public ProductOrder getProductOrder();
+    public ProductOrderDTO getProductOrderDTO();
 
     /**
      * Returns product associated with class implementing this interface
      *
      * @return - product associated with class implementing this interface
      */
-    public Product getProduct();
+    public ProductDTO getProductDTO();
 
     /**
-     * Checks if provided Product is able to be casted to Product class inside this Order and casts it.
+     * Checks if provided ProductDTO is able to be casted to Product class inside this Order DTO and casts it.
      *
-     * @param product - Product DTO to set inside this Order DTO class
+     * @param productDTO - Product DTO to set inside this Order DTO class
      */
-    public void setProduct(Product product);
+    public void setProductDTO(ProductDTO productDTO);
 }

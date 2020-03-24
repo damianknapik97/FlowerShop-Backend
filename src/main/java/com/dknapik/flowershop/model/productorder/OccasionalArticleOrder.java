@@ -1,9 +1,9 @@
-package com.dknapik.flowershop.model.order;
+package com.dknapik.flowershop.model.productorder;
 
-import com.dknapik.flowershop.dto.product.FlowerDTO;
-import com.dknapik.flowershop.model.product.Flower;
+import com.dknapik.flowershop.model.Model;
+import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.model.product.Product;
-import com.dknapik.flowershop.model.product.Souvenir;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,20 +15,20 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class SouvenirOrder implements ProductOrder {
+public final class OccasionalArticleOrder implements Model, ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column
     private int itemCount;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn
-    private Souvenir souvenir;
+    @JoinColumn()
+    private OccasionalArticle occasionalArticle;
 
 
-    public SouvenirOrder(int itemCount, Souvenir souvenir) {
+    public OccasionalArticleOrder(int itemCount, OccasionalArticle occasionalArticle) {
         this.itemCount = itemCount;
-        this.souvenir = souvenir;
+        this.occasionalArticle = occasionalArticle;
     }
 
     /**
@@ -73,7 +73,7 @@ public class SouvenirOrder implements ProductOrder {
     @Override
     @JsonIgnore
     public Product getProduct() {
-        return souvenir;
+        return occasionalArticle;
     }
 
     /**
@@ -85,13 +85,13 @@ public class SouvenirOrder implements ProductOrder {
     @JsonIgnore
     public void setProduct(Product product) {
         Objects.requireNonNull(product);
-        if (product.compareClass(Souvenir.class)) {
-            souvenir = (Souvenir) product;
+        if (product.compareClass(OccasionalArticle.class)) {
+            occasionalArticle = (OccasionalArticle) product;
         } else {
             throw new IllegalArgumentException("Provided product dto class - " +
                     product.getProductClass().toString() +
                     " - doesn't match the one inside product order dto -" +
-                    Souvenir.class.toString());
+                    OccasionalArticle.class.toString());
         }
     }
 }

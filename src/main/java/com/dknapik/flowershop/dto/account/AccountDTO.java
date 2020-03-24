@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.account;
 
+import com.dknapik.flowershop.dto.DTO;
 import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO {
+public class AccountDTO implements DTO {
     private UUID id;
     @NotEmpty
     @Size(min = 4)
@@ -33,7 +34,7 @@ public class AccountDTO {
     @Size(min = 8)
     @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
     private @Valid String password;
-    private AccountRole role = AccountRole.USER;
+    private AccountRole role = AccountRole.ROLE_USER;
     private ShoppingCart shoppingCartList;
 
 

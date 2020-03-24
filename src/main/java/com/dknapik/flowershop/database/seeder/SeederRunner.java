@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Component
 @ToString
-public class SeederRunner implements CommandLineRunner {
+class SeederRunner implements CommandLineRunner {
     @Value("${app-debug-mode}")
     private boolean debugMode;
     private List<SeederInt> seederList;

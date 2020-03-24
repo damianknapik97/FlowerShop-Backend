@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,6 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
 import javax.persistence.*;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Payment {
+public final class Payment implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -43,9 +43,4 @@ public class Payment {
         this.paymentType = paymentType;
     }
 
-    public Payment(MonetaryAmount totalPrice, PaymentType paymentType, boolean wasPaid) {
-        this.totalPrice = totalPrice;
-        this.paymentType = paymentType;
-        this.wasPaid = wasPaid;
-    }
 }

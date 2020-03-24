@@ -11,7 +11,7 @@ import org.springframework.data.domain.Example;
 import java.time.LocalDateTime;
 
 @ToString
-public class OrderSeeder implements SeederInt {
+class OrderSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = false;
     private final MoneyUtils moneyUtils;
     private final OrderRepository orderRepository;
@@ -28,7 +28,7 @@ public class OrderSeeder implements SeederInt {
     public void seed() {
         Money totalPrice = Money.of(5, moneyUtils.getApplicationCurrencyUnit());
         LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
-        Payment payment = new Payment(totalPrice, PaymentType.BANK_PAYMENT);
+        Payment payment = new Payment(totalPrice, PaymentType.BANK_TRANSFER);
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Katowice", "42-500", "Test Street", "328");
         ShoppingCart shoppingCart = new ShoppingCart("New Shopping Cart");

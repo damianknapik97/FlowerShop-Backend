@@ -6,6 +6,6 @@ package com.dknapik.flowershop.model.order;
  * @author Damian
  */
 public enum PaymentType {
-    BANK_PAYMENT,
+    BANK_TRANSFER,
     BLIK
 }

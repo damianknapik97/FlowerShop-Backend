@@ -1,7 +1,7 @@
 package com.dknapik.flowershop.database.order;
 
 import com.dknapik.flowershop.database.product.FlowerRepository;
-import com.dknapik.flowershop.model.order.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -21,7 +21,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class FlowerOrderRepositoryTest {
+final class FlowerOrderRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -36,7 +36,7 @@ public class FlowerOrderRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create order entity using product entity */
         Flower product = createFlowerEntity();
         FlowerOrder order = new FlowerOrder(5, product);
@@ -53,7 +53,7 @@ public class FlowerOrderRepositoryTest {
      * Check if entity can be retrieved from database using JPA repository.
      */
     @Test
-    public void retrieveFromDatabaseTest() {
+    void retrieveFromDatabaseTest() {
         /* Create order entity using product entity */
         Flower product = createFlowerEntity();
         FlowerOrder order = new FlowerOrder(5, product);
@@ -69,7 +69,7 @@ public class FlowerOrderRepositoryTest {
      * Check if product entities are eagerly extracted from order entity
      */
     @Test
-    public void fetchProductTest() throws NoSuchElementException {
+    void fetchProductTest() throws NoSuchElementException {
         /* Create order entity using product entity */
         Flower product = createFlowerEntity();
         FlowerOrder order = new FlowerOrder(5, product);

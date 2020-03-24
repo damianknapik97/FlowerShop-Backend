@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.Model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class DeliveryAddress {
+public final class DeliveryAddress implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

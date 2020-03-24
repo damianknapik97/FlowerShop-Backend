@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-public class DeliveryAddressRepositoryTest {
+final class DeliveryAddressRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -24,7 +24,7 @@ public class DeliveryAddressRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create entity */
         DeliveryAddress address =
                 new DeliveryAddress("Katowice", "42-500", "ExampleStreet", "328");
@@ -41,7 +41,7 @@ public class DeliveryAddressRepositoryTest {
      * Check if entity can be extracted from database using repository.
      */
     @Test
-    public void retrieveFromDatabase() {
+    void retrieveFromDatabase() {
         /* Create  entity */
         String name = "Test Shopping Cart";
         DeliveryAddress address =
@@ -54,6 +54,4 @@ public class DeliveryAddressRepositoryTest {
         Optional<DeliveryAddress> searchResult = deliveryAddressRepository.findOne(Example.of(address));
         Assertions.assertThat(searchResult.get()).isEqualToComparingFieldByField(address);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package com.dknapik.flowershop.model.bouquet;
 
-import com.dknapik.flowershop.model.order.ProductOrder;
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Bouquet {
+public final class Bouquet implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

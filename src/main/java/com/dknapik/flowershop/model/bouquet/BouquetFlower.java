@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.model.bouquet;
 
-import com.dknapik.flowershop.model.order.ProductOrder;
+import com.dknapik.flowershop.model.Model;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class BouquetFlower implements ProductOrder {
+public final class BouquetFlower implements Model, ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

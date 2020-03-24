@@ -9,7 +9,7 @@ import lombok.ToString;
  * @author Damian
  */
 @ToString
-public class JwtProperties {
+public final class JwtProperties {
     public static final byte[] SECRET = "[B@2bd4308b".getBytes();
     public static final int EXPIRATION_TIME = 864000000;                           // Token is valid for around 10 days
     public static final String TOKEN_PREFIX = "Bearer ";

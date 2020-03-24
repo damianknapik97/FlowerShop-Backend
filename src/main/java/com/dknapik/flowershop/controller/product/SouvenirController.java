@@ -2,7 +2,7 @@ package com.dknapik.flowershop.controller.product;
 
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.product.SouvenirDTO;
-import com.dknapik.flowershop.mapper.product.ProductMapper;
+import com.dknapik.flowershop.mapper.ProductMapper;
 import com.dknapik.flowershop.model.product.Souvenir;
 import com.dknapik.flowershop.services.product.SouvenirService;
 import lombok.extern.log4j.Log4j2;
@@ -18,28 +18,29 @@ import java.util.List;
 @RequestMapping("/product/souvenir")
 @CrossOrigin
 @Log4j2
-public class SouvenirController {
+final class SouvenirController {
     private final SouvenirService service;
     private final ProductMapper productMapper;
 
 
     @Autowired
-    public SouvenirController(SouvenirService service, ProductMapper productMapper) {
+    SouvenirController(SouvenirService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
 
     /**
-     * Retrieve unsorted page of Souvenir prooducts
+     * Retrieve unsorted page of Souvenir products
      *
      * @param page - number of page to return (By default page contains 20 objects)
      * @return Page with Souvenir products
      */
     @GetMapping
-    public ResponseEntity<RestResponsePage<SouvenirDTO>> getSouvenirs(
+    ResponseEntity<RestResponsePage<SouvenirDTO>> getSouvenirs(
             @RequestParam(value = "page", defaultValue = "0") int page) {
+        log.traceEntry();
+
         /* Retrieve Page of Souvenir entities */
-        log.info("Processing getSouvenirs request");
         RestResponsePage<Souvenir> souvenirs = service.retrieveSouvenirPage(page);
 
         /* Convert content to Dto */
@@ -50,8 +51,9 @@ public class SouvenirController {
         }
 
         /* Build Response entity and respond */
-        log.info("Building response");
         RestResponsePage<SouvenirDTO> souvenirDtos = new RestResponsePage<>(souvenirDtoList, souvenirs);
+
+        log.traceExit();
         return new ResponseEntity<>(souvenirDtos, HttpStatus.OK);
     }
 }

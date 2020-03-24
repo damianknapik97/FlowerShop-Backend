@@ -1,7 +1,8 @@
-package com.dknapik.flowershop.dto.order;
+package com.dknapik.flowershop.dto.productorder;
 
 import com.dknapik.flowershop.dto.product.FlowerDTO;
 import com.dknapik.flowershop.dto.product.ProductDTO;
+import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;

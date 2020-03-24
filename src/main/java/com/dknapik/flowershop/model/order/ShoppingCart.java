@@ -1,6 +1,11 @@
 package com.dknapik.flowershop.model.order;
 
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.model.bouquet.Bouquet;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
+import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +20,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class ShoppingCart {
+public final class ShoppingCart implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

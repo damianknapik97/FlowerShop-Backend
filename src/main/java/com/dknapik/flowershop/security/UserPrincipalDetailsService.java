@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @ToString
-public class UserPrincipalDetailsService implements UserDetailsService {
+public final class UserPrincipalDetailsService implements UserDetailsService {
     private final AccountRepository accRepository;
 
     public UserPrincipalDetailsService(AccountRepository accRepository) {

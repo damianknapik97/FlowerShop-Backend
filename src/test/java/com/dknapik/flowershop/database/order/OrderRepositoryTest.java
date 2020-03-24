@@ -19,7 +19,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class OrderRepositoryTest {
+final class OrderRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -33,22 +33,12 @@ public class OrderRepositoryTest {
     @Autowired
     private Environment env;
 
-    private Order createOrderEntity() {
-        Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
-        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
-        Payment payment = new Payment(money, PaymentType.BANK_PAYMENT);
-        DeliveryAddress deliveryAddress =
-                new DeliveryAddress("Katowice", "42-500", "Test Street", "328");
-        ShoppingCart shoppingCart = new ShoppingCart("New Shopping Cart");
-
-        return new Order("Happy New Year!", deliveryDateTime, payment, deliveryAddress, shoppingCart);
-    }
 
     /**
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create entity */
         Order order = createOrderEntity();
 
@@ -64,7 +54,7 @@ public class OrderRepositoryTest {
      * Check if entity can be extracted from database using repository.
      */
     @Test
-    public void retrieveFromDatabase() {
+    void retrieveFromDatabase() {
         /* Create entity */
         Order order = createOrderEntity();
 
@@ -77,7 +67,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void cascadeDeletePayment() {
+    void cascadeDeletePayment() {
         /* Create entity */
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Payment payment = new Payment(money, PaymentType.BLIK);
@@ -96,7 +86,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void cascadeDeleteDeliveryAddress() {
+    void cascadeDeleteDeliveryAddress() {
         /* Create entity */
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Wroclaw", "42-468", "Test Street", "543");
@@ -115,7 +105,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void cascadeDeleteShoppingCart() {
+    void cascadeDeleteShoppingCart() {
         /* Create entity */
         ShoppingCart shoppingCart = new ShoppingCart("Test Shopping Cart");
         Order order = createOrderEntity();
@@ -133,7 +123,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void fetchPayment() {
+    void fetchPayment() {
         /* Create entity */
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
         Payment payment = new Payment(money, PaymentType.BLIK);
@@ -150,7 +140,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void fetchDeliveryAddress() {
+    void fetchDeliveryAddress() {
         /* Create entity */
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Wroclaw", "42-468", "Test Street", "543");
@@ -166,7 +156,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void fetchShoppingCart() {
+    void fetchShoppingCart() {
         /* Create entity */
         ShoppingCart shoppingCart = new ShoppingCart("Test Shopping Cart");
         Order order = createOrderEntity();
@@ -178,5 +168,16 @@ public class OrderRepositoryTest {
         /* Retrieve entity and check if it is accessible */
         Optional<ShoppingCart> searchResult = shoppingCartRepository.findById(shoppingCart.getId());
         Assertions.assertThat(searchResult.get()).isEqualToComparingFieldByField(shoppingCart);
+    }
+
+    private Order createOrderEntity() {
+        Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
+        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
+        Payment payment = new Payment(money, PaymentType.BANK_TRANSFER);
+        DeliveryAddress deliveryAddress =
+                new DeliveryAddress("Katowice", "42-500", "Test Street", "328");
+        ShoppingCart shoppingCart = new ShoppingCart("New Shopping Cart");
+
+        return new Order("Happy New Year!", deliveryDateTime, payment, deliveryAddress, shoppingCart);
     }
 }

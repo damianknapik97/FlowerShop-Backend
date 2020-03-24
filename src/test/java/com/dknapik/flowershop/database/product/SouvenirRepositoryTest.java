@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-public class SouvenirRepositoryTest {
+final class SouvenirRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
@@ -31,7 +31,7 @@ public class SouvenirRepositoryTest {
      * Check if entity can be saved to database without any undesired changes or errors
      */
     @Test
-    public void saveToDatabaseTest() {
+    void saveToDatabaseTest() {
         /* Create new Souvenir object */
         String souvenirName = "Save Souvenir Test";
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
@@ -48,7 +48,7 @@ public class SouvenirRepositoryTest {
 
 
     @Test
-    public void findByNameTest() throws NoSuchElementException {
+    void findByNameTest() throws NoSuchElementException {
         /* Create Souvenir object */
         String souvenirName = "Test Souvenir";
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));

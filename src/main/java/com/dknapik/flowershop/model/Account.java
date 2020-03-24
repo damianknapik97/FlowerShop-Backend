@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Account {
+public final class Account implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -29,8 +29,8 @@ public class Account {
     private String email;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AccountRole role = AccountRole.USER;
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private AccountRole role = AccountRole.ROLE_USER;
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart = new ShoppingCart();
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})

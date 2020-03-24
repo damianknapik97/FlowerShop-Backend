@@ -6,7 +6,7 @@ import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.OccasionalArticleRepository;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @ToString
 @Transactional
-public class ShoppingCartSeeder implements SeederInt {
+class ShoppingCartSeeder implements SeederInt {
     private static final boolean ONLY_FOR_DEBUG = true;     // To check if class should be always instantiated and used
     private final MoneyUtils moneyUtils;
     private final OccasionalArticleRepository occasionalArticleRepository;
@@ -137,7 +137,7 @@ public class ShoppingCartSeeder implements SeederInt {
             toReturn = new Account(accountName,
                     encoder.encode(accountName),
                     "user@test.pl",
-                    AccountRole.USER);
+                    AccountRole.ROLE_USER);
             accountRepository.saveAndFlush(toReturn);
         } else {
             toReturn = this.accountRepository.findByName(accountName).get();

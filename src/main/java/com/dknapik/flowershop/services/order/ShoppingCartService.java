@@ -1,19 +1,30 @@
 package com.dknapik.flowershop.services.order;
 
+import com.dknapik.flowershop.constants.ShoppingCartMessage;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
+import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
-import com.dknapik.flowershop.model.order.FlowerOrder;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
-import com.dknapik.flowershop.model.order.SouvenirOrder;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import com.dknapik.flowershop.services.product.SouvenirService;
+import com.dknapik.flowershop.services.productorder.FlowerOrderService;
+import com.dknapik.flowershop.services.productorder.OccasionalArticleOrderService;
+import com.dknapik.flowershop.services.productorder.SouvenirOrderService;
+import com.dknapik.flowershop.utils.MoneyUtils;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.money.MonetaryAmount;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,25 +33,39 @@ import java.util.UUID;
 
 @Service
 @Log4j2
-public class ShoppingCartService {
+public final class ShoppingCartService {
     private final ShoppingCartRepository repository;
     private final AccountService accountService;
+    private final FlowerOrderService flowerOrderService;
     private final FlowerService flowerService;
+    private final OccasionalArticleOrderService occasionalArticleOrderService;
     private final OccasionalArticleService occasionalArticleService;
+    private final SouvenirOrderService souvenirOrderService;
     private final SouvenirService souvenirService;
+    private final MoneyUtils moneyUtils;
+
 
     @Autowired
     public ShoppingCartService(ShoppingCartRepository repository,
                                AccountService accountService,
+                               FlowerOrderService flowerOrderService,
                                FlowerService flowerService,
+                               OccasionalArticleOrderService occasionalArticleOrderService,
                                OccasionalArticleService occasionalArticleService,
-                               SouvenirService souvenirService) {
+                               SouvenirOrderService souvenirOrderService,
+                               SouvenirService souvenirService,
+                               MoneyUtils moneyUtils) {
         this.repository = repository;
         this.accountService = accountService;
+        this.flowerOrderService = flowerOrderService;
         this.flowerService = flowerService;
+        this.occasionalArticleOrderService = occasionalArticleOrderService;
         this.occasionalArticleService = occasionalArticleService;
+        this.souvenirOrderService = souvenirOrderService;
         this.souvenirService = souvenirService;
+        this.moneyUtils = moneyUtils;
     }
+
 
     /**
      * Retrieves shopping cart for provided account. If shopping cart was not found,
@@ -50,6 +75,8 @@ public class ShoppingCartService {
      * @return - Detailed shopping cart dto
      */
     public ShoppingCart retrieveSingleShoppingCart(String accountName) {
+        log.traceEntry();
+
         Account account = accountService.retrieveAccountByName(accountName);
         ShoppingCart shoppingCart = account.getShoppingCart();
 
@@ -59,6 +86,7 @@ public class ShoppingCartService {
             shoppingCart = createNewShoppingCart(accountName);
         }
 
+        log.traceExit();
         return shoppingCart;
     }
 
@@ -69,12 +97,15 @@ public class ShoppingCartService {
      * @return - Newly assigned Shopping Cart entity
      */
     public ShoppingCart createNewShoppingCart(String accountName) {
+        log.traceEntry();
+
         Account account = accountService.retrieveAccountByName(accountName);
         ShoppingCart shoppingCart = new ShoppingCart();
         account.setShoppingCart(shoppingCart);
 
         accountService.updateAccount(account);
 
+        log.traceExit();
         return shoppingCart;
     }
 
@@ -85,6 +116,8 @@ public class ShoppingCartService {
      * @return integer with number of products in shopping cart
      */
     public int countNumberOfProducts(UUID shoppingCartId) {
+        log.traceEntry();
+
         log.debug(() -> "Counting number of products in shopping cart with following id: " + shoppingCartId.toString());
         Optional<ShoppingCart> searchResults = repository.findById(shoppingCartId);
         int numberOfProducts = 0;
@@ -114,6 +147,7 @@ public class ShoppingCartService {
         }
 
         log.debug("Counted following number of products: ", numberOfProducts);
+        log.traceExit();
         return numberOfProducts;
     }
 
@@ -125,6 +159,8 @@ public class ShoppingCartService {
      * @param flowerID    - product id to add to shopping cart
      */
     public void addFlowerToShoppingCart(String accountName, UUID flowerID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -152,6 +188,7 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -163,6 +200,8 @@ public class ShoppingCartService {
      * @param occasionalArticleID - product id to add to shopping cart
      */
     public void addOccasionalArticleToShoppingCart(String accountName, UUID occasionalArticleID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -190,6 +229,8 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -201,6 +242,8 @@ public class ShoppingCartService {
      * @param souvenirID  - product id to add to shopping cart
      */
     public void addSouvenirToShoppingCart(String accountName, UUID souvenirID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Adding flower to following shopping cart: " + shoppingCart.toString());
 
@@ -228,6 +271,7 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -239,6 +283,8 @@ public class ShoppingCartService {
      * @param flowerOrderID - product ORDER id to remove from shopping cart
      */
     public void removeFlowerOrderFromShoppingCart(String accountName, UUID flowerOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -257,6 +303,7 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -268,6 +315,8 @@ public class ShoppingCartService {
      * @param occasionalArticleOrderID - product ORDER id to remove from shopping cart
      */
     public void removeOccasionalArticleFromShoppingCart(String accountName, UUID occasionalArticleOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -286,6 +335,7 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
     }
 
@@ -297,6 +347,8 @@ public class ShoppingCartService {
      * @param souvenirOrderID - product ORDER id to remove from shopping cart
      */
     public void removeSouvenirArticleFromShoppingCart(String accountName, UUID souvenirOrderID) {
+        log.traceEntry();
+
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
         log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
 
@@ -315,6 +367,139 @@ public class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        log.traceExit();
         repository.saveAndFlush(shoppingCart);
+    }
+
+    /**
+     * Create new shopping cart and set it to provided account. Then remove the old shopping cart
+     *
+     * @param accountName - account login in which following actions should be performed.
+     */
+    public void clearShoppingCart(@NonNull String accountName) {
+        log.traceEntry();
+
+        /* Retrieve shopping cart  */
+        log.debug(() -> "Clearing shopping cart");
+        Account account = accountService.retrieveAccountByName(accountName);
+        ShoppingCart oldShoppingCart = account.getShoppingCart();
+
+        /* Create and set new, empty shopping cart and save it to database */
+        account.setShoppingCart(new ShoppingCart());
+        accountService.updateAccount(account);
+
+        /* Remove old shopping cart */
+        repository.delete(oldShoppingCart);
+        repository.flush();
+
+        log.traceExit();
+    }
+
+    /**
+     * Checks if provided shopping cart contains any Order entities inside it.
+     *
+     * @param shoppingCart - Shopping cart Entity to check
+     * @return true if Shopping Cart is empty
+     */
+    public boolean isEmpty(ShoppingCart shoppingCart) {
+        if (shoppingCart.getFlowerOrderList() != null && !shoppingCart.getFlowerOrderList().isEmpty()) {
+            return false;
+        }
+
+        if (shoppingCart.getOccasionalArticleOrderList() != null &&
+                !shoppingCart.getOccasionalArticleOrderList().isEmpty()) {
+            return false;
+        }
+
+        if (shoppingCart.getSouvenirOrderList() != null && !shoppingCart.getSouvenirOrderList().isEmpty()) {
+            return false;
+        }
+
+        return shoppingCart.getBouquetList() == null || shoppingCart.getBouquetList().isEmpty();
+    }
+
+    /**
+     *
+     * Sum up price of all the Product Order entities that are nested inside provided Shopping Cart ID.
+     * This method additionally checks if all of Product entities contain the same Currency and throws exception if not.
+     *
+     * // TODO: This method is too long, refactor it, add unit test.
+     *
+     * @param shoppingCartID - Shopping Cart to count total price from.
+     * @return MonetaryAmount containing equal currencies and summed up product prices or 0 with current application
+     * currency
+     */
+    public MonetaryAmount countTotalPrice(UUID shoppingCartID) {
+        log.traceEntry();
+        Optional<ShoppingCart> shoppingCartOptional = repository.findById(shoppingCartID);
+
+        /* Check if it was even possible to retrieve this shopping cart by ID */
+        if (!shoppingCartOptional.isPresent()) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND));
+            throw new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND);
+        }
+
+        ShoppingCart shoppingCart = shoppingCartOptional.get();
+        MonetaryAmount totalPrice = null;
+        MonetaryAmount orderTotalPrice;
+
+        /* Retrieve sum of nested Flower Order entities initialize return object if sum didn't return null */
+        orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
+        if (orderTotalPrice != null) {
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            }
+        }
+
+        /* Retrieve sum of Occasional Article Orders */
+        orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
+        if (orderTotalPrice != null) {
+
+            /* Check if return object was previously initialized, and initialize it if not */
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            } else {
+
+                /* Check if currency of Occasional Article Order matches currently summed up objects currency */
+                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
+                    log.throwing(Level.ERROR,
+                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+                }
+
+                /* Add Occasional Article Orders sum to currently summed up object */
+                totalPrice = totalPrice.add(orderTotalPrice);
+            }
+        }
+
+        /* Retrieve sum of Souvenir Orders */
+        orderTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
+        if (orderTotalPrice != null) {
+
+            /* Check if return object was previously initialized, and initialize it if not */
+            if (totalPrice == null) {
+                totalPrice = orderTotalPrice;
+            } else {
+
+                /* Check if currency of Souvenir Order matches currently summed up objects currency */
+                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
+                    log.throwing(Level.ERROR,
+                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+                }
+
+                /* Add Souvenir Orders sum to currently summed up object */
+                totalPrice = totalPrice.add(orderTotalPrice);
+            }
+        }
+
+        /* If return object wasn't initialized in any of the previous cases,
+         return 0 as an amount and use application currency */
+        if (totalPrice == null) {
+            totalPrice = Money.zero(moneyUtils.getApplicationCurrencyUnit());
+        }
+
+        log.traceExit();
+        return totalPrice;
     }
 }

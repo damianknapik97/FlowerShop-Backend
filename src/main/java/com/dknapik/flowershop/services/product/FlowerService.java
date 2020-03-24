@@ -6,17 +6,20 @@ import com.dknapik.flowershop.database.product.FlowerRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.product.Flower;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class FlowerService {
+@Log4j2
+public final class FlowerService {
     private final FlowerRepository repository;
 
     @Autowired
@@ -31,8 +34,16 @@ public class FlowerService {
      * @return Flower entity with provided id;
      */
     public Flower retrieveSingleFlower(UUID id) {
+        log.traceEntry();
+
         Optional<Flower> retrievedFlower = repository.findById(id);
-        return retrievedFlower.orElseThrow(() -> new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
+        if (!retrievedFlower.isPresent()) {
+            log.throwing(Level.WARN, new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND));
+            throw new ResourceNotFoundException(ProductMessage.PRODUCT_NOT_FOUND);
+        }
+
+        log.traceExit();
+        return retrievedFlower.get();
     }
 
     /**
@@ -43,6 +54,8 @@ public class FlowerService {
      * @return Page with Flower products
      */
     public RestResponsePage<Flower> retrieveFlowerPage(int pageNumber) {
+        log.traceEntry();
+
         /* Create Page request for repository */
         Pageable pageable = PageRequest.of(pageNumber, ProductProperties.PAGE_SIZE);
 
@@ -50,6 +63,7 @@ public class FlowerService {
         List<Flower> content = repository.findAll(pageable).getContent();
 
         /* Return collection of products ready for trasnport/serialization/mapping */
+        log.traceExit();
         return new RestResponsePage<>(content, pageable, repository.count());
     }
 }

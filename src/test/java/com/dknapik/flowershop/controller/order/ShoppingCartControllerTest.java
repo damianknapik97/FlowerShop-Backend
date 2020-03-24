@@ -11,10 +11,10 @@ import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.order.ShoppingCartDTO;
 import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
-import com.dknapik.flowershop.model.order.FlowerOrder;
-import com.dknapik.flowershop.model.order.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.order.ShoppingCart;
-import com.dknapik.flowershop.model.order.SouvenirOrder;
+import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.OccasionalArticle;
 import com.dknapik.flowershop.model.product.Souvenir;
@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(value = "build/generated-snippets/shopping-cart")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class ShoppingCartControllerTest {
+final class ShoppingCartControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -79,17 +79,17 @@ public class ShoppingCartControllerTest {
 
 
     @BeforeEach
-    public void cleanBeforeTest() {
+    void cleanBeforeTest() {
         purgeDatabase();
     }
 
     @AfterEach
-    public void cleanAfterTest() {
+    void cleanAfterTest() {
         purgeDatabase();
     }
 
     @Test
-    public void getShoppingCartTest() throws Exception {
+    void getShoppingCartTest() throws Exception {
         /* Test configuration */
         int numberOfProducts = 10;
         String prefix = "Testing Product";
@@ -99,7 +99,7 @@ public class ShoppingCartControllerTest {
         /* Initialize entities needed in database */
         ShoppingCart shoppingCart = initializeShoppingCartEntity(prefix, numberOfProducts, false);
         Account account = createAccount("GetShoppingCartTest", "GetShoppingCartTest", shoppingCart);
-        controlObject = shoppingCartMapper.convertToDTO(shoppingCart);
+        controlObject = shoppingCartMapper.mapToDTO(shoppingCart);
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder =
@@ -122,7 +122,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void countShoppingCartProductsTest() throws Exception {
+    void countShoppingCartProductsTest() throws Exception {
         /* Test configuration */
         int numberOfProducts = 10;
         String prefix = "Testing Product";
@@ -152,7 +152,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void putFlowerOrderTest() throws Exception {
+    void putFlowerOrderTest() throws Exception {
         /* Initialize entities needed in database */
         String userName = "Test";
         String url = "/shopping-cart/flower";
@@ -187,7 +187,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void putOccasionalArticleOrderTest() throws Exception {
+    void putOccasionalArticleOrderTest() throws Exception {
         /* Initialize entities needed in database */
         String userName = "Test";
         String url = "/shopping-cart/occasional-article";
@@ -224,7 +224,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void putSouvenirOrderTest() throws Exception {
+    void putSouvenirOrderTest() throws Exception {
         /* Initialize entities needed in database */
         String userName = "Test";
         String url = "/shopping-cart/souvenir";
@@ -261,7 +261,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void removeFlowerOrderFromShoppingCartTest() throws Exception {
+    void removeFlowerOrderFromShoppingCartTest() throws Exception {
         /* Initialize entities needed in database */
         String userName = "Test";
         String url = "/shopping-cart/flower";
@@ -294,7 +294,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void removeOccasionalArticleOrderFromShoppingCartTest() throws Exception {
+    void removeOccasionalArticleOrderFromShoppingCartTest() throws Exception {
         /* Set testing parameters */
         String userName = "Test";
         String url = "/shopping-cart/occasional-article";
@@ -338,7 +338,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    public void removeSouvenirOrderFromShoppingCartTest() throws Exception {
+    void removeSouvenirOrderFromShoppingCartTest() throws Exception {
         /* Set testing parameters */
         String userName = "Test";
         String url = "/shopping-cart/occasional-article";
@@ -379,7 +379,10 @@ public class ShoppingCartControllerTest {
         Assertions.assertThat(afterTestResults.getFlowerOrderList().isEmpty()).isTrue();
     }
 
-    public void purgeDatabase() {
+    /**
+     * Delete all entities related to repositories used in this test to prevent accidental errors, and violations
+     */
+    private void purgeDatabase() {
         accountRepository.deleteAll();
         repository.deleteAll();
         flowerOrderRepository.deleteAll();
