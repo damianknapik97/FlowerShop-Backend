@@ -7,6 +7,7 @@ import com.dknapik.flowershop.dto.account.AccountDetailsDTO;
 import com.dknapik.flowershop.dto.account.PasswordChangeDTO;
 import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
+import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.services.AccountService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,18 +44,19 @@ final class AccountController {
 
     /**
      * Create new user account if all provided details are valid and provided user doesn't exists in db.
+     * Additionally ensure that provided role is set to USER.
      *
      * @param accountDto    - dto containg basic informations needed to register new user.
      * @param bindingResult - Manual control of results of provided data binding to dto.
      * @return string message with informations about data processing status.
      */
     @PostMapping()
-    ResponseEntity<MessageResponseDTO> createAccount(@Valid @RequestBody AccountDTO accountDto,
+    ResponseEntity<MessageResponseDTO> createAccountWithUserRole(@Valid @RequestBody AccountDTO accountDto,
                                                      BindingResult bindingResult) {
         log.traceEntry();
-
         MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
+        accountDto.setRole(AccountRole.ROLE_USER);
 
         try {
             this.service.createNewUser(accountDto, bindingResult);    // Process provided data

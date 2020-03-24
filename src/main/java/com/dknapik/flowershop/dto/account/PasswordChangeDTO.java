@@ -17,8 +17,6 @@ import java.util.UUID;
 public class PasswordChangeDTO implements DTO {
     private UUID id;
     @NotBlank
-    @Size(min = 8)
-    @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
     private @Valid String currentPassword;
     @NotBlank
     @Size(min = 8)

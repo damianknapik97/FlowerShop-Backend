@@ -183,14 +183,14 @@ class OrderController {
      * @return - MessageResponseDTO containing information about operation results.
      */
     @DeleteMapping
-    ResponseEntity<MessageResponseDTO> cancelOrder(@Valid @RequestParam("id") UUID orderID, Principal principal) {
+    ResponseEntity<MessageResponseDTO> removeOrder(@Valid @RequestParam("id") UUID orderID, Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
         service.removeOrder(orderID, principal.getName(), expectedStatus);
 
         log.traceExit();
-        return null;
+        return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_REMOVED_SUCCESSFULLY), HttpStatus.OK);
     }
 
     /**
@@ -203,7 +203,7 @@ class OrderController {
      * @return RestResponsePage with content containing OrderDTOs.
      */
     @GetMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPageFromAccount(@Valid @RequestParam("page") int page,
+    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPageFromAccount(@Valid @RequestParam("number") int page,
                                                                              Principal principal) {
         log.traceEntry();
         int pageSize = ProductProperties.PAGE_SIZE;

@@ -1,7 +1,6 @@
 package com.dknapik.flowershop.services.order;
 
 import com.dknapik.flowershop.constants.OrderMessage;
-import com.dknapik.flowershop.constants.ProductProperties;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.InternalServerException;
@@ -188,6 +187,14 @@ public final class OrderService {
         log.traceExit();
     }
 
+    /**
+     * Check if provided Order ID contains all the needed details for order to be processed.
+     * If previous statement is true, Order status is changed from CREATED to READY FOR ASSIGNMENT.
+     *
+     * @param orderID        - Order to check
+     * @param accountName    - Account to retrieve order from
+     * @param expectedStatus - Status which order should contain before the validation.
+     */
     public void validateOrderAndChangeItsStatus(@NonNull UUID orderID,
                                                 @NonNull String accountName,
                                                 @NonNull OrderStatus expectedStatus) {
@@ -235,7 +242,7 @@ public final class OrderService {
 
     /**
      * Removes provided Order ID from provided account. For this operation to be successfully performed,
-     * Order entity must match provided status
+     * Order entity must match provided status.
      *
      * @param orderID        - Order to search for
      * @param accountName    - account to search in
@@ -244,10 +251,17 @@ public final class OrderService {
     public void removeOrder(UUID orderID, String accountName, OrderStatus expectedStatus) {
         log.traceEntry();
 
+        /* Search for order Entity using provided details */
         Order order = retrieveOrderFromAccount(orderID, accountName, expectedStatus);
+
+        /* Retrieve account related to order, remove entity from its content and update account. */
+        Account account = accountService.retrieveAccountByName(accountName);
+        account.getOrderList().remove(order);
+        accountService.updateAccount(account);
+
+        /* To ensure that Order entity was deleted, use Order repository to delete it. */
         repository.delete(order);
         repository.flush();
-
         log.traceExit();
     }
 
@@ -272,18 +286,21 @@ public final class OrderService {
     /**
      * Retrieves a page of Order entities assigned to provided account name
      *
-     * @param pageNumber -
-     * @param pageSize -
+     * @param pageNumber  -
+     * @param pageSize    -
      * @param accountName - Account to retrieved Orders page from
      * @return RestResponsePage containing Order entities depending on provided arguments.
      */
     public RestResponsePage<Order> retrieveOrdersPageFromAccount(int pageNumber, int pageSize, String accountName) {
+        log.traceEntry();
 
         /* Create Page request for repository */
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
 
         /* Retrieve List of Orders and return RestResponsePage created from this List. */
         List<Order> orderList = repository.findAllByAccountName(accountName, pageRequest).getContent();
+
+        log.traceExit();
         return new RestResponsePage<>(orderList, pageRequest, repository.countAllByAccountName(accountName));
     }
 
@@ -295,6 +312,11 @@ public final class OrderService {
      * @return true if order status matches the expected status.
      */
     private boolean validateOrderStatus(@NonNull Order order, @NonNull OrderStatus expectedStatus) {
-        return order.getStatus() == expectedStatus;
+        log.traceEntry();
+
+        boolean returnValue = order.getStatus() == expectedStatus;
+
+        log.traceExit();
+        return returnValue;
     }
 }

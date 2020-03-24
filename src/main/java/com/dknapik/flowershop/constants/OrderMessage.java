@@ -5,7 +5,7 @@ public enum OrderMessage {
     ORDER_UPDATED_SUCCESSFULLY("Order was updated successfully"),
     ORDER_DETAILS_UPDATED_SUCCESSFULLY("Order details were updated successfully"),
     ORDER_SUBMITTED_SUCCESSFULLY("Order was submitted successfully"),
-
+    ORDER_REMOVED_SUCCESSFULLY("Order was removed successfully from your account"),
 
     /* Error */
     NO_ORDERS("Your account doesn't contain any existing orders"),

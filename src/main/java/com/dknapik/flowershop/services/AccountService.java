@@ -9,6 +9,7 @@ import com.dknapik.flowershop.exceptions.BindingException;
 import com.dknapik.flowershop.exceptions.DataProcessingException;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -59,7 +60,7 @@ public final class AccountService {
     /**
      * Create new user and save its credentials to database.
      *
-     * @param accountDto    - dto containg basic user credentials.
+     * @param accountDto    - dto containing basic user credentials.
      * @param bindingResult - request to dto mapping results.
      * @return - dto containing message about data processing results.
      * @throws BindingException        - mapping request to dto failed.
