@@ -25,7 +25,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
                                                     @Param("status") String orderStatus);
 
     @Query(value = "SELECT * FROM public.order_table ord JOIN public.account acc "
-            + "ON acc.id = ord.order_list_id WHERE acc.name=?1",
+            + "ON acc.id = ord.order_list_id WHERE acc.name=?1 --#pageable\n",
             countQuery = "SELECT count(*) FROM public.order_table ord JOIN public.account acc "
                     + "ON acc.id = ord.order_list_id WHERE acc.name=?1",
             nativeQuery = true)

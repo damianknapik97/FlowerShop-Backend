@@ -1,6 +1,7 @@
 package com.dknapik.flowershop.dto.order;
 
 import com.dknapik.flowershop.dto.DTO;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,5 @@ public class OrderDTO implements DTO {
     private LocalDateTime placementDate;
     @Size(max = 1024)
     private String additionalNote;
+    private OrderStatus orderStatus;
 }

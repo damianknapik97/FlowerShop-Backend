@@ -48,6 +48,7 @@ final class PaymentController {
                                                              Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
+        paymentDTO.setWasPaid(false);
 
         service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName(), expectedStatus);
 
