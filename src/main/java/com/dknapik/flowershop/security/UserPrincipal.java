@@ -1,6 +1,8 @@
 package com.dknapik.flowershop.security;
 
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
+@ToString
 public final class UserPrincipal implements UserDetails {
     private static final long serialVersionUID = 1L;
     private final Account account;
@@ -20,9 +23,7 @@ public final class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-
         authorities.add(new SimpleGrantedAuthority(this.account.getRole().toString()));
-
         return authorities;
     }
 
@@ -60,8 +61,7 @@ public final class UserPrincipal implements UserDetails {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return this.account.getRole().name();
+    public AccountRole getRole() {
+        return this.account.getRole();
     }
 }

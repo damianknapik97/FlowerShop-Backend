@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @ToString
 @Log4j2
@@ -29,45 +30,88 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     /**
-     * Filter user request for existing JWT Token
+     * Filter user request for existing JWT Token and correct assigned Role.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        //Read the Authorization header, where the JWT token should be
-        String header = request.getHeader(JwtProperties.HEADER_STRING);
+        log.traceEntry();
 
-        // If header does not contain BEARER or is null delegate exit
-        if ((header == null) || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        // If header is present, try to grab user principal from database and perform authoritzation
+        // If header is present, try to grab user principal from database and perform authoritzation.
+        checkIfHeadersArePresent(request, response, chain);
         Authentication authentication;
-        authentication = getUsernamePasswordAuthentication(request);
+        authentication = authenticate(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        log.traceExit();
         chain.doFilter(request, response);
     }
 
     /**
-     * Check provided JWT Token validity
+     * Check if headers required for authorization are present.
+     * Currently following headers are checked:
+     * Token Header
+     * Role Header
      */
-    private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(JwtProperties.HEADER_STRING);
-        String userName = null;
-        if (token != null) {
-            //Parse token and decode it
-            userName = JWT.require(JwtProperties.ENCODING_ALGORITHM).build().verify(token.replace(JwtProperties.TOKEN_PREFIX, "")).getSubject();
+    private void checkIfHeadersArePresent(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        log.traceEntry();
 
-            //Validate that user exists in database
-            if (userName != null) {
-                Account account = accountRepository.findByName(userName).orElse(null);
-                UserPrincipal userPrincipal = new UserPrincipal(account);
-                return new UsernamePasswordAuthenticationToken(userName, null, userPrincipal.getAuthorities());
-            }
+        // If token header does not contain BEARER or is null delegate exit
+        String header = request.getHeader(JwtProperties.TOKEN_HEADER);
+        if ((header == null) || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
+            log.trace("Token header doesn't exist in request or is invalid");
+            chain.doFilter(request, response);
         }
-        return null;
+
+        // If role header is null delegate exit
+        header = request.getHeader(JwtProperties.ROLE_HEADER);
+        if (header == null) {
+            log.trace("Role header doesn't exist in request");
+            chain.doFilter(request, response);
+        }
+
+        log.traceExit();
+    }
+
+    /**
+     * Check provided JWT Token and Role validity
+     */
+    private Authentication authenticate(HttpServletRequest request) {
+        log.traceEntry();
+        String token = request.getHeader(JwtProperties.TOKEN_HEADER);
+        String role = request.getHeader(JwtProperties.ROLE_HEADER);
+
+        System.out.println(role);
+        /* Parse token and decode it */
+        String userName = JWT.require(JwtProperties.ENCODING_ALGORITHM)
+                .build()
+                .verify(token.replace(JwtProperties.TOKEN_PREFIX, ""))
+                .getSubject();
+
+        /* Check if user name was properly decoded */
+        if (userName == null) {
+            log.error("Decoded JWT Token is either null or empty");
+            return null;
+        }
+
+        /* Check if account related to decoded token was successfully found */
+        Optional<Account> optionalAccount = accountRepository.findByName(userName);
+        if (!optionalAccount.isPresent()) {
+            log.error("Couldn't find account matching decoded JWT Token");
+            return null;
+        }
+        Account account = optionalAccount.get();
+
+        /* Validate user role */
+        if (!account.getRole().toString().contentEquals(role)) {
+            return null;
+        }
+
+        /* Headers validated */
+        UserPrincipal userPrincipal = new UserPrincipal(account);
+        log.traceExit();
+        return new UsernamePasswordAuthenticationToken(userName, null, userPrincipal.getAuthorities());
+
     }
 }
