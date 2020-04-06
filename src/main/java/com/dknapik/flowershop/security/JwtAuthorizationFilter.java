@@ -38,11 +38,13 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         log.traceEntry();
 
         // If header is present, try to grab user principal from database and perform authoritzation.
-        checkIfHeadersArePresent(request, response, chain);
-        Authentication authentication;
-        authentication = authenticate(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        if (checkIfHeadersArePresent(request)) {
+            Authentication authentication = authenticate(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("User authenticated");
+        } else {
+            log.info("Headers are not present in request, continuing...");
+        }
         log.traceExit();
         chain.doFilter(request, response);
     }
@@ -53,7 +55,7 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
      * Token Header
      * Role Header
      */
-    private void checkIfHeadersArePresent(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    private boolean checkIfHeadersArePresent(HttpServletRequest request)
             throws IOException, ServletException {
         log.traceEntry();
 
@@ -61,17 +63,22 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String header = request.getHeader(JwtProperties.TOKEN_HEADER);
         if ((header == null) || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
             log.trace("Token header doesn't exist in request or is invalid");
-            chain.doFilter(request, response);
+            return false;
         }
+        log.debug("Token Header:" + header);
 
         // If role header is null delegate exit
         header = request.getHeader(JwtProperties.ROLE_HEADER);
         if (header == null) {
             log.trace("Role header doesn't exist in request");
-            chain.doFilter(request, response);
+            return false;
         }
+        log.debug("Role Header:" + header);
+
+        //log.debug();
 
         log.traceExit();
+        return true;
     }
 
     /**
