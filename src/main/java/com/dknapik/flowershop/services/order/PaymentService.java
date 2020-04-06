@@ -27,8 +27,7 @@ public final class PaymentService {
     private final OrderService orderService;
 
     @Autowired
-    public PaymentService(PaymentRepository repository,
-                          OrderService orderService) {
+    public PaymentService(PaymentRepository repository, OrderService orderService) {
         this.repository = repository;
         this.orderService = orderService;
     }

@@ -24,9 +24,7 @@ public final class OrderMapper implements Mapper<Order, OrderDTO> {
     private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public OrderMapper(ModelMapper mapper,
-                       DeliveryAddressMapper deliveryAddressMapper,
-                       PaymentMapper paymentMapper,
+    public OrderMapper(ModelMapper mapper, DeliveryAddressMapper deliveryAddressMapper, PaymentMapper paymentMapper,
                        ShoppingCartMapper shoppingCartMapper) {
         this.mapper = mapper;
         this.deliveryAddressMapper = deliveryAddressMapper;
@@ -37,8 +35,6 @@ public final class OrderMapper implements Mapper<Order, OrderDTO> {
     /**
      * Map Order Entity to Order DTO using Jackson Model Mapper and other mappers related to embedded entities.
      *
-     * @param order - entity
-     * @return - dto
      */
     public OrderDTO mapToDTO(Order order) {
         log.traceEntry();
@@ -51,7 +47,6 @@ public final class OrderMapper implements Mapper<Order, OrderDTO> {
         if (order.getPayment() != null) {
             mappedDTO.setPaymentDTO(paymentMapper.mapToDTO(order.getPayment()));
         }
-
         if (order.getShoppingCart() != null) {
             mappedDTO.setShoppingCartDTO(shoppingCartMapper.mapToDTO(order.getShoppingCart()));
         }

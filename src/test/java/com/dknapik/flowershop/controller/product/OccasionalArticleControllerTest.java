@@ -79,7 +79,6 @@ final class OccasionalArticleControllerTest {
         int page = 0;
         RestResponsePage<OccasionalArticleDTO> controlCollection;
 
-
         /* Initialize testing entities and create List with entities that should be in http response */
         List<OccasionalArticle> articleList = initializeEntities(prefix, numberOfEntities)
                 .subList(0, ProductProperties.PAGE_SIZE);

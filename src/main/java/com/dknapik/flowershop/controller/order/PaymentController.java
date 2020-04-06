@@ -57,10 +57,9 @@ final class PaymentController {
                 HttpStatus.CREATED);
     }
 
-
     /**
      * // TODO: Add Test
-     * <p>
+     *
      * Retrieve all possible values of PaymentType that can be set to Payment entity.
      *
      * @return EnumSet created from PaymentType enum.
