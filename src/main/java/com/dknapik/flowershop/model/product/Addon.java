@@ -42,6 +42,12 @@ public final class Addon implements Product, Comparable<Addon> {
     private MonetaryAmount price;
     @Column(length = 1024)
     private String description;
+    @Column()
+    private String imageLarge;
+    @Column
+    private String imageMedium;
+    @Column()
+    private String imageSmall;
 
 
     public Addon(String name, AddonColour colour, MonetaryAmount price, String description) {

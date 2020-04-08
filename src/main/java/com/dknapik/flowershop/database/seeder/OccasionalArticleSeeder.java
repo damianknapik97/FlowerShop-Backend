@@ -25,13 +25,7 @@ class OccasionalArticleSeeder implements SeederInt {
     @Override
     public void seed() {
         /* Create array with entities to save */
-        Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
-        String description = "This item is great for specific occasion.";
-        OccasionalArticle[] occasionalArticlesArray = {
-                new OccasionalArticle("Card", price, description, "Birthday"),
-                new OccasionalArticle("Card", price, description, "Christmas"),
-                new OccasionalArticle("Confetti", price, description, "Birthday")
-        };
+        OccasionalArticle[] occasionalArticlesArray = createOccasionalArticles();
 
         /* Check if entity already exists and save it if not */
         for (OccasionalArticle occasionalArticle : occasionalArticlesArray) {
@@ -42,6 +36,40 @@ class OccasionalArticleSeeder implements SeederInt {
 
         /* Flush all changes */
         occasionalArticleRepository.flush();
+    }
+
+    private OccasionalArticle[] createOccasionalArticles() {
+        return new OccasionalArticle[] {
+                new OccasionalArticle("Card", moneyUtils.amountWithAppCurrency(4.99),
+                        "This product contains big \"Thank You\" inscription up front. " +
+                                "We will add your message on the back of this card", "Any",
+                        "https://drive.google.com/uc?id=1tZy6GiJ1FDETKiKRxS_rdjV1-EVQGQMk",
+                        "https://drive.google.com/uc?id=1_mtJlBeka2YuYrwg-JuJZN_0Z9mgRAn-",
+                        "https://drive.google.com/uc?id=1jxKIMOd3bAJRFxAJZxpTBkHQ6H2j-Rnj"),
+                new OccasionalArticle("Card", moneyUtils.amountWithAppCurrency(4.99),
+                        "This product contains big \"Happy Easter\" inscription, with hearths around it. " +
+                                "We will add your message on the back of this card", "Easter",
+                        "https://drive.google.com/uc?id=1ZAmqe0WxXsTLVkNzsoQBTVm4a0cnH9If",
+                        "https://drive.google.com/uc?id=1mpimGYNZQhIB1VbV0oMhYkx-JanjZEBV",
+                        "https://drive.google.com/uc?id=1v1RycRiCx8JsWix18AXL6axB14l9PW85"),
+                new OccasionalArticle("Card", moneyUtils.amountWithAppCurrency(4.99),
+                        "This product contains big \"Happy Birthday\" inscriptions up front. " +
+                                "We will add your message on the back of this card", "Birthday",
+                        "https://drive.google.com/uc?id=1uDCprDMblmGUquyk4plGnCumvuwvQ5mC",
+                        "https://drive.google.com/uc?id=1zVILb7eDo49Xs1w-g2WwXMeb8n-av5gt",
+                        "https://drive.google.com/uc?id=1EttzbOvuxqDfFSnEZ9sVatbJC9n4xLDN"),
+                new OccasionalArticle("Emoji Balloons", moneyUtils.amountWithAppCurrency(1.99),
+                        "Two emoji shaped balloons representing \"Kiss Emoji\" and \"Hearth Eyes Emoji\" " +
+                                "filled with helium", "Any",
+                        "https://drive.google.com/uc?id=1CaKK0bLpF9geDwuGbWuT84L1ZfPTwbga",
+                        "https://drive.google.com/uc?id=1BlFd5YfX4sKjD77E7E33FJlO_h67JlIR",
+                        "https://drive.google.com/uc?id=1i9XSEvVgoe85SzsYbvFstRFt1xPZoaCi"),
+                new OccasionalArticle("Colorful Balloons", moneyUtils.amountWithAppCurrency(4.99),
+                        "Pack of ten helium filled balloons. Colours are chosen at random.", "Any",
+                        "https://drive.google.com/uc?id=1denXo5IArSy8aQmeO2zc4WvDfm-4e-33",
+                        "https://drive.google.com/uc?id=1QR-0caRcjIGlB1Qp75f4gHTowx4Yflef",
+                        "https://drive.google.com/uc?id=11S8BtkRn8XyZIIzByVcj7x5g4OLRgpbu")
+        };
     }
 
     @Override

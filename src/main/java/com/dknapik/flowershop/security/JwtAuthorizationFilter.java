@@ -75,8 +75,6 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
         log.debug("Role Header:" + header);
 
-        //log.debug();
-
         log.traceExit();
         return true;
     }
@@ -89,7 +87,6 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(JwtProperties.TOKEN_HEADER);
         String role = request.getHeader(JwtProperties.ROLE_HEADER);
 
-        System.out.println(role);
         /* Parse token and decode it */
         String userName = JWT.require(JwtProperties.ENCODING_ALGORITHM)
                 .build()
@@ -119,6 +116,5 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         UserPrincipal userPrincipal = new UserPrincipal(account);
         log.traceExit();
         return new UsernamePasswordAuthenticationToken(userName, null, userPrincipal.getAuthorities());
-
     }
 }
