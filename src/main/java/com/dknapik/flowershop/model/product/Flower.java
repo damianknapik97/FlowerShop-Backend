@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.model.product;
 
-import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.utils.MoneyAmountAndCurrency;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class Flower implements Model, Product, Comparable<Flower> {
+public final class Flower implements Product, Comparable<Flower> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -44,13 +43,29 @@ public final class Flower implements Model, Product, Comparable<Flower> {
     private String description;
     @Column
     private int height;
-
+    @Column
+    private String imageLarge;
+    @Column
+    private String imageMedium;
+    @Column
+    private String imageSmall;
 
     public Flower(String name, MonetaryAmount price, String description, int height) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.height = height;
+    }
+
+    public Flower(String name, MonetaryAmount price, String description, int height,
+                  String imageLarge, String imageMedium, String imageSmall) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.height = height;
+        this.imageLarge = imageLarge;
+        this.imageMedium = imageMedium;
+        this.imageSmall = imageSmall;
     }
 
     /**

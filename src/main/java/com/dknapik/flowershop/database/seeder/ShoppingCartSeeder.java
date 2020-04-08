@@ -54,45 +54,30 @@ class ShoppingCartSeeder implements SeederInt {
      *   - The third one: Removing Account together with shopping cart, for some reason creates new Occasional Article Order entity */
     @Override
     public void seed() {
-        String userName = "user";
-        Account userAccount = retrieveAccount(userName);
-        boolean shoppingCartEmpty = isShoppingCartEmpty(userAccount);
-
-        /* Try to retrieve shopping cart and create new one if doesn't exist */
-        if (shoppingCartEmpty) {
-            /* Retrieve/Create Occasional Article from/in database */
-            Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
-            OccasionalArticle occasionalArticle =
-                    retrieveOccasionalArticle("ShoppingCartArticle",
-                            price,
-                            "This item is great for specific occasion.",
-                            "New Year");
-
-            /* Create new Occasional Article Order and add it to the list */
-            OccasionalArticleOrder newOrder = new OccasionalArticleOrder(2, occasionalArticle);
-            List<OccasionalArticleOrder> occasionalArticleOrderList = new LinkedList<>();
-            occasionalArticleOrderList.add(newOrder);
-
-            /* Create new shopping cart object, populated by id and occasional article orders */
-            userAccount.getShoppingCart().setName("TEST");
-            userAccount.getShoppingCart().setOccasionalArticleOrderList(occasionalArticleOrderList);
-            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
-            //occasionalArticleOrderRepository.saveAll(userAccount.getShoppingCart().getOccasionalArticleOrderList());
-            //occasionalArticleOrderRepository.flush();
-            //shoppingCartRepository.saveAndFlush(userAccount.getShoppingCart());
-            accountRepository.saveAndFlush(userAccount);
-            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().get(0).getId().toString());
-            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
-
-            //shoppingCartRepository.delete(userAccount.getShoppingCart());
-            //shoppingCartRepository.flush();
-            //accountRepository.delete(userAccount);
-            //accountRepository.flush();
-
-            //System.out.println(userAccount.getShoppingCart().getOccasionalArticleOrderList().size());
-            //accountRepository.flush();
-
-        }
+//        String userName = "user";
+//        Account userAccount = retrieveAccount(userName);
+//        boolean shoppingCartEmpty = isShoppingCartEmpty(userAccount);
+//
+//        /* Try to retrieve shopping cart and create new one if doesn't exist */
+//        if (shoppingCartEmpty) {
+//            /* Retrieve/Create Occasional Article from/in database */
+//            Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
+//            OccasionalArticle occasionalArticle =
+//                    retrieveOccasionalArticle("ShoppingCartArticle",
+//                            price,
+//                            "This item is great for specific occasion.",
+//                            "New Year");
+//
+//            /* Create new Occasional Article Order and add it to the list */
+//            OccasionalArticleOrder newOrder = new OccasionalArticleOrder(2, occasionalArticle);
+//            List<OccasionalArticleOrder> occasionalArticleOrderList = new LinkedList<>();
+//            occasionalArticleOrderList.add(newOrder);
+//
+//            /* Create new shopping cart object, populated by id and occasional article orders */
+//            userAccount.getShoppingCart().setName("TEST");
+//            userAccount.getShoppingCart().setOccasionalArticleOrderList(occasionalArticleOrderList);
+//            accountRepository.saveAndFlush(userAccount);
+//        }
     }
 
     /**

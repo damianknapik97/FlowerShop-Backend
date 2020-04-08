@@ -1,9 +1,10 @@
 package com.dknapik.flowershop.model.productorder;
 
 
+import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.model.product.Product;
 
-public interface ProductOrder {
+public interface ProductOrder extends Model {
 
     /**
      * Retrieves original class of the product order

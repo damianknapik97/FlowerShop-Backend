@@ -33,13 +33,7 @@ class SouvenirSeeder implements SeederInt {
         /* Create array with entities to save */
         Money price = Money.of(2, moneyUtils.getApplicationCurrencyUnit());
         String description = "This item is great for any occasion.";
-        Souvenir[] souvenirArray = {
-                new Souvenir("Cup", price, description),
-                new Souvenir("Perfume", price, description),
-                new Souvenir("Pillow", price, description),
-                new Souvenir("Hearth shaped pillow", price, description),
-                new Souvenir("Round pillow", price, description)
-        };
+        Souvenir[] souvenirArray = createSouvnirs();
 
         /* Check if entity already exists and save it if not */
         for (Souvenir souvenir : souvenirArray) {
@@ -50,6 +44,36 @@ class SouvenirSeeder implements SeederInt {
 
         /* Flush all changes */
         souvenirRepository.flush();
+    }
+
+    private Souvenir[] createSouvnirs() {
+        return new Souvenir[] {
+                new Souvenir("Standing man figurine", moneyUtils.amountWithAppCurrency(19.99),
+                        "Silver figurine representing muscular man. Perfect gift for honoring an archivement",
+                        "https://drive.google.com/uc?id=19hB2Xi6O1jwQT8ZC9OyTuoTicXZ_SyT3",
+                        "https://drive.google.com/uc?id=1zuDRjkIUK7XZJ6etBhjsVJX5mpvvq86g",
+                        "https://drive.google.com/uc?id=1d-4SJrtmdEmg9r6dWbpjxVOaKQ2drAGQ"),
+                new Souvenir("Beige Teddy Bear", moneyUtils.amountWithAppCurrency(16.00),
+                        "Fluffy, medium sized decorative item. Looks great on any shelf.",
+                        "https://drive.google.com/uc?id=1Ca4DwNPV1RLJgZmYCM8aBEKNRD45dBE6",
+                        "https://drive.google.com/uc?id=1zLl4KItIv5_DnsxTXv60tg4dqU8eJU-I",
+                        "https://drive.google.com/uc?id=1Ni13SKH5jklfceXJQNNj1FISnK9gHiMx"),
+                new Souvenir("Brown Teddy Bear", moneyUtils.amountWithAppCurrency(9.99),
+                        "Fluffy, small decorative item. Looks great on any shelf.",
+                        "https://drive.google.com/uc?id=1G9VH9g-cfvV-lHdX67OkP6oxCfFjMFMs",
+                        "https://drive.google.com/uc?id=1dypiV-FMS4hKPr3tPPqcqEvhUvNQ05dN",
+                        "https://drive.google.com/uc?id=1v20jlxlVgoxra8FtAj2TimtCQwn4H4tA"),
+                new Souvenir("Mermaid Cat Pillow", moneyUtils.amountWithAppCurrency(15.00),
+                        "Funny, medium sized pillow.",
+                        "https://drive.google.com/uc?id=1AUw4JZ2ts9sHJXX0hYpbVk81u0ttEaOn",
+                        "https://drive.google.com/uc?id=1Lu5t2Y8OULvoO7UQwmsH4YfZsthaTHvA",
+                        "https://drive.google.com/uc?id=1AUw4JZ2ts9sHJXX0hYpbVk81u0ttEaOn"),
+                new Souvenir("Scooter Dog Pillow", moneyUtils.amountWithAppCurrency(12.00),
+                        "Funny, medium sized pillow.",
+                        "https://drive.google.com/uc?id=13sNpdgpvwXvTYNdcr3fhGIxt6fKkfeRB",
+                        "https://drive.google.com/uc?id=1Mqz8NclVHwnx7HRoqO80jIW5A0v-ErwC",
+                        "https://drive.google.com/uc?id=1T0W3of4kVGbLPb9ERsqbaXMsWXhovb_N")
+        };
     }
 
     @Override

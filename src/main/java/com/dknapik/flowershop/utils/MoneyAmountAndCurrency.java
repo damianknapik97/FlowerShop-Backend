@@ -40,5 +40,4 @@ public final class MoneyAmountAndCurrency extends AbstractMultiColumnUserType<Mo
     public String[] getPropertyNames() {
         return PROPERTY_NAMES;
     }
-
 }

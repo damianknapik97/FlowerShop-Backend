@@ -24,6 +24,9 @@ public class OccasionalArticleDTO implements ProductDTO {
     private @Valid String description;
     @NotBlank
     private @Valid String theme;
+    private String imageLarge;
+    private String imageMedium;
+    private String imageSmall;
 
     /**
      * Retrieves original class of the products

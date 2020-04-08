@@ -22,6 +22,9 @@ public class SouvenirDTO implements ProductDTO {
     private @Valid MonetaryAmount price;
     @NotNull
     private @Valid String description;
+    private String imageLarge;
+    private String imageMedium;
+    private String imageSmall;
 
     /**
      * Retrieves original class of the products

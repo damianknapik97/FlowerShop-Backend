@@ -7,11 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.UUID;
 
 /**
@@ -26,21 +22,22 @@ public class AccountDTO implements DTO {
     private UUID id;
     @NotEmpty
     @Size(min = 4)
-    private @Valid String name;
+    private String name;
     @NotEmpty
     @Email
-    private @Valid String email;
+    private String email;
     @NotEmpty
     @Size(min = 8)
     @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+")
-    private @Valid String password;
+    private String password;
+    @NotNull
     private AccountRole role = AccountRole.ROLE_USER;
     private ShoppingCart shoppingCartList;
 
 
-    public AccountDTO(@Valid @NotEmpty @Size(min = 4) String name,
-                      @Valid @NotEmpty @Email String email,
-                      @Valid @NotEmpty @Size(min = 8) @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+") String password,
+    public AccountDTO(String name,
+                      String email,
+                      String password,
                       AccountRole role) {
         this.name = name;
         this.email = email;
@@ -49,9 +46,9 @@ public class AccountDTO implements DTO {
     }
 
     public AccountDTO(UUID id,
-                      @Valid @NotEmpty @Size(min = 4) String name,
-                      @Valid @NotEmpty @Email String email,
-                      @Valid @NotEmpty @Size(min = 8) @Pattern(regexp = "(?=.*?[0-9])(?=.*?[A-Z]).+") String password,
+                      String name,
+                      String email,
+                      String password,
                       AccountRole role) {
         this.id = id;
         this.name = name;

@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -60,21 +61,21 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        //Grab pricinpal
+        // Grab pricinpal
         UserPrincipal principal = (UserPrincipal) authResult.getPrincipal();
 
-        //Create JWT token
+        // Create JWT token
         String token = JWT.create()
                 .withSubject(principal.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .sign(JwtProperties.ENCODING_ALGORITHM);
 
+        System.out.println(JwtProperties.TOKEN_PREFIX + token);
+
         // Add JWT token in response
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
+        response.addHeader(JwtProperties.TOKEN_HEADER, JwtProperties.TOKEN_PREFIX + token);
         // Add Role in response
-        response.addHeader("Role", principal.toString());
-        // Add Account ID in response
-        response.addHeader("ID", principal.getID().toString());
+        response.addHeader(JwtProperties.ROLE_HEADER, principal.getRole().toString());
         // Add CORS policy header
         response.addHeader("Access-Control-Expose-Headers", "Authorization, Role, ID");
     }

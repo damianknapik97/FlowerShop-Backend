@@ -25,6 +25,9 @@ public class FlowerDTO implements ProductDTO {
     private @Valid String description;
     @Min(1)
     private @Valid int height;
+    private String imageLarge;
+    private String imageMedium;
+    private String imageSmall;
 
     /**
      * Retrieves original class of the products
