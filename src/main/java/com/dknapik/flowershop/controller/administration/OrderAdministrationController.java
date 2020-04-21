@@ -1,7 +1,6 @@
 package com.dknapik.flowershop.controller.administration;
 
-import com.dknapik.flowershop.constants.OrderMessage;
-import com.dknapik.flowershop.constants.ProductProperties;
+import com.dknapik.flowershop.constants.administration.OrderAdministrationMessage;
 import com.dknapik.flowershop.constants.sorting.OrderSortingProperty;
 import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
@@ -19,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/order-administration")
 @CrossOrigin
 @ToString
 @Log4j2
+@Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
 public class OrderAdministrationController {
     private final OrderAdministrationService service;
     private final OrderMapper orderMapper;
@@ -42,7 +43,6 @@ public class OrderAdministrationController {
      * @param orderDTO - DTO to update (ID must match actually existing Order entity)
      * @return - MessageResponseDTO with information about operation result.
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PutMapping
     ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
         log.traceEntry();
@@ -50,12 +50,14 @@ public class OrderAdministrationController {
         service.updateOrder(orderMapper.mapToEntity(orderDTO));
 
         log.traceExit();
-        return new ResponseEntity<>(new MessageResponseDTO(OrderMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new MessageResponseDTO(OrderAdministrationMessage.ORDER_UPDATED_SUCCESSFULLY), HttpStatus.OK);
     }
 
     /**
      * Converts OrderSortingProperty enum data type into Set, and returns it.
      */
+    @GetMapping("/page/sorting-properties")
     ResponseEntity<Set<OrderSortingProperty>> retrieveSortingProperties() {
         log.traceEntry();
 
@@ -68,19 +70,21 @@ public class OrderAdministrationController {
     /**
      * Retrieves one page of orders, regardless of assigned account to it.
      * This end point can be used only by authorized accounts
+     * <p>
+     * TODO: Add Test
      *
      * @param page - number of page to retrieve
      * @return Pageable with number of orders defined in ProductProperties class.
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    @GetMapping("/page")
+    @GetMapping()
     ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "elements", defaultValue = "0") int numberOfElements,
             @RequestParam(value = "sorting", defaultValue = "NONE") OrderSortingProperty sortingProperty) {
         log.traceEntry();
 
         RestResponsePage<Order> orderResponsePage =
-                service.retrieveResponsePage(page, ProductProperties.PAGE_SIZE, sortingProperty);
+                service.retrieveResponsePage(page, numberOfElements, sortingProperty);
         RestResponsePage<OrderDTO> orderDTOResponsePage = orderMapper.mapPageToDTO(orderResponsePage);
 
         log.traceExit();
@@ -88,20 +92,38 @@ public class OrderAdministrationController {
     }
 
     /**
-     * Update provided ResponsePage content, and return newly updated ResponsePage with sorting that includes
+     * Update provided Iterable content, and return newly updated ResponsePage with sorting that includes
      * just updated entities.
+     * <p>
+     * TODO: Add Test
      */
-    @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
     @PutMapping("/page")
     ResponseEntity<RestResponsePage<OrderDTO>> updateOrdersPage(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "elements", defaultValue = "20") int numberOfElements,
             @RequestParam(value = "sorting", defaultValue = "NONE") OrderSortingProperty sortingProperty,
-            @Valid @RequestBody RestResponsePage<Order> inputOrdersPage) {
+            @Valid @RequestBody Iterable<Order> inputOrders) {
         log.traceEntry();
 
-        RestResponsePage<Order> outputOrdersPage = service.updatePage(inputOrdersPage, sortingProperty);
+        RestResponsePage<Order> outputOrdersPage =
+                service.updateMultipleOrders(page, numberOfElements, sortingProperty, inputOrders);
         RestResponsePage<OrderDTO> outputOrdersDTOPage = orderMapper.mapPageToDTO(outputOrdersPage);
 
         log.traceExit();
         return new ResponseEntity<>(outputOrdersDTOPage, HttpStatus.OK);
+    }
+
+    /**
+     * Search database for Order ID and related to it component, and return it.
+     */
+    @GetMapping()
+    ResponseEntity<OrderDTO> retrieveOrder(@Valid @RequestParam("id") UUID orderID) {
+        log.traceEntry();
+
+        Order retrievedOrder = this.service.retrieveOrder(orderID);
+        OrderDTO orderDTO = orderMapper.mapToDTO(retrievedOrder);
+
+        log.traceExit();
+        return new ResponseEntity<>(orderDTO, HttpStatus.OK);
     }
 }

@@ -1,8 +1,10 @@
 package com.dknapik.flowershop.services.administration;
 
+import com.dknapik.flowershop.constants.administration.OrderAdministrationMessage;
 import com.dknapik.flowershop.constants.sorting.OrderSortingProperty;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.services.order.OrderService;
 import lombok.NonNull;
@@ -15,8 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @ToString
@@ -38,6 +41,23 @@ public final class OrderAdministrationService {
      */
     public void updateOrder(Order order) {
         orderService.updateExistingOrder(order);
+    }
+
+    /**
+     * Searches database for provided order ID, and returns related to it entity.
+     * After search for mentioned ID fails, ResourceNotFound runtime exception is thrown.
+     */
+    public Order retrieveOrder(UUID orderID) {
+        log.traceEntry();
+        Optional<Order> orderOptional = repository.findById(orderID);
+
+        if (!orderOptional.isPresent()) {
+            log.throwing(new ResourceNotFoundException(OrderAdministrationMessage.ORDER_NOT_FOUND));
+            throw new ResourceNotFoundException(OrderAdministrationMessage.ORDER_NOT_FOUND);
+        }
+
+        log.traceExit();
+        return orderOptional.get();
     }
 
     /**
@@ -69,25 +89,26 @@ public final class OrderAdministrationService {
     }
 
     /**
-     * Updates content of provided ResponsePage, uses it to build a new ResponsePage containing newly ordered
-     * components, including the changes.
+     * Updates Orders in provided iterable, and create new ResponsePage from provided arguments,
+     * containing sorted Order entities. Newly updated orders are included.
      *
-     * @param pageToUpdate    - Page containing orders to update, and to create new query.
-     * @param sortingProperty - how orders should be ordered when retrieved from database.
+     * @param page             - which page to retrieve
+     * @param numberOfEntities - how many entities to retrieve
+     * @param sortingProperty  - how orders should be ordered when retrieved from database.
+     * @param ordersToUpdate   - iterable containing Orders entities to update
      * @return RestResponsePage containing sorted Orders.
      */
-    public RestResponsePage<Order> updatePage(@NonNull RestResponsePage<Order> pageToUpdate,
-                                              @NonNull OrderSortingProperty sortingProperty) {
+    public RestResponsePage<Order> updateMultipleOrders(int page, int numberOfEntities,
+                                                        @NonNull OrderSortingProperty sortingProperty,
+                                                        @NonNull Iterable<Order> ordersToUpdate) {
         log.traceEntry();
 
-        /* Update all entities provided in page content */
-        List<Order> pageContent = pageToUpdate.getContent();
-        for (Order order : pageContent) {
-            orderService.updateExistingOrder(order);
-        }
+        /* Update all entities provided in iterable */
+        repository.saveAll(ordersToUpdate);
+        repository.flush();
 
-        /* Create new ResponsePage, using provided pageable and sorting property */
-        Page<Order> newOrderPage = retrieveSortedPage(pageToUpdate.getPageable(), sortingProperty);
+        /* Create new ResponsePage, using provided properties */
+        Page<Order> newOrderPage = retrieveResponsePage(page, numberOfEntities, sortingProperty);
 
         log.traceExit();
         return new RestResponsePage<>(newOrderPage);
