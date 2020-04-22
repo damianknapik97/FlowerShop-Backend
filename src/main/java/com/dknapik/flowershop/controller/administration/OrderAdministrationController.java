@@ -76,7 +76,7 @@ public class OrderAdministrationController {
      * @param page - number of page to retrieve
      * @return Pageable with number of orders defined in ProductProperties class.
      */
-    @GetMapping()
+    @GetMapping("/page")
     ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "elements", defaultValue = "0") int numberOfElements,
@@ -115,6 +115,8 @@ public class OrderAdministrationController {
 
     /**
      * Search database for Order ID and related to it component, and return it.
+     *
+     * TODO: Add Test
      */
     @GetMapping()
     ResponseEntity<OrderDTO> retrieveOrder(@Valid @RequestParam("id") UUID orderID) {

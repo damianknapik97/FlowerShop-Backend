@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -19,6 +20,7 @@ import org.zalando.jackson.datatype.money.MoneyModule;
 import java.math.BigDecimal;
 
 @Configuration
+@EnableJpaAuditing
 public class WebConfig {
 
     @Primary
