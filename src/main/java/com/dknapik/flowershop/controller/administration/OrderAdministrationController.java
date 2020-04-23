@@ -71,7 +71,6 @@ public class OrderAdministrationController {
      * Retrieves one page of orders, regardless of assigned account to it.
      * This end point can be used only by authorized accounts
      * <p>
-     * TODO: Add Test
      *
      * @param page - number of page to retrieve
      * @return Pageable with number of orders defined in ProductProperties class.

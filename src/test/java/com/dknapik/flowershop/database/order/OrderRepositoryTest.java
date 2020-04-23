@@ -172,12 +172,11 @@ final class OrderRepositoryTest {
 
     private Order createOrderEntity() {
         Money money = Money.of(10, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
-        LocalDateTime deliveryDateTime = LocalDateTime.of(2020, 12, 15, 16, 30);
         Payment payment = new Payment(money, PaymentType.BANK_TRANSFER);
         DeliveryAddress deliveryAddress =
                 new DeliveryAddress("Katowice", "42-500", "Test Street", "328");
         ShoppingCart shoppingCart = new ShoppingCart("New Shopping Cart");
 
-        return new Order("Happy New Year!", deliveryDateTime, payment, deliveryAddress, shoppingCart);
+        return new Order("Happy New Year!", payment, deliveryAddress, shoppingCart);
     }
 }
