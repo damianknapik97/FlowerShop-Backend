@@ -22,11 +22,11 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
             nativeQuery = true)
     Optional<Account> findByOrderID(UUID orderID);
 
-    Page<Account> findAllByAccountByCreationDateDesc(Pageable pageable);
+    Page<Account> findAllByOrderByCreationDateDesc(Pageable pageable);
 
-    Page<Account> findAllByAccountByCreationDateAsc(Pageable pageable);
+    Page<Account> findAllByOrderByCreationDateAsc(Pageable pageable);
 
-    Page<Account> findAllByAccountByRoleDesc(Pageable pageable);
+    Page<Account> findAllByOrderByRoleDesc(Pageable pageable);
 
-    Page<Account> findAllByAccountByRoleAsc(Pageable pageable);
+    Page<Account> findAllByOrderByRoleAsc(Pageable pageable);
 }

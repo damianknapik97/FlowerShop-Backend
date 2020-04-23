@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.account;
 
+import com.dknapik.flowershop.dto.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountEmployeeDetailsDTO {
+public class AccountEmployeeDetailsDTO implements DTO {
     @NotBlank
     private String accountName;
     @NotBlank
