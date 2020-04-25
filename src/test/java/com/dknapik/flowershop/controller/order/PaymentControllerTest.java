@@ -108,7 +108,7 @@ final class PaymentControllerTest {
 
         /* Check if Response matches */
         if (!resultDTO.getMessage()
-                .contentEquals(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY.toString())) {
+                .contentEquals(PaymentMessage.CREATED_SUCCESSFULLY.toString())) {
             throw new RuntimeException("Response message doesn't match expected one");
         }
 

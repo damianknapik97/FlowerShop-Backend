@@ -16,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @ToString
@@ -33,6 +35,12 @@ public final class AccountAdministrationService {
         this.accountService = accountService;
         this.repository = repository;
         this.accountMapper = accountMapper;
+    }
+
+    public Set<AccountSortingProperty> retrieveSortingProperties() {
+        log.traceEntry();
+        log.traceExit();
+        return EnumSet.allOf(AccountSortingProperty.class);
     }
 
     /**
@@ -86,7 +94,9 @@ public final class AccountAdministrationService {
      * @param sortingProperty - how accounts should be ordered when retrieved from database
      * @return RestResponsePage with Account entities.
      */
-    public RestResponsePage<Account> retrieveAccountsPage(int pageNumber, int pageSize, AccountSortingProperty sortingProperty) {
+    public RestResponsePage<Account> retrieveAccountsPage(int pageNumber,
+                                                          int pageSize,
+                                                          AccountSortingProperty sortingProperty) {
         log.traceEntry();
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

@@ -53,7 +53,7 @@ final class DeliveryAddressController {
                 principal.getName(), expectedStatus);
 
         log.traceExit();
-        return new ResponseEntity<>(new MessageResponseDTO(DeliveryAddressMessage.DELIVERY_ADDRESS_ADDED_SUCCESSFULLY),
+        return new ResponseEntity<>(new MessageResponseDTO(DeliveryAddressMessage.ADDED_SUCCESSFULLY),
                 HttpStatus.CREATED);
     }
 }

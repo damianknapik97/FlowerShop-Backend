@@ -3,6 +3,7 @@ package com.dknapik.flowershop.services.order;
 import com.dknapik.flowershop.constants.PaymentMessage;
 import com.dknapik.flowershop.database.order.PaymentRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.model.order.Payment;
@@ -52,8 +53,8 @@ public final class PaymentService {
 
         /* Check if payment is already assigned */
         if (order.getPayment() != null) {
-            log.throwing(Level.WARN, new InvalidOperationException(PaymentMessage.PAYMENT_ALREADY_ASSIGNED));
-            throw new InvalidOperationException(PaymentMessage.PAYMENT_ALREADY_ASSIGNED);
+            log.throwing(Level.WARN, new InvalidOperationException(PaymentMessage.ALREADY_ASSIGNED));
+            throw new InvalidOperationException(PaymentMessage.ALREADY_ASSIGNED);
         }
 
         /* Set Payment for provided order and save it */
@@ -70,5 +71,22 @@ public final class PaymentService {
      */
     public Set<PaymentType> retrieveAllPaymentOptions() {
         return EnumSet.allOf(PaymentType.class);
+    }
+
+    /**
+     * Checks if ID from provided argument exists already in database, and updates whole entity if true.
+     */
+    public void updateExistingPaymentEntity(@NonNull Payment payment) {
+        log.traceEntry();
+
+        if (repository.existsById(payment.getId())) {
+            repository.saveAndFlush(payment);
+        } else {
+            log.throwing(new ResourceNotFoundException(PaymentMessage.UPDATE_FAILED));
+            throw new ResourceNotFoundException(PaymentMessage.UPDATE_FAILED);
+        }
+
+        log.traceExit();
+
     }
 }

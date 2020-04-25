@@ -53,7 +53,7 @@ final class PaymentController {
         service.addNewPaymentToOrder(orderID, mapper.mapToEntity(paymentDTO), principal.getName(), expectedStatus);
 
         log.traceExit();
-        return new ResponseEntity<>(new MessageResponseDTO(PaymentMessage.PAYMENT_CREATED_SUCCESSFULLY),
+        return new ResponseEntity<>(new MessageResponseDTO(PaymentMessage.CREATED_SUCCESSFULLY),
                 HttpStatus.CREATED);
     }
 

@@ -17,6 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Set;
 import java.util.UUID;
 
 @CrossOrigin
@@ -67,7 +68,7 @@ public class AccountAdministrationController {
      */
     @GetMapping("/page")
     @Secured("ROLE_ADMIN")
-    ResponseEntity<RestResponsePage<AccountAdministrativeDetailsDTO>> retrieveAccountPage(
+    ResponseEntity<RestResponsePage<AccountAdministrativeDetailsDTO>> retrieveAccountsPage(
             @Valid @RequestParam(value = "page", defaultValue = "0") int page,
             @Valid @RequestParam(value = "elements", defaultValue = "20") int numberOfElements,
             @Valid @RequestParam(value = "sorting", defaultValue = "NONE") AccountSortingProperty sortingProperty) {
@@ -96,5 +97,20 @@ public class AccountAdministrationController {
         log.traceExit();
         return new ResponseEntity<>(new MessageResponseDTO(AccountAdministrationMessage.ACCOUNT_UPDATED_SUCCESSFULLY),
                 HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves and returns set containing all available sorting properties
+     * that can be later used in account page retrieval
+     */
+    @GetMapping("/sorting")
+    @Secured("ROLE_ADMIN")
+    ResponseEntity<Set<AccountSortingProperty>> retrieveSortingProperties() {
+        log.traceEntry();
+
+        Set<AccountSortingProperty> sortingProperties = service.retrieveSortingProperties();
+
+        log.traceExit();
+        return new ResponseEntity<>(sortingProperties, HttpStatus.OK);
     }
 }

@@ -6,7 +6,9 @@ import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.services.order.DeliveryAddressService;
 import com.dknapik.flowershop.services.order.OrderService;
+import com.dknapik.flowershop.services.order.PaymentService;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -27,20 +29,35 @@ import java.util.UUID;
 public final class OrderAdministrationService {
     private final OrderRepository repository;
     private final OrderService orderService;
+    private final PaymentService paymentService;
+    private final DeliveryAddressService deliveryAddressService;
 
     @Autowired
-    public OrderAdministrationService(OrderRepository repository, OrderService orderService) {
+    public OrderAdministrationService(OrderRepository repository,
+                                      OrderService orderService,
+                                      PaymentService paymentService,
+                                      DeliveryAddressService deliveryAddressService) {
         this.repository = repository;
         this.orderService = orderService;
+        this.paymentService = paymentService;
+        this.deliveryAddressService = deliveryAddressService;
     }
 
     /**
-     * Update existing order entity by delegating to existing order update function inside Order Service.
+     * Update existing order entity by delegating to existing individual update functions.
      *
      * @param order - Entity to update
      */
     public void updateOrder(Order order) {
-        orderService.updateExistingOrder(order);
+        log.traceEntry();
+
+        if (repository.existsById(order.getId())) {
+            paymentService.updateExistingPaymentEntity(order.getPayment());
+            deliveryAddressService.updateDeliveryAddressEntity(order.getDeliveryAddress());
+            orderService.updateExistingOrder(order);
+        }
+
+        log.traceExit();
     }
 
     /**
