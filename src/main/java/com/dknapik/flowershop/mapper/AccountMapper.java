@@ -5,6 +5,7 @@ import com.dknapik.flowershop.dto.account.AccountAdministrativeDetailsDTO;
 import com.dknapik.flowershop.dto.account.AccountDTO;
 import com.dknapik.flowershop.dto.account.AccountEmployeeDetailsDTO;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.utils.PasswordUtils;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -18,9 +19,11 @@ import java.util.List;
 @Log4j2
 public class AccountMapper implements Mapper<Account, AccountDTO> {
     private final ModelMapper modelMapper;
+    private final PasswordUtils passwordUtils;
 
-    public AccountMapper(ModelMapper modelMapper) {
+    public AccountMapper(ModelMapper modelMapper, PasswordUtils passwordUtils) {
         this.modelMapper = modelMapper;
+        this.passwordUtils = passwordUtils;
     }
 
     /*
@@ -89,11 +92,19 @@ public class AccountMapper implements Mapper<Account, AccountDTO> {
     /**
      * Maps provided source object to destination object.
      * No new object is created, only mapped destination object is returned
+     *
+     * Password is handled separately by PasswordUtilities. By handled separately, I mean it is checked in the
+     * context of source password matching the destination password. If previous statement is false, source password
+     * is encrypted and it replaces destination password.
      */
     public Account mapToExistingEntity(AccountAdministrativeDetailsDTO source, Account destination) {
         log.traceEntry();
 
+        String newPassword = source.getPassword();
+        String oldPassword = destination.getPassword();
+
         modelMapper.map(source, destination);
+        destination.setPassword(passwordUtils.replacePassword(oldPassword, newPassword));
 
         log.traceExit();
         return destination;

@@ -1,8 +1,10 @@
 package com.dknapik.flowershop.constants.administration;
 
 public enum AccountAdministrationMessage {
-    ACCOUNT_UPDATED_SUCCESSFULLY("Account was updated successfully."),
-    ACCOUNT_NOT_FOUND("Account with provided ID couldn't be found in database.");
+    UPDATED_SUCCESSFULLY("Account was updated successfully."),
+    NOT_FOUND_BY_ORDER_ID("No account could be linked to provided order id"),
+    NOT_FOUND("Account with provided ID couldn't be found in database.");
+
 
     private final String message;
 

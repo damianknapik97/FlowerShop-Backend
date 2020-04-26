@@ -56,6 +56,25 @@ public class AccountAdministrationController {
     }
 
     /**
+     * Retrieves single Account entity from provided ID and maps it
+     * to AccountAdministrativeDetailsDTO before returning it.
+     *
+     * TODO: Add Test
+     */
+    @GetMapping()
+    @Secured("ROLE_ADMIN")
+    ResponseEntity<AccountAdministrativeDetailsDTO> retrieveAdministrativeAccDetails(
+            @Valid @RequestParam("id") UUID accountID) {
+        log.traceEntry();
+
+        Account retrievedAccount = service.retrieveAccount(accountID);
+        AccountAdministrativeDetailsDTO returnDTO = mapper.mapToAccountAdministrativeDetailsDTO(retrievedAccount);
+
+        log.traceExit();
+        return new ResponseEntity<>(returnDTO, HttpStatus.OK);
+    }
+
+    /**
      * Retrieves one page of accounts.
      * This end point is accessible only for accounts with admin level privileges.
      *
@@ -95,7 +114,7 @@ public class AccountAdministrationController {
         service.updateAccount(accountDetailsDTO);
 
         log.traceExit();
-        return new ResponseEntity<>(new MessageResponseDTO(AccountAdministrationMessage.ACCOUNT_UPDATED_SUCCESSFULLY),
+        return new ResponseEntity<>(new MessageResponseDTO(AccountAdministrationMessage.UPDATED_SUCCESSFULLY),
                 HttpStatus.OK);
     }
 

@@ -47,15 +47,31 @@ public final class AccountAdministrationService {
      * Searches database for account with provided ID, and returns it.
      * If account was not found, ResourceNotFound runtime exception is thrown.
      * <p>
-     * TODO: Add Test
      */
     public Account retrieveAccountByOrderID(UUID orderID) {
         log.traceEntry();
         Optional<Account> accountOptional = repository.findByOrderID(orderID);
 
         if (!accountOptional.isPresent()) {
-            log.throwing(new ResourceNotFoundException(AccountAdministrationMessage.ACCOUNT_NOT_FOUND));
-            throw new ResourceNotFoundException(AccountAdministrationMessage.ACCOUNT_NOT_FOUND);
+            log.throwing(new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND_BY_ORDER_ID));
+            throw new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND_BY_ORDER_ID);
+        }
+
+        log.traceExit();
+        return accountOptional.get();
+    }
+
+    /**
+     * Simply retrieve account entity from database, using provided id in function argument.
+     */
+    public Account retrieveAccount(UUID accountID) {
+        log.traceEntry();
+
+        Optional<Account> accountOptional = repository.findById(accountID);
+
+        if (!accountOptional.isPresent()) {
+            log.throwing(new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND));
+            throw new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND);
         }
 
         log.traceExit();
@@ -71,10 +87,10 @@ public final class AccountAdministrationService {
     public void updateAccount(AccountAdministrativeDetailsDTO accountDetails) {
         log.traceEntry();
 
-        Optional<Account> retrievedAccount = repository.findByOrderID(accountDetails.getId());
+        Optional<Account> retrievedAccount = repository.findById(accountDetails.getId());
         if (!retrievedAccount.isPresent()) {
-            log.throwing(new ResourceNotFoundException(AccountAdministrationMessage.ACCOUNT_NOT_FOUND));
-            throw new ResourceNotFoundException(AccountAdministrationMessage.ACCOUNT_NOT_FOUND);
+            log.throwing(new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND));
+            throw new ResourceNotFoundException(AccountAdministrationMessage.NOT_FOUND);
         }
 
         log.debug(() -> "Account before update: " + retrievedAccount.get().toString());
