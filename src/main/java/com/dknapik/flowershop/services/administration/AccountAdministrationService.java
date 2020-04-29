@@ -8,6 +8,7 @@ import com.dknapik.flowershop.dto.account.AccountAdministrativeDetailsDTO;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.mapper.AccountMapper;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.services.AccountService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -35,6 +36,12 @@ public final class AccountAdministrationService {
         this.accountService = accountService;
         this.repository = repository;
         this.accountMapper = accountMapper;
+    }
+
+    public Set<AccountRole> retrieveAccountRoles() {
+        log.traceEntry();
+        log.traceExit();
+        return EnumSet.allOf(AccountRole.class);
     }
 
     public Set<AccountSortingProperty> retrieveSortingProperties() {

@@ -24,13 +24,13 @@ public final class PasswordUtils {
     public String replacePassword(String oldPassword, String newPassword) {
         log.traceEntry();
 
-        if (!passwordEncoder.matches(oldPassword, newPassword)) {
+        if (!oldPassword.contentEquals(newPassword) && !passwordEncoder.matches(oldPassword, newPassword)) {
             log.info("Passwords doesn't match each other, encoding and updating new one");
             return passwordEncoder.encode(newPassword);
         }
 
-        log.traceExit();
         log.info("Password does match, no changes needed");
+        log.traceExit();
         return oldPassword;
     }
 }

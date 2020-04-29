@@ -8,6 +8,7 @@ import com.dknapik.flowershop.dto.account.AccountAdministrativeDetailsDTO;
 import com.dknapik.flowershop.dto.account.AccountEmployeeDetailsDTO;
 import com.dknapik.flowershop.mapper.AccountMapper;
 import com.dknapik.flowershop.model.Account;
+import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.services.administration.AccountAdministrationService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -131,5 +132,19 @@ public class AccountAdministrationController {
 
         log.traceExit();
         return new ResponseEntity<>(sortingProperties, HttpStatus.OK);
+    }
+
+    /**
+     * Retrieves and returns set containing all available account roles that are the basis for system security.
+     */
+    @GetMapping("/roles")
+    @Secured("ROLE_ADMIN")
+    ResponseEntity<Set<AccountRole>> retrieveAccountRoles() {
+        log.traceEntry();
+
+        Set<AccountRole> retrievedAccountRoles = service.retrieveAccountRoles();
+
+        log.traceExit();
+        return new ResponseEntity<>(retrievedAccountRoles, HttpStatus.OK);
     }
 }
