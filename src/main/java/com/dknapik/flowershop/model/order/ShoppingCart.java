@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public final class ShoppingCart implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,32 +64,6 @@ public final class ShoppingCart implements Model {
         this.souvenirOrderList = souvenirOrderList;
         this.flowerOrderList = flowerOrderList;
         this.bouquetList = bouquetList;
-    }
-
-    public ShoppingCart(String name,
-                        LocalDateTime creationDate,
-                        List<OccasionalArticleOrder> occasionalArticleOrderList,
-                        List<SouvenirOrder> souvenirOrderList,
-                        List<FlowerOrder> flowerOrderList,
-                        List<Bouquet> bouquetList) {
-        this.name = name;
-        this.creationDate = creationDate;
-        this.occasionalArticleOrderList = occasionalArticleOrderList;
-        this.souvenirOrderList = souvenirOrderList;
-        this.flowerOrderList = flowerOrderList;
-        this.bouquetList = bouquetList;
-    }
-
-    public ShoppingCart(String name,
-                        LocalDateTime creationDate,
-                        List<OccasionalArticleOrder> occasionalArticleOrderList,
-                        List<SouvenirOrder> souvenirOrderList,
-                        List<FlowerOrder> flowerOrderList) {
-        this.name = name;
-        this.creationDate = creationDate;
-        this.occasionalArticleOrderList = occasionalArticleOrderList;
-        this.souvenirOrderList = souvenirOrderList;
-        this.flowerOrderList = flowerOrderList;
     }
 
     /**

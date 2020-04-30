@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +33,6 @@ public final class Order implements Model {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REMOVE})
     @JoinColumn
     private ShoppingCart shoppingCart;
-    @CreatedDate
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime placementDate;
@@ -44,12 +44,10 @@ public final class Order implements Model {
 
 
     public Order(String message,
-                 LocalDateTime deliveryDate,
                  Payment payment,
                  DeliveryAddress deliveryAddress,
                  ShoppingCart shoppingCart) {
         this.message = message;
-        this.deliveryDate = deliveryDate;
         this.payment = payment;
         this.deliveryAddress = deliveryAddress;
         this.shoppingCart = shoppingCart;

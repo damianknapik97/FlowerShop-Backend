@@ -101,7 +101,7 @@ final class DeliveryAddressControllerTest {
 
         /* Check if Response matches */
         if (!resultDTO.getMessage()
-                .contentEquals(DeliveryAddressMessage.DELIVERY_ADDRESS_ADDED_SUCCESSFULLY.toString())) {
+                .contentEquals(DeliveryAddressMessage.ADDED_SUCCESSFULLY.toString())) {
             throw new RuntimeException("Response message doesn't match expected one");
         }
 

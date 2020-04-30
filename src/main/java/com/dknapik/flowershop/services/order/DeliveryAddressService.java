@@ -3,6 +3,7 @@ package com.dknapik.flowershop.services.order;
 import com.dknapik.flowershop.constants.DeliveryAddressMessage;
 import com.dknapik.flowershop.database.order.DeliveryAddressRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
+import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.OrderStatus;
@@ -52,12 +53,25 @@ public final class DeliveryAddressService {
         /* Check if delivery order is already set, set delivery address to order and save it to database */
         if (order.getDeliveryAddress() != null) {
             log.throwing(Level.WARN,
-                    new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED));
-            throw new InvalidOperationException(DeliveryAddressMessage.DELIVERY_ADDRESS_ALREADY_ASSIGNED);
+                    new InvalidOperationException(DeliveryAddressMessage.ALREADY_ASSIGNED));
+            throw new InvalidOperationException(DeliveryAddressMessage.ALREADY_ASSIGNED);
 
         }
         order.setDeliveryAddress(deliveryAddress);
         orderService.updateExistingOrder(order);
+
+        log.traceExit();
+    }
+
+    public void updateDeliveryAddressEntity(@NonNull DeliveryAddress deliveryAddress) {
+        log.traceEntry();
+
+        if (repository.existsById(deliveryAddress.getId())) {
+            repository.saveAndFlush(deliveryAddress);
+        } else {
+            log.throwing(new ResourceNotFoundException(DeliveryAddressMessage.UPDATE_FAILED));
+            throw new ResourceNotFoundException(DeliveryAddressMessage.UPDATE_FAILED);
+        }
 
         log.traceExit();
     }

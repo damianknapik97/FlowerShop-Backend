@@ -35,4 +35,19 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             + "ON acc.id = ord.order_list_id WHERE acc.name=?1",
             nativeQuery = true)
     int countAllByAccountName(String accountName);
+
+    //@Query(value = "SELECT * FROM public.order_table ord ORDER BY ord.placement_date DESC --#pageable\n",
+    //        countQuery = "SELECT * FROM public.order_table ord ORDER BY ord.placement_date DESC",
+    //        nativeQuery = true)
+    Page<Order> findAllByOrderByPlacementDateDesc(Pageable pageable);
+
+    Page<Order> findAllByOrderByPlacementDateAsc(Pageable pageable);
+
+    Page<Order> findAllByOrderByDeliveryDateDesc(Pageable pageable);
+
+    Page<Order> findAllByOrderByDeliveryDateAsc(Pageable pageable);
+
+    Page<Order> findAllByOrderByStatusAsc(Pageable pageable);
+
+    Page<Order> findAllByOrderByStatusDesc(Pageable pageable);
 }

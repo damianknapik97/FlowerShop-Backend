@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +50,10 @@ public final class RestResponsePage<T> extends PageImpl<T> implements DTO {
 
     public RestResponsePage(List<T> content) {
         super(content);
+    }
+
+    public RestResponsePage(Page<T> page) {
+        super(page.getContent(), page.getPageable(), page.getTotalElements());
     }
 
     public RestResponsePage() {

@@ -1,5 +1,6 @@
 package com.dknapik.flowershop.dto.order;
 
+import com.dknapik.flowershop.dto.DTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDetailsDTO {
+public class OrderDetailsDTO implements DTO {
     @NotBlank
     private String message;
     @NotNull

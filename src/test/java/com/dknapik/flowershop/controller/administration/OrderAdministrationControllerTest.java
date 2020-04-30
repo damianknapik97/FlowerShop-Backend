@@ -2,6 +2,7 @@ package com.dknapik.flowershop.controller.administration;
 
 import com.dknapik.flowershop.constants.OrderMessage;
 import com.dknapik.flowershop.constants.ProductProperties;
+import com.dknapik.flowershop.constants.sorting.OrderSortingProperty;
 import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
@@ -157,6 +158,8 @@ public class OrderAdministrationControllerTest {
 
         /* Create Request */
         MockHttpServletRequestBuilder requestBuilder = get(url).param("page", "0")
+                .param("elements", String.valueOf(ProductProperties.PAGE_SIZE))
+                .param("sorting", OrderSortingProperty.NONE.toString())
                 .with(user(account.getName()).authorities(new SimpleGrantedAuthority(account.getRole().toString())));
 
         /* Perform Request, Check status, Create Documentation */
