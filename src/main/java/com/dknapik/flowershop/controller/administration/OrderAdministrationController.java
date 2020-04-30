@@ -7,6 +7,7 @@ import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.services.administration.OrderAdministrationService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -131,5 +132,18 @@ public class OrderAdministrationController {
 
         log.traceExit();
         return new ResponseEntity<>(orderDTO, HttpStatus.OK);
+    }
+
+    /**
+     * Returns all available statuses that can be assigned to any existing order.
+     */
+    @GetMapping("/statuses")
+    ResponseEntity<Set<OrderStatus>> retrieveOrderStatuses() {
+        log.traceEntry();
+
+        Set<OrderStatus> retrievedOrderStatuses = service.retrieveOrderStatuses();
+
+        log.traceExit();
+        return new ResponseEntity<>(retrievedOrderStatuses, HttpStatus.OK);
     }
 }

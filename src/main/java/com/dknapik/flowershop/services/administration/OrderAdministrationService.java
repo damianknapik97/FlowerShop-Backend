@@ -6,6 +6,7 @@ import com.dknapik.flowershop.database.order.OrderRepository;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.Order;
+import com.dknapik.flowershop.model.order.OrderStatus;
 import com.dknapik.flowershop.services.order.DeliveryAddressService;
 import com.dknapik.flowershop.services.order.OrderService;
 import com.dknapik.flowershop.services.order.PaymentService;
@@ -170,5 +171,11 @@ public final class OrderAdministrationService {
 
         log.traceExit();
         return ordersPage;
+    }
+
+    public Set<OrderStatus> retrieveOrderStatuses() {
+        log.traceEntry();
+        log.traceExit();
+        return EnumSet.allOf(OrderStatus.class);
     }
 }
