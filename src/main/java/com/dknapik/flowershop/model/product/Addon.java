@@ -57,6 +57,22 @@ public final class Addon implements Product, Comparable<Addon> {
         this.description = description;
     }
 
+    public Addon(String name,
+                 AddonColour colour,
+                 MonetaryAmount price,
+                 String description,
+                 String imageLarge,
+                 String imageMedium,
+                 String imageSmall) {
+        this.name = name;
+        this.colour = colour;
+        this.price = price;
+        this.description = description;
+        this.imageLarge = imageLarge;
+        this.imageMedium = imageMedium;
+        this.imageSmall = imageSmall;
+    }
+
     /**
      * Retrieves original class of the products
      *

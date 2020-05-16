@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * TODO This module should be removed as Seeders not only decrease performance of the tests
  * by being initialized every time, they also are inappropriately/messy implemented.
- *
+ * <p>
  * Current idea: Create manually PostgreSQL database, and reuse it using override of docker volumes.
  */
 
@@ -38,7 +38,8 @@ class SeederRunner implements CommandLineRunner {
                         SouvenirSeeder souvenirSeeder,
                         OccasionalArticleSeeder occasionalArticle,
                         ShoppingCartSeeder shoppingCartSeeder,
-                        OccasionalArticleSeeder occasionalArticleSeeder) {
+                        OccasionalArticleSeeder occasionalArticleSeeder,
+                        BouquetSeeder bouquetSeeder) {
 
         seederList = Arrays.asList(
                 accountSeeder,
@@ -47,7 +48,8 @@ class SeederRunner implements CommandLineRunner {
                 flowerSeeder.setNumberOfEntities(52),
                 occasionalArticle,
                 shoppingCartSeeder,
-                occasionalArticleSeeder
+                occasionalArticleSeeder,
+                bouquetSeeder
         );
     }
 

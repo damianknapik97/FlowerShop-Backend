@@ -13,4 +13,6 @@ public interface AddonRepository extends JpaRepository<Addon, UUID> {
     Iterable<Addon> findByName(String name);
 
     Iterable<Addon> findByNameAndColour(String name, AddonColour colour);
+
+    boolean existsByNameAndColourAndDescription(String name,AddonColour colour, String description);
 }

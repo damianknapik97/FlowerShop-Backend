@@ -12,4 +12,6 @@ public interface FlowerRepository extends JpaRepository<Flower, UUID> {
 
     Optional<Flower> findByName(String name);
 
+    boolean existsByNameAndHeightAndDescription(String name, int height, String description);
+
 }

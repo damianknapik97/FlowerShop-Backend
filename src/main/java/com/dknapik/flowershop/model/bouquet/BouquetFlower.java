@@ -1,6 +1,5 @@
 package com.dknapik.flowershop.model.bouquet;
 
-import com.dknapik.flowershop.model.Model;
 import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.product.Product;
@@ -15,14 +14,14 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public final class BouquetFlower implements Model, ProductOrder {
+public final class BouquetFlower implements ProductOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column
+    @Column()
     private int itemCount;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinColumn
+    @JoinColumn()
     private Flower flower;
 
 

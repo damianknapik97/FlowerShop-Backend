@@ -14,6 +14,10 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
+@Table(
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"name", "discountPercentage", "userCreated"})
+)
 @TypeDefs(
         value = {
                 @TypeDef(name = "moneyAmountAndCurrency", typeClass = MoneyAmountAndCurrency.class)
