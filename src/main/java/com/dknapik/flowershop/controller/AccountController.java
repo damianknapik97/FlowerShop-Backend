@@ -56,7 +56,9 @@ final class AccountController {
         log.traceEntry();
         MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
-        accountDto.setRole(AccountRole.ROLE_USER);
+
+        // TODO: For presentation purposes changed to administrator
+        accountDto.setRole(AccountRole.ROLE_ADMIN);
 
         try {
             this.service.createNewUser(accountDto, bindingResult);    // Process provided data

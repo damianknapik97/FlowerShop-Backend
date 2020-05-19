@@ -46,7 +46,10 @@ public class BouquetSeeder implements SeederInt {
     public void seed() {
         List<Flower> flowerList = createPredefinedFlowers();
         List<Addon> addonList = createPredefinedAddons();
-        createSmallExemplaryBouquet(flowerList.get(1), flowerList.get(2), addonList.get(1));
+        /* TODO: This looks terrible, unfortunately no other idea at the moment */
+        createSmallExemplaryBouquet(flowerList.get(0), flowerList.get(1), addonList.get(0));
+        createMediumExemplaryBouquet(flowerList.get(0), flowerList.get(1), flowerList.get(2),
+                addonList.get(0), addonList.get(1));
 
 
     }

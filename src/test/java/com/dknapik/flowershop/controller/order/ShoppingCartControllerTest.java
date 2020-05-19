@@ -2,6 +2,7 @@ package com.dknapik.flowershop.controller.order;
 
 import com.dknapik.flowershop.constants.ShoppingCartMessage;
 import com.dknapik.flowershop.database.AccountRepository;
+import com.dknapik.flowershop.database.bouquet.BouquetRepository;
 import com.dknapik.flowershop.database.order.FlowerOrderRepository;
 import com.dknapik.flowershop.database.order.ShoppingCartRepository;
 import com.dknapik.flowershop.database.product.FlowerRepository;
@@ -70,6 +71,8 @@ final class ShoppingCartControllerTest {
     private OccasionalArticleRepository occasionalArticleRepository;
     @Autowired
     private SouvenirRepository souvenirRepository;
+    @Autowired
+    private BouquetRepository bouquetRepository;
     @Autowired
     private Environment env;
     @Autowired
@@ -385,6 +388,7 @@ final class ShoppingCartControllerTest {
     private void purgeDatabase() {
         accountRepository.deleteAll();
         repository.deleteAll();
+        bouquetRepository.deleteAll();
         flowerOrderRepository.deleteAll();
         flowerRepository.deleteAll();
         occasionalArticleRepository.deleteAll();
