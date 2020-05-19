@@ -26,11 +26,18 @@ import java.util.UUID;
 public final class PaymentService {
     private final PaymentRepository repository;
     private final OrderService orderService;
+    private final ShoppingCartService shoppingCartService;
+    private final DeliveryAddressService deliveryAddressService;
 
     @Autowired
-    public PaymentService(PaymentRepository repository, OrderService orderService) {
+    public PaymentService(PaymentRepository repository,
+                          OrderService orderService,
+                          ShoppingCartService shoppingCartService,
+                          DeliveryAddressService deliveryAddressService) {
         this.repository = repository;
         this.orderService = orderService;
+        this.shoppingCartService = shoppingCartService;
+        this.deliveryAddressService = deliveryAddressService;
     }
 
     /**
@@ -57,8 +64,10 @@ public final class PaymentService {
             throw new InvalidOperationException(PaymentMessage.ALREADY_ASSIGNED);
         }
 
+
+
         /* Set Payment for provided order and save it */
-        order.setPayment(payment);
+        order.setPayment(updatePaymentTotalPrice(order.getShoppingCart().getId(), payment));
         orderService.updateExistingOrder(order);
 
         log.traceExit();
@@ -87,6 +96,17 @@ public final class PaymentService {
         }
 
         log.traceExit();
+    }
 
+    /**
+     * TODO
+     * Creating total price field was a mistake because it allows user to unexpectedly violate order total price
+     * in their favor. To combat this, below function was created that ensures correctness of order total price
+     * on every modification.
+     */
+    private Payment updatePaymentTotalPrice(@NonNull UUID shoppingCartID, @NonNull Payment payment) {
+        payment.setTotalPrice(shoppingCartService.countTotalPrice(shoppingCartID)
+                .add(deliveryAddressService.countDeliveryFee()));
+        return payment;
     }
 }

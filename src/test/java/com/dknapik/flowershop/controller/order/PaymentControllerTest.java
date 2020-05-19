@@ -12,6 +12,8 @@ import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.Payment;
 import com.dknapik.flowershop.model.order.PaymentType;
 import com.dknapik.flowershop.model.order.ShoppingCart;
+import com.dknapik.flowershop.services.order.DeliveryAddressService;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.javamoney.moneta.Money;
@@ -61,7 +63,9 @@ final class PaymentControllerTest {
     @Autowired
     private PaymentMapper paymentMapper;
     @Autowired
-    private Environment env;
+    private DeliveryAddressService deliveryAddressService;
+    @Autowired
+    private MoneyUtils moneyUtils;
 
     @BeforeEach
     void beforeEach() {
@@ -76,13 +80,14 @@ final class PaymentControllerTest {
     @Test
     void createPaymentForOrder() throws Exception {
         String url = "/payment";
-        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
+
+        MonetaryAmount deliveryFee = deliveryAddressService.countDeliveryFee();
 
         /* Initialize required entities */
         Order order = createOrder("Testing Order", new ShoppingCart(), false);
         Account account = createAccountWithOrder("Payment User", "Payment User",
                 order, AccountRole.ROLE_USER);
-        Payment controlValue = new Payment(money, PaymentType.BLIK);
+        Payment controlValue = new Payment(deliveryFee, PaymentType.BLIK);
         PaymentDTO dto = paymentMapper.mapToDTO(controlValue);
 
         /* Deserialize required entity */

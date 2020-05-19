@@ -7,6 +7,7 @@ import com.dknapik.flowershop.exceptions.runtime.ResourceNotFoundException;
 import com.dknapik.flowershop.model.order.DeliveryAddress;
 import com.dknapik.flowershop.model.order.Order;
 import com.dknapik.flowershop.model.order.OrderStatus;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.money.MonetaryAmount;
 import java.util.UUID;
 
 @ToString
@@ -22,13 +24,16 @@ import java.util.UUID;
 public final class DeliveryAddressService {
     private final DeliveryAddressRepository repository;
     private final OrderService orderService;
+    private final MoneyUtils moneyUtils;
 
 
     @Autowired
     public DeliveryAddressService(DeliveryAddressRepository repository,
-                                  OrderService orderService) {
+                                  OrderService orderService,
+                                  MoneyUtils moneyUtils) {
         this.repository = repository;
         this.orderService = orderService;
+        this.moneyUtils = moneyUtils;
     }
 
     /**
@@ -74,5 +79,12 @@ public final class DeliveryAddressService {
         }
 
         log.traceExit();
+    }
+
+    /**
+     * TODO: This method needs to be implemented and extended, for now it returns static value.
+     */
+    public MonetaryAmount countDeliveryFee() {
+        return moneyUtils.amountWithAppCurrency(5.00);
     }
 }

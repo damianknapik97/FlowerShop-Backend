@@ -22,4 +22,14 @@ public class DeliveryAddressDTO implements DTO {
     @NotBlank
     private String houseNumber;
     private String apartmentNumber;
+
+    public DeliveryAddressDTO(@NotBlank String cityName,
+                              @NotBlank String zipCode,
+                              @NotBlank String streetName,
+                              @NotBlank String houseNumber) {
+        this.cityName = cityName;
+        this.zipCode = zipCode;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+    }
 }

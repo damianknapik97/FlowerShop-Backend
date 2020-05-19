@@ -15,9 +15,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PaymentDTO implements DTO {
     private UUID id;
-    @NotNull
     private MonetaryAmount totalPrice;
     @NotNull
     private PaymentType paymentType;
     private boolean wasPaid;
+
+    public PaymentDTO(@NotNull PaymentType paymentType) {
+        this.paymentType = paymentType;
+    }
 }

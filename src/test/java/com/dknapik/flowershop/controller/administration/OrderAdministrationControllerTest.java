@@ -11,14 +11,12 @@ import com.dknapik.flowershop.dto.MessageResponseDTO;
 import com.dknapik.flowershop.dto.RestResponsePage;
 import com.dknapik.flowershop.dto.order.OrderDTO;
 import com.dknapik.flowershop.mapper.order.OrderMapper;
-import com.dknapik.flowershop.mapper.order.ShoppingCartMapper;
 import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.AccountRole;
-import com.dknapik.flowershop.model.order.Order;
-import com.dknapik.flowershop.model.order.OrderStatus;
-import com.dknapik.flowershop.model.order.ShoppingCart;
+import com.dknapik.flowershop.model.order.*;
 import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
@@ -79,7 +77,7 @@ public class OrderAdministrationControllerTest {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
-    private ShoppingCartMapper shoppingCartMapper;
+    private MoneyUtils moneyUtils;
 
     @BeforeEach
     void cleanUpBefore() {
@@ -94,15 +92,18 @@ public class OrderAdministrationControllerTest {
     @Test
     void updateOrderTest() throws Exception {
         String url = "/order-administration";
-        MonetaryAmount money = Money.of(6.99, Monetary.getCurrency(env.getProperty("app-monetary-currency")));
+        MonetaryAmount monetaryAmount = moneyUtils.amountWithAppCurrency(6.99);
 
         /* Create test related values and entities */
-        Flower product = initializeFlowerEntity("TestingFlower", money);
+        Flower product = initializeFlowerEntity("TestingFlower", monetaryAmount);
         Order expectedResult = populateDatabaseWithOrderEntities(1).get(0);
         expectedResult.setShoppingCart(initializeShoppingCartEntity("Testing Order Shopping Cart",
                 false, product));
         expectedResult.setMessage("Updated Message");
         expectedResult.setStatus(OrderStatus.ASSIGNED);
+        expectedResult.setDeliveryAddress(new DeliveryAddress("Test city", "69-420",
+                "Test street", "420"));
+        expectedResult.setPayment(new Payment(monetaryAmount, PaymentType.BANK_TRANSFER));
         Account account = createAccount("Order Testing User", "Order Testing User",
                 null, AccountRole.ROLE_EMPLOYEE);
         OrderDTO orderToUpdate = orderMapper.mapToDTO(expectedResult);

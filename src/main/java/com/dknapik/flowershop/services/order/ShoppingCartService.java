@@ -20,7 +20,6 @@ import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
-import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -419,11 +418,9 @@ public final class ShoppingCartService {
     }
 
     /**
-     *
      * Sum up price of all the Product Order entities that are nested inside provided Shopping Cart ID.
      * This method additionally checks if all of Product entities contain the same Currency and throws exception if not.
-     *
-     * // TODO: This method is too long, refactor it, add unit test.
+     * <p>
      *
      * @param shoppingCartID - Shopping Cart to count total price from.
      * @return MonetaryAmount containing equal currencies and summed up product prices or 0 with current application
@@ -440,66 +437,37 @@ public final class ShoppingCartService {
         }
 
         ShoppingCart shoppingCart = shoppingCartOptional.get();
-        MonetaryAmount totalPrice = null;
-        MonetaryAmount orderTotalPrice;
-
-        /* Retrieve sum of nested Flower Order entities initialize return object if sum didn't return null */
-        orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
-        if (orderTotalPrice != null) {
-            if (totalPrice == null) {
-                totalPrice = orderTotalPrice;
-            }
-        }
+        /* Retrieve sum of nested Flower Order entities initialize */
+        MonetaryAmount orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
 
         /* Retrieve sum of Occasional Article Orders */
-        orderTotalPrice = occasionalArticleOrderService.countTotalPrice(shoppingCart.getOccasionalArticleOrderList());
-        if (orderTotalPrice != null) {
+        MonetaryAmount productsTotalPrice = occasionalArticleOrderService.countTotalPrice(
+                shoppingCart.getOccasionalArticleOrderList());
 
-            /* Check if return object was previously initialized, and initialize it if not */
-            if (totalPrice == null) {
-                totalPrice = orderTotalPrice;
-            } else {
-
-                /* Check if currency of Occasional Article Order matches currently summed up objects currency */
-                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
-                    log.throwing(Level.ERROR,
-                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
-                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
-                }
-
-                /* Add Occasional Article Orders sum to currently summed up object */
-                totalPrice = totalPrice.add(orderTotalPrice);
-            }
+        /* Check if currency of Occasional Article Order matches currently summed up objects currency */
+        if (!moneyUtils.checkMatchingCurrencies(orderTotalPrice.getCurrency(), productsTotalPrice.getCurrency())) {
+            log.throwing(Level.ERROR,
+                    new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+            throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+        } else {
+            /* Add Occasional Article Orders sum to currently summed up object */
+            orderTotalPrice.add(productsTotalPrice);
         }
 
         /* Retrieve sum of Souvenir Orders */
-        orderTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
-        if (orderTotalPrice != null) {
+        productsTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
 
-            /* Check if return object was previously initialized, and initialize it if not */
-            if (totalPrice == null) {
-                totalPrice = orderTotalPrice;
-            } else {
-
-                /* Check if currency of Souvenir Order matches currently summed up objects currency */
-                if (totalPrice.getCurrency().getNumericCode() != orderTotalPrice.getCurrency().getNumericCode()) {
-                    log.throwing(Level.ERROR,
-                            new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
-                    throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
-                }
-
-                /* Add Souvenir Orders sum to currently summed up object */
-                totalPrice = totalPrice.add(orderTotalPrice);
-            }
-        }
-
-        /* If return object wasn't initialized in any of the previous cases,
-         return 0 as an amount and use application currency */
-        if (totalPrice == null) {
-            totalPrice = Money.zero(moneyUtils.getApplicationCurrencyUnit());
+        /* Check if currency of Souvenir Order matches currently summed up objects currency */
+        if (!moneyUtils.checkMatchingCurrencies(orderTotalPrice.getCurrency(), productsTotalPrice.getCurrency())) {
+            log.throwing(Level.ERROR,
+                    new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+            throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+        } else {
+            /* Add Souvenir Orders sum to currently summed up object */
+            orderTotalPrice.add(productsTotalPrice);
         }
 
         log.traceExit();
-        return totalPrice;
+        return orderTotalPrice;
     }
 }

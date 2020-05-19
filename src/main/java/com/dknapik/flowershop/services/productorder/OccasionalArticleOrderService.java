@@ -4,7 +4,7 @@ import com.dknapik.flowershop.constants.ProductOrderMessage;
 import com.dknapik.flowershop.database.order.OccasionalArticleOrderRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
-import lombok.NonNull;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -19,23 +19,29 @@ import javax.money.MonetaryAmount;
 @ToString
 public final class OccasionalArticleOrderService {
     private final OccasionalArticleOrderRepository repository;
+    private final MoneyUtils moneyUtils;
 
     @Autowired
-    public OccasionalArticleOrderService(OccasionalArticleOrderRepository repository) {
+    public OccasionalArticleOrderService(OccasionalArticleOrderRepository repository, MoneyUtils moneyUtils) {
         this.repository = repository;
+        this.moneyUtils = moneyUtils;
     }
 
     /**
-     * Be cautious as this function returns NULL if there is no Order entity inside provided iterable.
-     * Extract prices of each entity nested inside this component. multiply it by number of ordered entities and return.
+     * Count total price of Occasional Article Orders nested inside provided iterable. If the provided iterable is
+     * null or empty, number zero with application currently defined currency code is returned.
      *
      * @param occasionalArticleOrderIterable - Iterable containing Product Order entities with nested Product entities.
-     * @return NULL if no order entities were provided, MonetaryAmount with sum of all the ordered entities
-     * inside provided iterable with matching currency unit otherwise.
+     * @return Monetary Amount containing zero and application currency if there is no products to count price from,
+     * or total sum of all products inside provided iterable.
      */
-    public MonetaryAmount countTotalPrice(@NonNull Iterable<OccasionalArticleOrder> occasionalArticleOrderIterable) {
+    public MonetaryAmount countTotalPrice(Iterable<OccasionalArticleOrder> occasionalArticleOrderIterable) {
         log.traceEntry();
         MonetaryAmount totalPrice = null;
+
+        if (occasionalArticleOrderIterable == null) {
+            return Money.zero(moneyUtils.getApplicationCurrencyUnit());
+        }
 
         for (OccasionalArticleOrder order : occasionalArticleOrderIterable) {
             if (order != null) {

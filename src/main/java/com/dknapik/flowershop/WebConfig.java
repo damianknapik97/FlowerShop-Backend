@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 public class WebConfig {
 
     @Primary
-    @Bean(name = "ObjectMapper")
+    @Bean()
     protected ObjectMapper objectMapper() {
         return new ObjectMapper()
                 .registerModule(new ParameterNamesModule())

@@ -37,7 +37,6 @@ public final class Payment implements Model {
     @Column
     private boolean wasPaid;
 
-
     public Payment(MonetaryAmount totalPrice, PaymentType paymentType) {
         this.totalPrice = totalPrice;
         this.paymentType = paymentType;

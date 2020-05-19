@@ -4,7 +4,7 @@ import com.dknapik.flowershop.constants.ProductOrderMessage;
 import com.dknapik.flowershop.database.order.SouvenirOrderRepository;
 import com.dknapik.flowershop.exceptions.runtime.InvalidOperationException;
 import com.dknapik.flowershop.model.productorder.SouvenirOrder;
-import lombok.NonNull;
+import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -19,10 +19,12 @@ import javax.money.MonetaryAmount;
 @ToString
 public final class SouvenirOrderService {
     private final SouvenirOrderRepository repository;
+    private final MoneyUtils moneyUtils;
 
     @Autowired
-    public SouvenirOrderService(SouvenirOrderRepository repository) {
+    public SouvenirOrderService(SouvenirOrderRepository repository, MoneyUtils moneyUtils) {
         this.repository = repository;
+        this.moneyUtils = moneyUtils;
     }
 
     /**
@@ -33,9 +35,13 @@ public final class SouvenirOrderService {
      * @return NULL if no order entities were provided, MonetaryAmount with sum of all the ordered entities
      * inside provided iterable with matching currency unit otherwise.
      */
-    public MonetaryAmount countTotalPrice(@NonNull Iterable<SouvenirOrder> souvenirOrderIterable) {
+    public MonetaryAmount countTotalPrice(Iterable<SouvenirOrder> souvenirOrderIterable) {
         log.traceEntry();
         MonetaryAmount totalPrice = null;
+
+        if (souvenirOrderIterable == null) {
+            return Money.zero(moneyUtils.getApplicationCurrencyUnit());
+        }
 
         for (SouvenirOrder order : souvenirOrderIterable) {
             if (order != null) {

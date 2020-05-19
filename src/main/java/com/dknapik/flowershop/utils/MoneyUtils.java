@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import java.math.BigDecimal;
 
 @Service
 @ToString
@@ -22,6 +21,15 @@ public final class MoneyUtils {
 
     public CurrencyUnit getApplicationCurrencyUnit() {
         return currencyUnit;
+    }
+
+    /**
+     * Checks if two provided currency codes match each other
+     *
+     * @return true if currencies match.
+     */
+    public boolean checkMatchingCurrencies(CurrencyUnit source, CurrencyUnit target) {
+        return source.getNumericCode() == target.getNumericCode();
     }
 
     /**
