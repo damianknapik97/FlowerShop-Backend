@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @ToString
 @Log4j2
-public class AccountMapper implements Mapper<Account, AccountDTO> {
+public final class AccountMapper implements Mapper<Account, AccountDTO> {
     private final ModelMapper modelMapper;
     private final PasswordUtils passwordUtils;
 

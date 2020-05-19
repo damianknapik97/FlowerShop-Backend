@@ -16,6 +16,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -108,4 +110,45 @@ public final class ProductOrderMapper {
         return mappedProduct;
     }
 
+    /**
+     * Convert ProdutOrder collection to DTO collecton. This method utilizes convert to DTO method defined inside this
+     * class.
+     *
+     * @param source - Source collection
+     * @param type   - Target type that will be returned
+     * @return List with mapped DTO entities.
+     */
+    public <T extends ProductOrderDTO> List<T> convertProductOrderListToDTO(List< ? extends ProductOrder> source,
+                                                                            Class<T> type) {
+        log.traceEntry();
+        List<T> returnList = new LinkedList<>();
+
+        for (ProductOrder productOrder : source) {
+            returnList.add(convertToDto(productOrder, type));
+        }
+
+        log.traceExit();
+        return returnList;
+    }
+
+    /**
+     * Convert ProductOrder DTO collection to entity collection. This method utilizes convert to entity method
+     * defined inside this class.
+     *
+     * @param source - Source collection
+     * @param type   - Target type that will be returned
+     * @return List with mapped entities.
+     */
+    public <T extends ProductOrder> List<T> convertProductOrderDTOListToEntity(List<? extends ProductOrderDTO> source,
+                                                                               Class<T> type) {
+        log.traceEntry();
+        List<T> returnList = new LinkedList<>();
+
+        for (ProductOrderDTO productOrderDTO : source) {
+            returnList.add(convertToEntity(productOrderDTO, type));
+        }
+
+        log.traceExit();
+        return returnList;
+    }
 }
