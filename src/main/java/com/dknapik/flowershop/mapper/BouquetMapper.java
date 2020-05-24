@@ -13,6 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @ToString
 @Log4j2
@@ -58,6 +61,43 @@ public final class BouquetMapper implements Mapper<Bouquet, BouquetDTO> {
 
         log.traceExit();
         return returnValue;
+    }
+
+    /**
+     * Maps provided list with entities to DTOs
+     *
+     * @param bouquetList - Collection to map
+     * @return List with BouquetDTOs
+     */
+    public List<BouquetDTO> mapListToDTO(List<Bouquet> bouquetList) {
+        log.traceEntry();
+
+        List<BouquetDTO> bouquetDTOs = new LinkedList<>();
+        for (Bouquet bouquet : bouquetList) {
+            bouquetDTOs.add(mapToDTO(bouquet));
+        }
+
+
+        log.traceExit();
+        return bouquetDTOs;
+    }
+
+    /**
+     * Maps provided List with DTOs to entities.
+     *
+     * @param bouquetDTOList - Collection to map
+     * @return List with Bouquet entities.
+     */
+    public List<Bouquet> mapListToEntity(List<BouquetDTO> bouquetDTOList) {
+        log.traceEntry();
+
+        List<Bouquet> bouquetList = new LinkedList<>();
+        for (BouquetDTO bouquetDTO : bouquetDTOList) {
+            bouquetList.add(mapToEntity(bouquetDTO));
+        }
+
+        log.traceExit();
+        return bouquetList;
     }
 
     /**
