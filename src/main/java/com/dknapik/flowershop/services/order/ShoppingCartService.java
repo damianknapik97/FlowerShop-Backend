@@ -359,9 +359,9 @@ public final class ShoppingCartService {
         }
 
         /* Search shopping cart for provided product order and delete it if it exists  */
-        for (int i = 0; i < shoppingCart.getOccasionalArticleOrderList().size(); i++) {
-            if (shoppingCart.getOccasionalArticleOrderList().get(i).getId().equals(souvenirOrderID)) {
-                shoppingCart.getOccasionalArticleOrderList().remove(i);
+        for (int i = 0; i < shoppingCart.getSouvenirOrderList().size(); i++) {
+            if (shoppingCart.getSouvenirOrderList().get(i).getId().equals(souvenirOrderID)) {
+                shoppingCart.getSouvenirOrderList().remove(i);
                 break;
             }
         }
