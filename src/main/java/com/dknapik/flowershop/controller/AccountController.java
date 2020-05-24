@@ -23,7 +23,7 @@ import java.security.Principal;
  * This class handles all requests related to account modification and
  * delegates them to appropriate functions in services and returns messages about data processing status
  * <p>
- * // TODO: Refactor this class :
+ *  TODO: Refactor this class :
  * - Exceptions should be replaced by Runtime exceptions
  * - Entity/DTO mapping should be performed here instead of service
  * - No need for custom handling of BindingResults
@@ -56,7 +56,9 @@ final class AccountController {
         log.traceEntry();
         MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
         HttpStatus status = HttpStatus.OK;
-        accountDto.setRole(AccountRole.ROLE_USER);
+        /* TODO: New account role temporarily set to ROLE_ADMIN for application promotional purposes */
+        accountDto.setRole(AccountRole.ROLE_ADMIN);
+        //accountDto.setRole(AccountRole.ROLE_USER);
 
         try {
             this.service.createNewUser(accountDto, bindingResult);    // Process provided data
