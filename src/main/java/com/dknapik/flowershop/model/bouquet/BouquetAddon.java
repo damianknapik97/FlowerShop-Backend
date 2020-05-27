@@ -1,8 +1,8 @@
 package com.dknapik.flowershop.model.bouquet;
 
-import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.product.Addon;
 import com.dknapik.flowershop.model.product.Product;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -88,5 +88,20 @@ public final class BouquetAddon implements ProductOrder {
                     " - doesn't match the one inside product order dto -" +
                     Addon.class.toString());
         }
+    }
+
+    /**
+     * WARNING ! This method returns always 1 because Addon entities doesn't include number of products.
+     * Reason behind this solution is that addons can not be measured in units as different bouquets require
+     * different amount of them based on the florist preferences/skills. The intention to give possible customers
+     * option to customize bouquets based on their preferences enforces this idea as clients are unable to determine
+     * how much, for example blue ribbon would their product require in the end.
+     *
+     * @return integer that is always 1
+     */
+    @Override
+    @JsonIgnore
+    public int getOrderedAmount() {
+        return 1;
     }
 }

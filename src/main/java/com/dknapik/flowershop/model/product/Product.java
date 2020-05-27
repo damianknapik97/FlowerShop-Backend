@@ -2,7 +2,7 @@ package com.dknapik.flowershop.model.product;
 
 import com.dknapik.flowershop.model.Model;
 
-public interface Product extends Model {
+public interface Product extends Model, UnitPrice {
 
     /**
      * Retrieves original class of the products

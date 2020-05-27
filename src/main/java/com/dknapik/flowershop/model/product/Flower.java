@@ -110,4 +110,15 @@ public final class Flower implements Product, Comparable<Flower> {
     public int compareTo(Flower o) {
         return this.name.compareTo(o.name);
     }
+
+    /**
+     * Returns product price per single unit.
+     *
+     * @return MonetaryAmount containing amount and currency of a single product.
+     */
+    @Override
+    @JsonIgnore
+    public MonetaryAmount getUnitPrice() {
+        return this.price;
+    }
 }

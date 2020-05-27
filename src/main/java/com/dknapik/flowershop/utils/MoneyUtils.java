@@ -23,6 +23,10 @@ public final class MoneyUtils {
         return currencyUnit;
     }
 
+    public MonetaryAmount zeroWithApplicationCurrency() {
+        return Money.zero(getApplicationCurrencyUnit());
+    }
+
     /**
      * Checks if two provided currency codes match each other
      *

@@ -91,4 +91,15 @@ public final class FlowerOrder implements ProductOrder {
                     Flower.class.toString());
         }
     }
+
+    /**
+     * Returns amount of products that are ordered inside entity implementing this interface.
+     *
+     * @return integer representing number of products.
+     */
+    @Override
+    @JsonIgnore
+    public int getOrderedAmount() {
+        return this.itemCount;
+    }
 }
