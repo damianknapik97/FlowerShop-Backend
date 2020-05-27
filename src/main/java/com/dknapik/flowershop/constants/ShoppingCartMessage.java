@@ -6,7 +6,7 @@ public enum ShoppingCartMessage {
     PRODUCT_REMOVED_SUCCESSFULLY("Removed product from your shopping cart"),
 
     ERROR_MATCHING_CURRENCY_UNITS("Currency units between product categories doesn't match each other"),
-    SHOPPIONG_CART_NOT_FOUND("No shopping cart matches provided ID");
+    SHOPPING_CART_NOT_FOUND("No shopping cart matches provided ID");
 
     final String infoMessage;
 
