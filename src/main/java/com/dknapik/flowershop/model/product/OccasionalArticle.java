@@ -111,4 +111,15 @@ public final class OccasionalArticle implements Product, Comparable<OccasionalAr
     public int compareTo(OccasionalArticle o) {
         return this.name.compareTo(o.getName());
     }
+
+    /**
+     * Returns product price per single unit.
+     *
+     * @return MonetaryAmount containing amount and currency of a single product.
+     */
+    @Override
+    @JsonIgnore
+    public MonetaryAmount getUnitPrice() {
+        return this.price;
+    }
 }

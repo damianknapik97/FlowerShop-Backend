@@ -8,14 +8,13 @@ import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.order.ShoppingCart;
 import com.dknapik.flowershop.model.productorder.FlowerOrder;
 import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
+import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import com.dknapik.flowershop.services.product.SouvenirService;
-import com.dknapik.flowershop.services.productorder.FlowerOrderService;
-import com.dknapik.flowershop.services.productorder.OccasionalArticleOrderService;
-import com.dknapik.flowershop.services.productorder.SouvenirOrderService;
+import com.dknapik.flowershop.services.productorder.ProductOrderService;
 import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.money.MonetaryAmount;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,33 +35,27 @@ import java.util.UUID;
 public final class ShoppingCartService {
     private final ShoppingCartRepository repository;
     private final AccountService accountService;
-    private final FlowerOrderService flowerOrderService;
     private final FlowerService flowerService;
-    private final OccasionalArticleOrderService occasionalArticleOrderService;
     private final OccasionalArticleService occasionalArticleService;
-    private final SouvenirOrderService souvenirOrderService;
     private final SouvenirService souvenirService;
+    private final ProductOrderService productOrderService;
     private final MoneyUtils moneyUtils;
 
 
     @Autowired
     public ShoppingCartService(ShoppingCartRepository repository,
                                AccountService accountService,
-                               FlowerOrderService flowerOrderService,
                                FlowerService flowerService,
-                               OccasionalArticleOrderService occasionalArticleOrderService,
                                OccasionalArticleService occasionalArticleService,
-                               SouvenirOrderService souvenirOrderService,
                                SouvenirService souvenirService,
+                               ProductOrderService productOrderService,
                                MoneyUtils moneyUtils) {
         this.repository = repository;
         this.accountService = accountService;
-        this.flowerOrderService = flowerOrderService;
         this.flowerService = flowerService;
-        this.occasionalArticleOrderService = occasionalArticleOrderService;
         this.occasionalArticleService = occasionalArticleService;
-        this.souvenirOrderService = souvenirOrderService;
         this.souvenirService = souvenirService;
+        this.productOrderService = productOrderService;
         this.moneyUtils = moneyUtils;
     }
 
@@ -84,6 +78,29 @@ public final class ShoppingCartService {
             log.warn(() -> "Shopping cart for provided user " + accountName + " doesn't exists, creating new one");
             shoppingCart = createNewShoppingCart(accountName);
         }
+
+        log.traceExit();
+        return shoppingCart;
+    }
+
+    /**
+     * Retrieves shopping cart for provided ID. If shopping cart was not found an ResourceNotFoundException is thrown.
+     *
+     * @param shoppingCartID - ID of shopping cart to retrieve
+     * @return - Shopping cart with provided ID.
+     */
+    public ShoppingCart retrieveSingleShoppingCart(UUID shoppingCartID) {
+        log.traceEntry();
+
+        Optional<ShoppingCart> shoppingCartOptional = repository.findById(shoppingCartID);
+
+        /* Check if it was even possible to retrieve this shopping cart by ID */
+        if (!shoppingCartOptional.isPresent()) {
+            log.throwing(Level.ERROR, new ResourceNotFoundException(ShoppingCartMessage.SHOPPING_CART_NOT_FOUND));
+            throw new ResourceNotFoundException(ShoppingCartMessage.SHOPPING_CART_NOT_FOUND);
+        }
+
+        ShoppingCart shoppingCart = shoppingCartOptional.get();
 
         log.traceExit();
         return shoppingCart;
@@ -420,7 +437,6 @@ public final class ShoppingCartService {
     /**
      * Sum up price of all the Product Order entities that are nested inside provided Shopping Cart ID.
      * This method additionally checks if all of Product entities contain the same Currency and throws exception if not.
-     * <p>
      *
      * @param shoppingCartID - Shopping Cart to count total price from.
      * @return MonetaryAmount containing equal currencies and summed up product prices or 0 with current application
@@ -428,46 +444,45 @@ public final class ShoppingCartService {
      */
     public MonetaryAmount countTotalPrice(UUID shoppingCartID) {
         log.traceEntry();
-        Optional<ShoppingCart> shoppingCartOptional = repository.findById(shoppingCartID);
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(shoppingCartID);
+        List<List<? extends ProductOrder>> allProductOrders = shoppingCart.getAllProductOrders();
 
-        /* Check if it was even possible to retrieve this shopping cart by ID */
-        if (!shoppingCartOptional.isPresent()) {
-            log.throwing(Level.ERROR, new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND));
-            throw new ResourceNotFoundException(ShoppingCartMessage.SHOPPIONG_CART_NOT_FOUND);
+        MonetaryAmount totalPrice = null;
+        MonetaryAmount orderListPriceSum;
+        for (List<? extends ProductOrder> productOrdersList : allProductOrders) {
+
+            /* Count total price for product order  */
+            orderListPriceSum = productOrderService.countTotalCollectionPrice(productOrdersList);
+
+            /* Check if total price is zero, if true there is no point in performing calculations */
+            if (!orderListPriceSum.isZero()) {
+
+                /* Check if return variable was initialized as it needs to have Currency Unit assigned from extracted
+                 * product order sum instead of the whole application if we would like to introduce multiple
+                 * currency unit support in the future.  */
+                if (totalPrice == null) {
+                    totalPrice = orderListPriceSum;
+                } else {
+                    if (!moneyUtils.checkMatchingCurrencies(totalPrice.getCurrency(),
+                            orderListPriceSum.getCurrency())) {
+                        log.throwing(new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
+                        throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
+                    }
+
+                    /* If everything else is fine, add counted price to total price */
+                    totalPrice = totalPrice.add(orderListPriceSum);
+                }
+            }
         }
 
-        ShoppingCart shoppingCart = shoppingCartOptional.get();
-        /* Retrieve sum of nested Flower Order entities initialize */
-        MonetaryAmount orderTotalPrice = flowerOrderService.countTotalPrice(shoppingCart.getFlowerOrderList());
-
-        /* Retrieve sum of Occasional Article Orders */
-        MonetaryAmount productsTotalPrice = occasionalArticleOrderService.countTotalPrice(
-                shoppingCart.getOccasionalArticleOrderList());
-
-        /* Check if currency of Occasional Article Order matches currently summed up objects currency */
-        if (!moneyUtils.checkMatchingCurrencies(orderTotalPrice.getCurrency(), productsTotalPrice.getCurrency())) {
-            log.throwing(Level.ERROR,
-                    new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
-            throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
-        } else {
-            /* Add Occasional Article Orders sum to currently summed up object */
-            orderTotalPrice.add(productsTotalPrice);
-        }
-
-        /* Retrieve sum of Souvenir Orders */
-        productsTotalPrice = souvenirOrderService.countTotalPrice(shoppingCart.getSouvenirOrderList());
-
-        /* Check if currency of Souvenir Order matches currently summed up objects currency */
-        if (!moneyUtils.checkMatchingCurrencies(orderTotalPrice.getCurrency(), productsTotalPrice.getCurrency())) {
-            log.throwing(Level.ERROR,
-                    new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS));
-            throw new InvalidOperationException(ShoppingCartMessage.ERROR_MATCHING_CURRENCY_UNITS);
-        } else {
-            /* Add Souvenir Orders sum to currently summed up object */
-            orderTotalPrice.add(productsTotalPrice);
+        /* In order to not to return null, we check if above calculation even initialized return variable.
+         *  If not, we initialize it with 0 value and application currently used currency. */
+        if (totalPrice == null) {
+            totalPrice = moneyUtils.zeroWithApplicationCurrency();
         }
 
         log.traceExit();
-        return orderTotalPrice;
+        return totalPrice;
     }
+
 }

@@ -75,9 +75,9 @@ public final class ShoppingCart implements Model {
     public List<List<? extends ProductOrder>> getAllProductOrders() {
         List<List<? extends ProductOrder>> returnList = new LinkedList<>();
 
-        returnList.add(occasionalArticleOrderList);
-        returnList.add(souvenirOrderList);
         returnList.add(flowerOrderList);
+        returnList.add(souvenirOrderList);
+        returnList.add(occasionalArticleOrderList);
 
         return returnList;
     }
