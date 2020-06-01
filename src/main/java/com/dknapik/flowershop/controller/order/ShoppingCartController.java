@@ -38,7 +38,7 @@ final class ShoppingCartController {
      * @return ShoppingCart Dto with products, name and id
      */
     @GetMapping
-    ResponseEntity<ShoppingCartDTO> getShoppingCart(Principal principal) {
+    ResponseEntity<ShoppingCartDTO> shoppingCart(Principal principal) {
         log.traceEntry();
 
         ShoppingCart shoppingCart = service.retrieveSingleShoppingCart(principal.getName());
@@ -56,7 +56,7 @@ final class ShoppingCartController {
      * @return - number of products inside shopping cart
      */
     @GetMapping("/count")
-    ResponseEntity<Integer> countShoppingCartProducts(@Valid @RequestParam("id") UUID id) {
+    ResponseEntity<Integer> shoppingCartProducts(@Valid @RequestParam("id") UUID id) {
         log.traceEntry();
 
         int numberOfProducts = service.countNumberOfProducts(id);
@@ -76,8 +76,8 @@ final class ShoppingCartController {
      * @return Response with message about operation results.
      */
     @PutMapping("/flower")
-    ResponseEntity<MessageResponseDTO> putFlowerOrder(@Valid @RequestParam("id") UUID flowerID,
-                                                      Principal principal) {
+    ResponseEntity<MessageResponseDTO> flowerOrder(@Valid @RequestParam("id") UUID flowerID,
+                                                   Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " + principal.getName() +
                 " - using following id " + flowerID.toString());
@@ -99,7 +99,7 @@ final class ShoppingCartController {
      * @return Response with message about operation results.
      */
     @PutMapping("/occasional-article")
-    ResponseEntity<MessageResponseDTO> putOccasionalArticleOrder(
+    ResponseEntity<MessageResponseDTO> occasionalArticleOrder(
             @Valid @RequestParam("id") UUID occasionalArticleID, Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " +
@@ -122,13 +122,30 @@ final class ShoppingCartController {
      * @return Response with message about operation results
      */
     @PutMapping("/souvenir")
-    ResponseEntity<MessageResponseDTO> putSouvenirOrder(@Valid @RequestParam("id") UUID souvenirID,
-                                                        Principal principal) {
+    ResponseEntity<MessageResponseDTO> souvenirOrder(@Valid @RequestParam("id") UUID souvenirID,
+                                                     Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " + principal.getName() +
                 " - using following id " + souvenirID.toString());
 
         service.addSouvenirToShoppingCart(principal.getName(), souvenirID);
+
+        log.traceExit();
+        return new ResponseEntity<>(
+                new MessageResponseDTO(ShoppingCartMessage.PRODUCT_ADDED_SUCCESSFULLY), HttpStatus.OK);
+    }
+
+    /**
+     * Adds provided bouquet id to shopping cart of user performing this request.
+     *
+     * @param bouquetID - Id of bouquet to add to shopping cart
+     * @param principal - user that shopping cart shall be used
+     * @return Response with message about operation results.
+     */
+    ResponseEntity<MessageResponseDTO> bouquet(@Valid @RequestParam("id") UUID bouquetID, Principal principal) {
+        log.traceEntry();
+
+        service.addBouquetToShoppingCart(principal.getName(), bouquetID);
 
         log.traceExit();
         return new ResponseEntity<>(
@@ -143,7 +160,7 @@ final class ShoppingCartController {
      * @return Response with message about operation results
      */
     @DeleteMapping("/flower")
-    ResponseEntity<MessageResponseDTO> deleteFlowerOrder(@Valid @RequestParam("id") UUID flowerOrderID,
+    ResponseEntity<MessageResponseDTO> removeFlowerOrder(@Valid @RequestParam("id") UUID flowerOrderID,
                                                          Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " + principal.getName() +
@@ -164,7 +181,7 @@ final class ShoppingCartController {
      * @return Response with message about operation results
      */
     @DeleteMapping("/occasional-article")
-    ResponseEntity<MessageResponseDTO> deleteOccasionalArticleOrder(
+    ResponseEntity<MessageResponseDTO> removeOccasionalArticleOrder(
             @Valid @RequestParam("id") UUID occasionalArticleOrderID, Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " + principal.getName() +
@@ -182,10 +199,10 @@ final class ShoppingCartController {
      *
      * @param souvenirOrderID - id of order
      * @param principal       - user that shopping cart shall be used
-     * @return Response with message about operation results
+     * @return Response with message about operation result.
      */
     @DeleteMapping("/souvenir")
-    ResponseEntity<MessageResponseDTO> deleteSouvenirOrder(@Valid @RequestParam("id") UUID souvenirOrderID,
+    ResponseEntity<MessageResponseDTO> removeSouvenirOrder(@Valid @RequestParam("id") UUID souvenirOrderID,
                                                            Principal principal) {
         log.traceEntry();
         log.debug(() -> "Processing request for following user - " + principal.getName() +
@@ -199,6 +216,24 @@ final class ShoppingCartController {
     }
 
     /**
+     * Deletes bouquet from shopping cart of account performing this request.
+     *
+     * @param bouquetID - id of bouquet to remove
+     * @param principal = user that shopping cart shall be used
+     * @return Response with message about operation result.
+     */
+    @DeleteMapping("/bouquet")
+    ResponseEntity<MessageResponseDTO> removeBouquet(@Valid @RequestParam("id") UUID bouquetID, Principal principal) {
+        log.traceEntry();
+
+        service.removeBouquetFromShoppingCart(principal.getName(), bouquetID);
+
+        log.traceExit();
+        return new ResponseEntity<>(new MessageResponseDTO(ShoppingCartMessage.PRODUCT_REMOVED_SUCCESSFULLY),
+                HttpStatus.OK);
+    }
+
+    /**
      * TODO: Add Test
      * <p>
      * Add all prices of currently assigned Product Order entities to provided Shopping Cart ID and return them.
@@ -207,7 +242,7 @@ final class ShoppingCartController {
      * @return Total price of all the products assigned with currency
      */
     @GetMapping("/total-price")
-    ResponseEntity<MonetaryAmount> countTotalPrice(@Valid @RequestParam("id") UUID shoppingCartID) {
+    ResponseEntity<MonetaryAmount> totalPrice(@Valid @RequestParam("id") UUID shoppingCartID) {
         log.traceEntry();
 
         MonetaryAmount totalPrice = service.countTotalPrice(shoppingCartID);

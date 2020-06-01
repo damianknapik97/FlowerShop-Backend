@@ -11,6 +11,7 @@ import com.dknapik.flowershop.model.productorder.OccasionalArticleOrder;
 import com.dknapik.flowershop.model.productorder.ProductOrder;
 import com.dknapik.flowershop.model.productorder.SouvenirOrder;
 import com.dknapik.flowershop.services.AccountService;
+import com.dknapik.flowershop.services.bouquet.BouquetService;
 import com.dknapik.flowershop.services.product.FlowerService;
 import com.dknapik.flowershop.services.product.OccasionalArticleService;
 import com.dknapik.flowershop.services.product.SouvenirService;
@@ -39,6 +40,7 @@ public final class ShoppingCartService {
     private final OccasionalArticleService occasionalArticleService;
     private final SouvenirService souvenirService;
     private final ProductOrderService productOrderService;
+    private final BouquetService bouquetService;
     private final MoneyUtils moneyUtils;
 
 
@@ -49,6 +51,7 @@ public final class ShoppingCartService {
                                OccasionalArticleService occasionalArticleService,
                                SouvenirService souvenirService,
                                ProductOrderService productOrderService,
+                               BouquetService bouquetService,
                                MoneyUtils moneyUtils) {
         this.repository = repository;
         this.accountService = accountService;
@@ -56,6 +59,7 @@ public final class ShoppingCartService {
         this.occasionalArticleService = occasionalArticleService;
         this.souvenirService = souvenirService;
         this.productOrderService = productOrderService;
+        this.bouquetService = bouquetService;
         this.moneyUtils = moneyUtils;
     }
 
@@ -287,8 +291,38 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
-        log.traceExit();
         repository.saveAndFlush(shoppingCart);
+
+        log.traceExit();
+    }
+
+    /**
+     * Retrieves bouquet with provided id from database and adds it to the shopping cart associated with provided
+     * account name. Bouquets unlike other products, doesn't contain special entities defining how many
+     * numbers of the same bouquet are ordered. This is due to the fact that bouquets are highly modifiable and
+     * it is expected for user to create his own bouquet composition rather than buy large collection of the same
+     * bouquet type.
+     *
+     * @param accountName - account to modify shopping cart from.
+     * @param bouquetID   - ID of the product that will be added to shopping cart
+     */
+    public void addBouquetToShoppingCart(String accountName, UUID bouquetID) {
+        log.traceEntry();
+
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Adding Bouquet to following shopping cart: " + shoppingCart.toString());
+
+        /* Check if collection for provided products even exists, and initialize it if not */
+        if (shoppingCart.getBouquetList() == null) {
+            log.trace("Shopping cart doesn't contain any Bouquet collection, initializing...");
+            shoppingCart.setBouquetList(new LinkedList<>());
+        }
+
+        shoppingCart.getBouquetList().add(bouquetService.retrieveBouquet(bouquetID));
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+
+        log.traceExit();
     }
 
     /**
@@ -302,7 +336,7 @@ public final class ShoppingCartService {
         log.traceEntry();
 
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
-        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
+        log.debug(() -> "Removing Flower Order from following shopping cart: " + shoppingCart.toString());
 
         /* Check if collection for provided products even exists, and initialize it if not */
         if (shoppingCart.getFlowerOrderList() == null) {
@@ -319,8 +353,9 @@ public final class ShoppingCartService {
         }
 
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
-        log.traceExit();
         repository.saveAndFlush(shoppingCart);
+
+        log.traceExit();
     }
 
     /**
@@ -334,7 +369,7 @@ public final class ShoppingCartService {
         log.traceEntry();
 
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
-        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
+        log.debug(() -> "Removing Occasional Article order from following shopping cart: " + shoppingCart.toString());
 
         /* Check if collection for provided products even exists, and initialize it if not */
         if (shoppingCart.getOccasionalArticleOrderList() == null) {
@@ -366,7 +401,7 @@ public final class ShoppingCartService {
         log.traceEntry();
 
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
-        log.debug(() -> "Removing product order from following shopping cart: " + shoppingCart.toString());
+        log.debug(() -> "Removing Souvenir order from following shopping cart: " + shoppingCart.toString());
 
         /* Check if collection for provided products even exists, and initialize it if not */
         if (shoppingCart.getSouvenirOrderList() == null) {
@@ -385,6 +420,34 @@ public final class ShoppingCartService {
         log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
         log.traceExit();
         repository.saveAndFlush(shoppingCart);
+    }
+
+
+    /**
+     * Searches shopping cart retrieved from provided account, for provided bouquet id and removes it.
+     *
+     * @param accountName - account to retrieve shopping cart from
+     * @param bouquetID   - id of the bouquet to remove from shopping cart
+     */
+    public void removeBouquetFromShoppingCart(String accountName, UUID bouquetID) {
+        log.traceEntry();
+
+        ShoppingCart shoppingCart = retrieveSingleShoppingCart(accountName);
+        log.debug(() -> "Removing Bouquet from following shopping cart: " + shoppingCart.toString());
+
+        /* Search shopping cart for provided Bouquet and delete it if it exists  */
+        for (int i = 0; i < shoppingCart.getOccasionalArticleOrderList().size(); i++) {
+            if (shoppingCart.getBouquetList().get(i).getId().equals(bouquetID)) {
+                shoppingCart.getBouquetList().remove(i);
+                break;
+            }
+        }
+
+        log.debug(() -> "Saving following shopping cart: " + shoppingCart.toString());
+        repository.saveAndFlush(shoppingCart);
+
+
+        log.traceExit();
     }
 
     /**
@@ -447,6 +510,7 @@ public final class ShoppingCartService {
         ShoppingCart shoppingCart = retrieveSingleShoppingCart(shoppingCartID);
         List<List<? extends ProductOrder>> allProductOrders = shoppingCart.getAllProductOrders();
 
+        /* Initialize total price starting with total price of all the bouquets inside provided order */
         MonetaryAmount totalPrice = null;
         MonetaryAmount orderListPriceSum;
         for (List<? extends ProductOrder> productOrdersList : allProductOrders) {
@@ -473,6 +537,13 @@ public final class ShoppingCartService {
                     totalPrice = totalPrice.add(orderListPriceSum);
                 }
             }
+        }
+
+        /* Add total bouquet price */
+        MonetaryAmount totalBouquetPrice = bouquetService.countBouquetIterableTotalPrice(shoppingCart.getBouquetList());
+        if (!totalBouquetPrice.isZero() && totalPrice != null) {
+            totalPrice = totalPrice.add(totalBouquetPrice);
+
         }
 
         /* In order to not to return null, we check if above calculation even initialized return variable.
