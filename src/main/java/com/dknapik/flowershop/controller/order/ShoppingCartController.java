@@ -250,7 +250,6 @@ final class ShoppingCartController {
         log.traceExit();
         return new ResponseEntity<>(totalPrice, HttpStatus.OK);
     }
-
 }
 
 

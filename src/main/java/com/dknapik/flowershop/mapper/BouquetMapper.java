@@ -13,8 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.money.MonetaryAmount;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @ToString
@@ -61,6 +64,24 @@ public final class BouquetMapper implements Mapper<Bouquet, BouquetDTO> {
 
         log.traceExit();
         return returnValue;
+    }
+
+    /**
+     * Attaches total bouquet price to corresponding id in provided BouquetDTO iterable.
+     *
+     * @param bouquetDTOs - iterable that will have prices attached to
+     * @param prices      - Map containing prices ready for attachment.
+     * @return List with BouquetDTOs containing total price set.
+     */
+    public List<BouquetDTO> mapBouquetPricesToDTO(List<BouquetDTO> bouquetDTOs, Map<UUID, MonetaryAmount> prices) {
+        log.traceEntry();
+
+        for (BouquetDTO bouquetDTO : bouquetDTOs) {
+            bouquetDTO.setTotalPrice(prices.get(bouquetDTO.getId()));
+        }
+
+        log.traceExit();
+        return bouquetDTOs;
     }
 
     /**
@@ -137,4 +158,5 @@ public final class BouquetMapper implements Mapper<Bouquet, BouquetDTO> {
         log.traceExit();
         return target;
     }
+
 }

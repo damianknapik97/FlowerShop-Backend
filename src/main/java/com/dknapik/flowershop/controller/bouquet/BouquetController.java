@@ -14,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.money.MonetaryAmount;
+import java.util.Map;
+import java.util.UUID;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/bouquet")
@@ -42,11 +46,19 @@ public final class BouquetController {
             @RequestParam(name = "sorting", defaultValue = "NONE") ProductSortingProperty sortingProperty) {
         log.traceEntry();
 
+        /* Extract bouquet page */
         RestResponsePage<Bouquet> bouquetResponsePage =
                 bouquetService.retrieveBouquetsPage(pageNumber, ProductProperties.PAGE_SIZE, sortingProperty);
+
+        /* Map bouquet page to bouquet DTO page */
         RestResponsePage<BouquetDTO> bouquetResponseDTO =
                 new RestResponsePage<>(bouquetMapper.mapListToDTO(bouquetResponsePage.getContent()),
                         bouquetResponsePage);
+
+        /* Count total price for each bouquet and map them to bouquet DTO page */
+        Map<UUID, MonetaryAmount> bouquetPrices =
+                bouquetService.countIndividualBouquetPrices(bouquetResponsePage.getContent());
+        bouquetMapper.mapBouquetPricesToDTO(bouquetResponseDTO.getContent(), bouquetPrices);
 
         log.traceExit();
         return new ResponseEntity<>(bouquetResponseDTO, HttpStatus.OK);

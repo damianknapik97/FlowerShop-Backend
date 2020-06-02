@@ -14,10 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BouquetDTO implements DTO {
+    MonetaryAmount totalPrice;
     private UUID id;
     private String name;
-    private MonetaryAmount productionCost;
-    private int discountPercentage;
     private List<BouquetFlowerDTO> bouquetFlowerList;
     private List<BouquetAddonDTO> bouquetAddonList;
     private boolean userCreated;

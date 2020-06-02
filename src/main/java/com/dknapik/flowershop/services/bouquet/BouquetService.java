@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.money.MonetaryAmount;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -154,6 +156,25 @@ public final class BouquetService {
 
         log.traceExit();
         return totalPrice;
+    }
+
+    /**
+     * Counts total price for each bouquet provided in iterable. Returned hash map contains UUID of each bouquet
+     * with corresponding to it total price.
+     *
+     * @param bouquetIterable - iterable with bouquet orders
+     * @return Hash Map containing UUID of each bouquet with corresponding to it total price.
+     */
+    public Map<UUID, MonetaryAmount> countIndividualBouquetPrices(@NonNull Iterable<Bouquet> bouquetIterable) {
+        log.traceEntry();
+
+        Map<UUID, MonetaryAmount> totalPriceMap = new HashMap<>();
+        for (Bouquet bouquet : bouquetIterable) {
+            totalPriceMap.put(bouquet.getId(), countBouquetPrice(bouquet));
+        }
+
+        log.traceExit();
+        return totalPriceMap;
     }
 
 
