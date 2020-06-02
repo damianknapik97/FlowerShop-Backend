@@ -46,6 +46,9 @@ public final class Bouquet implements Model {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
     private List<BouquetAddon> bouquetAddonList;
+    private String imageLarge;
+    private String imageMedium;
+    private String imageSmall;
     @Column
     private boolean userCreated;
 
@@ -61,6 +64,26 @@ public final class Bouquet implements Model {
         this.discountPercentage = discountPercentage;
         this.bouquetFlowerList = bouquetFlowerList;
         this.bouquetAddonList = bouquetAddonList;
+        this.userCreated = userCreated;
+    }
+
+    public Bouquet(String name,
+                   MonetaryAmount productionCost,
+                   int discountPercentage,
+                   List<BouquetFlower> bouquetFlowerList,
+                   List<BouquetAddon> bouquetAddonList,
+                   String imageLarge,
+                   String imageMedium,
+                   String imageSmall,
+                   boolean userCreated) {
+        this.name = name;
+        this.productionCost = productionCost;
+        this.discountPercentage = discountPercentage;
+        this.bouquetFlowerList = bouquetFlowerList;
+        this.bouquetAddonList = bouquetAddonList;
+        this.imageLarge = imageLarge;
+        this.imageMedium = imageMedium;
+        this.imageSmall = imageSmall;
         this.userCreated = userCreated;
     }
 }

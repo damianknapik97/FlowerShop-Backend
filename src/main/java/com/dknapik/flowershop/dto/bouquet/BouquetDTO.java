@@ -14,10 +14,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BouquetDTO implements DTO {
-    MonetaryAmount totalPrice;
     private UUID id;
     private String name;
     private List<BouquetFlowerDTO> bouquetFlowerList;
     private List<BouquetAddonDTO> bouquetAddonList;
+    private String imageLarge;
+    private String imageMedium;
+    private String imageSmall;
+    private MonetaryAmount totalPrice;
     private boolean userCreated;
 }

@@ -4,7 +4,6 @@ import com.dknapik.flowershop.database.AccountRepository;
 import com.dknapik.flowershop.database.bouquet.BouquetRepository;
 import com.dknapik.flowershop.database.product.AddonRepository;
 import com.dknapik.flowershop.database.product.FlowerRepository;
-import com.dknapik.flowershop.model.Account;
 import com.dknapik.flowershop.model.bouquet.Bouquet;
 import com.dknapik.flowershop.model.bouquet.BouquetAddon;
 import com.dknapik.flowershop.model.bouquet.BouquetFlower;
@@ -14,7 +13,6 @@ import com.dknapik.flowershop.model.product.Flower;
 import com.dknapik.flowershop.utils.MoneyUtils;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -67,6 +65,9 @@ public class BouquetSeeder implements SeederInt {
                 5,
                 bouquetFlowerContent,
                 bouquetAddonContent,
+                "https://drive.google.com/uc?id=1HeZeyYTQtOFqG7UlDfD9kByWlH3xSDqB",
+                "https://drive.google.com/uc?id=1sdhPZhsicTaA5RRyrpuAS9GNnokF1_PQ",
+                "https://drive.google.com/uc?id=1kk8ZDp-QnJVL3zcwkgYGHHBOuHgmVuWH",
                 false);
 
         if (!bouquetRepository.existsByNameAndDiscountPercentageAndUserCreated(bouquet.getName(),
@@ -91,6 +92,9 @@ public class BouquetSeeder implements SeederInt {
                 5,
                 bouquetFlowerContent,
                 bouquetAddonContent,
+                "https://drive.google.com/uc?id=15oxOoV-UD5nNsIOI7kuUjG8f8qHMaOtX",
+                "https://drive.google.com/uc?id=1gTAav_7xbN-548rpL12RAPYOr9bFCe6w",
+                "https://drive.google.com/uc?id=17t_rDgAu1KwVnL48pvNm1TYrAkGfXLRK",
                 false);
 
         if (!bouquetRepository.existsByNameAndDiscountPercentageAndUserCreated(bouquet.getName(),
