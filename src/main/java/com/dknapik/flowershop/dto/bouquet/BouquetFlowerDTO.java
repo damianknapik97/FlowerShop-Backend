@@ -18,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BouquetFlowerDTO implements ProductOrderDTO {
     private UUID id;
+    private int itemCount;
     @NotNull
     private @Valid FlowerDTO flowerDTO;
 

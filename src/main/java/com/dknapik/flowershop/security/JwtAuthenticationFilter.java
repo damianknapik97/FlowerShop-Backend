@@ -70,8 +70,6 @@ public final class JwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .sign(JwtProperties.ENCODING_ALGORITHM);
 
-        System.out.println(JwtProperties.TOKEN_PREFIX + token);
-
         // Add JWT token in response
         response.addHeader(JwtProperties.TOKEN_HEADER, JwtProperties.TOKEN_PREFIX + token);
         // Add Role in response

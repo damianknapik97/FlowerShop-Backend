@@ -142,6 +142,7 @@ final class ShoppingCartController {
      * @param principal - user that shopping cart shall be used
      * @return Response with message about operation results.
      */
+    @PutMapping("/bouquet")
     ResponseEntity<MessageResponseDTO> bouquet(@Valid @RequestParam("id") UUID bouquetID, Principal principal) {
         log.traceEntry();
 

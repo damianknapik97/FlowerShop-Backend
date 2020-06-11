@@ -65,7 +65,7 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             log.trace("Token header doesn't exist in request or is invalid");
             return false;
         }
-        log.debug("Token Header:" + header);
+        log.trace("Token Header:" + header);
 
         // If role header is null delegate exit
         header = request.getHeader(JwtProperties.ROLE_HEADER);
@@ -73,7 +73,7 @@ public final class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             log.trace("Role header doesn't exist in request");
             return false;
         }
-        log.debug("Role Header:" + header);
+        log.trace("Role Header:" + header);
 
         log.traceExit();
         return true;

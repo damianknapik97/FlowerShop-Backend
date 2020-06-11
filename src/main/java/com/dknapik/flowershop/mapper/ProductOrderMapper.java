@@ -1,14 +1,8 @@
 package com.dknapik.flowershop.mapper;
 
-import com.dknapik.flowershop.dto.product.FlowerDTO;
-import com.dknapik.flowershop.dto.product.OccasionalArticleDTO;
-import com.dknapik.flowershop.dto.product.ProductDTO;
-import com.dknapik.flowershop.dto.product.SouvenirDTO;
+import com.dknapik.flowershop.dto.product.*;
 import com.dknapik.flowershop.dto.productorder.ProductOrderDTO;
-import com.dknapik.flowershop.model.product.Flower;
-import com.dknapik.flowershop.model.product.OccasionalArticle;
-import com.dknapik.flowershop.model.product.Product;
-import com.dknapik.flowershop.model.product.Souvenir;
+import com.dknapik.flowershop.model.product.*;
 import com.dknapik.flowershop.model.productorder.ProductOrder;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -83,6 +77,8 @@ public final class ProductOrderMapper {
             mappedProduct = productMapper.convertToDto(toConvert, OccasionalArticleDTO.class);
         } else if (toConvert.compareClass(Souvenir.class)) {
             mappedProduct = productMapper.convertToDto(toConvert, SouvenirDTO.class);
+        } else {
+            mappedProduct = productMapper.convertToDto(toConvert, AddonDTO.class);
         }
 
         log.traceExit();
@@ -104,6 +100,8 @@ public final class ProductOrderMapper {
             mappedProduct = productMapper.convertToEntity(toConvert, OccasionalArticle.class);
         } else if (toConvert.compareClass(SouvenirDTO.class)) {
             mappedProduct = productMapper.convertToEntity(toConvert, Souvenir.class);
+        } else {
+            mappedProduct = productMapper.convertToEntity(toConvert, Addon.class);
         }
 
         log.traceExit();
