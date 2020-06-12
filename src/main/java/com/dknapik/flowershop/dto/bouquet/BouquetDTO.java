@@ -18,6 +18,7 @@ public class BouquetDTO implements DTO {
     private String name;
     private List<BouquetFlowerDTO> bouquetFlowerList;
     private List<BouquetAddonDTO> bouquetAddonList;
+    private String description;
     private String imageLarge;
     private String imageMedium;
     private String imageSmall;

@@ -11,7 +11,8 @@ import java.util.UUID;
 @Repository
 public interface BouquetRepository extends JpaRepository<Bouquet, UUID> {
 
-    boolean existsByNameAndDiscountPercentageAndUserCreated(String name, int discountPercentage, boolean userCreated);
+    boolean existsByNameAndDiscountPercentageAndDescriptionAndUserCreated(String name, int discountPercentage,
+                                                                          String description, boolean userCreated);
 
     Page<Bouquet> findAllByOrderByNameDesc(Pageable pageable);
 

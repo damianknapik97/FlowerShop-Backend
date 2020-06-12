@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Table(
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"name", "discountPercentage", "userCreated"})
+        @UniqueConstraint(columnNames = {"name", "discountPercentage", "description", "userCreated"})
 )
 @TypeDefs(
         value = {
@@ -46,8 +46,13 @@ public final class Bouquet implements Model {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn
     private List<BouquetAddon> bouquetAddonList;
+    @Column(length = 1024)
+    private String description;
+    @Column
     private String imageLarge;
+    @Column
     private String imageMedium;
+    @Column
     private String imageSmall;
     @Column
     private boolean userCreated;
@@ -72,6 +77,7 @@ public final class Bouquet implements Model {
                    int discountPercentage,
                    List<BouquetFlower> bouquetFlowerList,
                    List<BouquetAddon> bouquetAddonList,
+                   String description,
                    String imageLarge,
                    String imageMedium,
                    String imageSmall,
@@ -81,6 +87,7 @@ public final class Bouquet implements Model {
         this.discountPercentage = discountPercentage;
         this.bouquetFlowerList = bouquetFlowerList;
         this.bouquetAddonList = bouquetAddonList;
+        this.description = description;
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;

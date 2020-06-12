@@ -65,13 +65,16 @@ public class BouquetSeeder implements SeederInt {
                 5,
                 bouquetFlowerContent,
                 bouquetAddonContent,
+                "Design is an evolutionary process, and filler text is just one tool in your progress-pushing arsenal. " +
+                        "Use it where it makes sense to use it, and pull it once the natural process indicates that " +
+                        "it’s time to roll out a descendant built with real content.",
                 "https://drive.google.com/uc?id=1HeZeyYTQtOFqG7UlDfD9kByWlH3xSDqB",
                 "https://drive.google.com/uc?id=1sdhPZhsicTaA5RRyrpuAS9GNnokF1_PQ",
                 "https://drive.google.com/uc?id=1kk8ZDp-QnJVL3zcwkgYGHHBOuHgmVuWH",
                 false);
 
-        if (!bouquetRepository.existsByNameAndDiscountPercentageAndUserCreated(bouquet.getName(),
-                bouquet.getDiscountPercentage(), bouquet.isUserCreated())) {
+        if (!bouquetRepository.existsByNameAndDiscountPercentageAndDescriptionAndUserCreated(bouquet.getName(),
+                bouquet.getDiscountPercentage(), bouquet.getDescription(), bouquet.isUserCreated())) {
             bouquetRepository.saveAndFlush(bouquet);
         }
     }
@@ -92,13 +95,16 @@ public class BouquetSeeder implements SeederInt {
                 5,
                 bouquetFlowerContent,
                 bouquetAddonContent,
+                "Design is an evolutionary process, and filler text is just one tool in " +
+                        "your progress-pushing arsenal. Use it where it makes sense to use it, and pull it once the " +
+                        "natural process indicates that it’s time to roll out a descendant built with real content.",
                 "https://drive.google.com/uc?id=15oxOoV-UD5nNsIOI7kuUjG8f8qHMaOtX",
                 "https://drive.google.com/uc?id=1gTAav_7xbN-548rpL12RAPYOr9bFCe6w",
                 "https://drive.google.com/uc?id=17t_rDgAu1KwVnL48pvNm1TYrAkGfXLRK",
                 false);
 
-        if (!bouquetRepository.existsByNameAndDiscountPercentageAndUserCreated(bouquet.getName(),
-                bouquet.getDiscountPercentage(), bouquet.isUserCreated())) {
+        if (!bouquetRepository.existsByNameAndDiscountPercentageAndDescriptionAndUserCreated(bouquet.getName(),
+                bouquet.getDiscountPercentage(), bouquet.getDescription(), bouquet.isUserCreated())) {
             bouquetRepository.saveAndFlush(bouquet);
         }
     }

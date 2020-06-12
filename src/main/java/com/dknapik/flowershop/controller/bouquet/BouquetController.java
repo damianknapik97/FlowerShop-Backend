@@ -50,21 +50,15 @@ public final class BouquetController {
         RestResponsePage<Bouquet> bouquetResponsePage =
                 bouquetService.retrieveBouquetsPage(pageNumber, ProductProperties.PAGE_SIZE, sortingProperty);
 
-        log.debug("Entity - " + bouquetResponsePage.getContent());
-
         /* Map bouquet page to bouquet DTO page */
         RestResponsePage<BouquetDTO> bouquetResponseDTO =
                 new RestResponsePage<>(bouquetMapper.mapListToDTO(bouquetResponsePage.getContent()),
                         bouquetResponsePage);
 
-        log.debug("DTO - " + bouquetResponsePage.getContent());
-
         /* Count total price for each bouquet and map them to bouquet DTO page */
         Map<UUID, MonetaryAmount> bouquetPrices =
                 bouquetService.countIndividualBouquetPrices(bouquetResponsePage.getContent());
         bouquetMapper.mapBouquetPricesToDTO(bouquetResponseDTO.getContent(), bouquetPrices);
-
-        log.debug("DTO with price - " + bouquetResponsePage.getContent());
 
         log.traceExit();
         return new ResponseEntity<>(bouquetResponseDTO, HttpStatus.OK);

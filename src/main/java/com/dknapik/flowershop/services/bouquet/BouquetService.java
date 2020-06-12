@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,8 +55,13 @@ public final class BouquetService {
      * @param bouquet - Object to count total price from
      * @return MonetaryAmount with sum of all nested products inside provided object.
      */
-    public MonetaryAmount countBouquetPrice(Bouquet bouquet) {
+    public MonetaryAmount countBouquetPrice(@Nullable Bouquet bouquet) {
         log.traceEntry();
+
+        if (bouquet == null) {
+            log.error("Bouquet is null, returning monetary amount equal to 0");
+            return moneyUtils.zeroWithApplicationCurrency();
+        }
 
         MonetaryAmount totalBouquetPrice =
                 productOrderService.countTotalCollectionPrice(bouquet.getBouquetFlowerList());
@@ -65,20 +72,21 @@ public final class BouquetService {
         /* Check if both flower and addon prices are zero,
         if true, we return zero with default application currency code  */
         if (totalBouquetPrice.isZero() && totalAddonPrice.isZero()) {
+            log.warn("No flowers or addons inside provided bouquet, returning monetary amount equal to 0");
             return moneyUtils.zeroWithApplicationCurrency();
         }
 
         /* Check if total price sum of flowers is zero, if true, we return addon price regardless of whats inside */
         if (totalBouquetPrice.isZero()) {
             /* Addon price is subtracted by discount percentage */
-            return totalAddonPrice.multiply(((double) bouquet.getDiscountPercentage() / 100));
+            return includeDiscount(totalAddonPrice, bouquet.getDiscountPercentage());
         }
 
         /* If total price sum of flowers wasn't zero, we check if total addon price is zero, if true we return
          * total sum of flowers, regardless of what is inside */
         if (totalAddonPrice.isZero()) {
             /* Flower price is subtracted by discount percentage */
-            return totalBouquetPrice.multiply(((double) bouquet.getDiscountPercentage() / 100));
+            return includeDiscount(totalBouquetPrice, bouquet.getDiscountPercentage());
         }
 
         /* Both previous statements were false, it turns out that total flower and addon price aren't zero and
@@ -92,10 +100,34 @@ public final class BouquetService {
 
         /* We add prices and return them. Total price is subtracted by discount percentage. */
         totalBouquetPrice = totalBouquetPrice.add(totalAddonPrice);
-        totalBouquetPrice = totalBouquetPrice.multiply(((double) bouquet.getDiscountPercentage() / 100));
+        totalBouquetPrice = includeDiscount(totalBouquetPrice, bouquet.getDiscountPercentage());
+
 
         log.traceExit();
         return totalBouquetPrice;
+    }
+
+    /**
+     * Counts monetary amount of discount that is later subtracted from provided total price and returned.
+     *
+     * @param totalPrice         - Total price of all the components inside bouquet
+     * @param discountPercentage - integer representing discount in percentage
+     * @return MonetaryAmount containing total price subtracted off the discount percentage
+     */
+    private MonetaryAmount includeDiscount(@NonNull MonetaryAmount totalPrice, int discountPercentage) {
+        log.traceEntry();
+
+        /* Change percentage represented in integer to decimal */
+        double decimalPercentageValue = (double) discountPercentage / 100;
+
+        /* Multiply total price with decimal percentage and subtract counted discount from total price */
+        MonetaryAmount priceWithDiscount = totalPrice.subtract(totalPrice.multiply(decimalPercentageValue));
+
+        /* Round up price to be properly represented with only 2 decimal places */
+        priceWithDiscount = priceWithDiscount.with(Monetary.getDefaultRounding());
+
+        log.traceExit();
+        return priceWithDiscount;
     }
 
 
