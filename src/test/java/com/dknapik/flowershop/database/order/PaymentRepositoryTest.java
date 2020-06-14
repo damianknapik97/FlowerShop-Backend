@@ -19,7 +19,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-final class PaymentRepositoryTest {
+class PaymentRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired

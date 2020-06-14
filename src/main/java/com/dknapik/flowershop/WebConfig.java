@@ -66,13 +66,4 @@ public class WebConfig {
         return new CorsFilter(source);
     }
 
-    /*
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("GET, PUT, POST, DELETE, OPTIONS")
-                .allowedOrigins("*")
-                .allowCredentials(true);
-    }
-     */
 }

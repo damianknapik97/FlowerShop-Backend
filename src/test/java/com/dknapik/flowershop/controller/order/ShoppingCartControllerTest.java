@@ -56,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(value = "build/generated-snippets/shopping-cart")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-final class ShoppingCartControllerTest {
+class ShoppingCartControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -79,7 +79,6 @@ final class ShoppingCartControllerTest {
     private ShoppingCartMapper shoppingCartMapper;
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @BeforeEach
     void cleanBeforeTest() {

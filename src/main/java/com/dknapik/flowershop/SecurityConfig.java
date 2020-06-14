@@ -32,7 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private AccountRepository accRepository; // Stores user login and passwords
+    private final AccountRepository accRepository; // Stores user login and passwords
 
     @Autowired
     public SecurityConfig(AccountRepository accRepository) {

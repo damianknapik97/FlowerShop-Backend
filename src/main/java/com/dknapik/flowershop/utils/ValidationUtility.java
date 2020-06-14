@@ -7,14 +7,14 @@ import com.dknapik.flowershop.model.order.ShoppingCart;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Class used for validating Entities/Objects retrieved from database that required user input some time in the past.
  * It is possible that this c;ass is an excessive measure of security and should be highly considered
  * and questioned when it comes to performance tweaking.
  */
-@Service
+@Component
 @ToString
 @Log4j2
 public final class ValidationUtility {
@@ -53,9 +53,9 @@ public final class ValidationUtility {
         log.traceEntry();
         boolean returnValue = shoppingCart.getId() != null
                 && (shoppingCart.getOccasionalArticleOrderList() != null
-                        || shoppingCart.getSouvenirOrderList() != null
-                        || shoppingCart.getFlowerOrderList() != null
-                        || shoppingCart.getBouquetList() != null);
+                || shoppingCart.getSouvenirOrderList() != null
+                || shoppingCart.getFlowerOrderList() != null
+                || shoppingCart.getBouquetList() != null);
 
         log.info(() -> "Shopping cart validation results: " + returnValue);
 

@@ -12,6 +12,7 @@ import com.dknapik.flowershop.model.AccountRole;
 import com.dknapik.flowershop.services.administration.AccountAdministrationService;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -26,11 +27,12 @@ import java.util.UUID;
 @RestController
 @ToString
 @Log4j2
-public class AccountAdministrationController {
+class AccountAdministrationController {
     private final AccountAdministrationService service;
     private final AccountMapper mapper;
 
-    public AccountAdministrationController(AccountAdministrationService service, AccountMapper mapper) {
+    @Autowired
+    AccountAdministrationController(AccountAdministrationService service, AccountMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -59,7 +61,7 @@ public class AccountAdministrationController {
     /**
      * Retrieves single Account entity from provided ID and maps it
      * to AccountAdministrativeDetailsDTO before returning it.
-     *
+     * <p>
      * TODO: Add Test
      */
     @GetMapping()

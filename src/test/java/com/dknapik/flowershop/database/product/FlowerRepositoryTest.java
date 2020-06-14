@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-final class FlowerRepositoryTest {
+class FlowerRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-final class DeliveryAddressRepositoryTest {
+class DeliveryAddressRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired

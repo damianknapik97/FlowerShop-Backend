@@ -59,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(value = "build/generated-snippets/order")
 @TestPropertySource(properties = {"app-monetary-currency=PLN", "app-debug-mode=false"})
 @Transactional
-public class OrderAdministrationControllerTest {
+class OrderAdministrationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

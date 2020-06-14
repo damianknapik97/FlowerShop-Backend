@@ -3,13 +3,13 @@ package com.dknapik.flowershop.utils;
 import lombok.ToString;
 import org.javamoney.moneta.Money;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 
-@Service
+@Component
 @ToString
 public final class MoneyUtils {
     private final CurrencyUnit currencyUnit;

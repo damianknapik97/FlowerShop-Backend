@@ -27,12 +27,12 @@ import java.util.UUID;
 @ToString
 @Log4j2
 @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-public class OrderAdministrationController {
+class OrderAdministrationController {
     private final OrderAdministrationService service;
     private final OrderMapper orderMapper;
 
     @Autowired
-    public OrderAdministrationController(OrderAdministrationService service, OrderMapper orderMapper) {
+    OrderAdministrationController(OrderAdministrationService service, OrderMapper orderMapper) {
         this.service = service;
         this.orderMapper = orderMapper;
     }
@@ -43,11 +43,10 @@ public class OrderAdministrationController {
      *
      * @param orderDTO - DTO to update (ID must match actually existing Order entity)
      * @return - MessageResponseDTO with information about operation result.
-     *
+     * <p>
      * TODO: This method allows user for modifying fields that shouldn't be modified (ex. total price, products, etc.).
-     *       In order to avoid this vulnerability, a special Employee level mapping function should be constructed
-     *       that will ignore assignation of mentioned fields.
-     *
+     * In order to avoid this vulnerability, a special Employee level mapping function should be constructed
+     * that will ignore assignation of mentioned fields.
      */
     @PutMapping
     ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
@@ -120,7 +119,7 @@ public class OrderAdministrationController {
 
     /**
      * Search database for Order ID and related to it component, and return it.
-     *
+     * <p>
      * TODO: Add Test
      */
     @GetMapping()

@@ -50,7 +50,7 @@ final class AccountControllerTest {
     private ApplicationContext context;
     @Autowired
     private ObjectMapper objectMapper;
-    private String username = "TestUser";
+    private final String username = "TestUser";
 
 
     @BeforeEach

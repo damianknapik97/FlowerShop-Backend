@@ -23,7 +23,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @TestPropertySource(properties = {"app-monetary-currency=PLN"})
-final class BouquetAddonRepositoryTest {
+class BouquetAddonRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
