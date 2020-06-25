@@ -27,12 +27,12 @@ import java.util.UUID;
 @RestController
 @ToString
 @Log4j2
-class AccountAdministrationController {
+public class AccountAdministrationController {
     private final AccountAdministrationService service;
     private final AccountMapper mapper;
 
     @Autowired
-    AccountAdministrationController(AccountAdministrationService service, AccountMapper mapper) {
+    public AccountAdministrationController(AccountAdministrationService service, AccountMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -47,7 +47,7 @@ class AccountAdministrationController {
      */
     @GetMapping("/order")
     @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-    ResponseEntity<AccountEmployeeDetailsDTO> retrieveEmployeeAccDetailsFromOrder(
+    public ResponseEntity<AccountEmployeeDetailsDTO> retrieveEmployeeAccDetailsFromOrder(
             @Valid @RequestParam("id") UUID orderID) {
         log.traceEntry();
 
@@ -66,7 +66,7 @@ class AccountAdministrationController {
      */
     @GetMapping()
     @Secured("ROLE_ADMIN")
-    ResponseEntity<AccountAdministrativeDetailsDTO> retrieveAdministrativeAccDetails(
+    public ResponseEntity<AccountAdministrativeDetailsDTO> retrieveAdministrativeAccDetails(
             @Valid @RequestParam("id") UUID accountID) {
         log.traceEntry();
 
@@ -90,7 +90,7 @@ class AccountAdministrationController {
      */
     @GetMapping("/page")
     @Secured("ROLE_ADMIN")
-    ResponseEntity<RestResponsePage<AccountAdministrativeDetailsDTO>> retrieveAccountsPage(
+    public ResponseEntity<RestResponsePage<AccountAdministrativeDetailsDTO>> retrieveAccountsPage(
             @Valid @RequestParam(value = "page", defaultValue = "0") int page,
             @Valid @RequestParam(value = "elements", defaultValue = "20") int numberOfElements,
             @Valid @RequestParam(value = "sorting", defaultValue = "NONE") AccountSortingProperty sortingProperty) {
@@ -110,7 +110,7 @@ class AccountAdministrationController {
      */
     @PutMapping()
     @Secured("ROLE_ADMIN")
-    ResponseEntity<MessageResponseDTO> updateAccountAdministrativeDetails(
+    public ResponseEntity<MessageResponseDTO> updateAccountAdministrativeDetails(
             @Valid @RequestBody AccountAdministrativeDetailsDTO accountDetailsDTO) {
         log.traceEntry();
 
@@ -127,7 +127,7 @@ class AccountAdministrationController {
      */
     @GetMapping("/sorting")
     @Secured("ROLE_ADMIN")
-    ResponseEntity<Set<AccountSortingProperty>> retrieveSortingProperties() {
+    public ResponseEntity<Set<AccountSortingProperty>> retrieveSortingProperties() {
         log.traceEntry();
 
         Set<AccountSortingProperty> sortingProperties = service.retrieveSortingProperties();
@@ -141,7 +141,7 @@ class AccountAdministrationController {
      */
     @GetMapping("/roles")
     @Secured("ROLE_ADMIN")
-    ResponseEntity<Set<AccountRole>> retrieveAccountRoles() {
+    public ResponseEntity<Set<AccountRole>> retrieveAccountRoles() {
         log.traceEntry();
 
         Set<AccountRole> retrievedAccountRoles = service.retrieveAccountRoles();

@@ -40,7 +40,7 @@ public final class ShoppingCart implements Model {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn()
     private List<FlowerOrder> flowerOrderList;
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn()
     private List<Bouquet> bouquetList;
 
@@ -50,7 +50,7 @@ public final class ShoppingCart implements Model {
     }
 
     public ShoppingCart(String name, List<OccasionalArticleOrder> occasionalArticleOrderList) {
-        this.name = name;
+        this(name);
         this.occasionalArticleOrderList = occasionalArticleOrderList;
     }
 
@@ -59,8 +59,7 @@ public final class ShoppingCart implements Model {
                         List<SouvenirOrder> souvenirOrderList,
                         List<FlowerOrder> flowerOrderList,
                         List<Bouquet> bouquetList) {
-        this.name = name;
-        this.occasionalArticleOrderList = occasionalArticleOrderList;
+        this(name, occasionalArticleOrderList);
         this.souvenirOrderList = souvenirOrderList;
         this.flowerOrderList = flowerOrderList;
         this.bouquetList = bouquetList;

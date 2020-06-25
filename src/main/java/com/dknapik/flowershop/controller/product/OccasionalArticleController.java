@@ -18,12 +18,12 @@ import java.util.List;
 @RequestMapping("/product/occasional-article")
 @CrossOrigin
 @Log4j2
-final class OccasionalArticleController {
+public final class OccasionalArticleController {
     private final OccasionalArticleService service;
     private final ProductMapper productMapper;
 
     @Autowired
-    OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
+    public OccasionalArticleController(OccasionalArticleService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
@@ -35,7 +35,7 @@ final class OccasionalArticleController {
      * @return Pageable containing Occasional Article entities.
      */
     @GetMapping
-    ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
+    public ResponseEntity<RestResponsePage<OccasionalArticleDTO>> getOccasionalArticles(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         /* Retrieve desired page */
         log.traceEntry();

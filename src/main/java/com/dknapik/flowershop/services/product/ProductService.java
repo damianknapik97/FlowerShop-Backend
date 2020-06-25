@@ -13,7 +13,7 @@ import javax.money.MonetaryAmount;
 @Service
 @ToString
 @Log4j2
-final class ProductService {
+public final class ProductService {
     private final MoneyUtils moneyUtils;
 
     @Autowired

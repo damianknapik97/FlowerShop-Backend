@@ -61,6 +61,7 @@ public final class Account implements Model {
     }
 
     public Account(String name, String password, String email, AccountRole role) {
+        this(name, password, email);
         this.name = name;
         this.password = password;
         this.email = email;

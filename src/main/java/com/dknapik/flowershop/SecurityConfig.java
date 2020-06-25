@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/account").permitAll()
                 .antMatchers("/logout").permitAll()
                 .antMatchers("/product/**").permitAll()
+                .antMatchers("/bouquet/**").permitAll()
                 .anyRequest().authenticated();  // Restricting user access to api's besides ones defined above
     }
 

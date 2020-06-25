@@ -29,13 +29,13 @@ import java.util.UUID;
 @CrossOrigin
 @ToString
 @Log4j2
-class OrderController {
+public class OrderController {
     private final OrderService service;
     private final OrderMapper mapper;
     private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    OrderController(OrderService service, OrderMapper mapper, ShoppingCartMapper shoppingCartMapper) {
+    public OrderController(OrderService service, OrderMapper mapper, ShoppingCartMapper shoppingCartMapper) {
         this.service = service;
         this.mapper = mapper;
         this.shoppingCartMapper = shoppingCartMapper;
@@ -48,7 +48,7 @@ class OrderController {
      * @return MessageResponseDTO containing information about operation result.
      */
     @PostMapping()
-    ResponseEntity<MessageResponseDTO> createOrderFromCurrentShoppingCart(Principal principal) {
+    public ResponseEntity<MessageResponseDTO> createOrderFromCurrentShoppingCart(Principal principal) {
         log.traceEntry();
 
         UUID orderID = service.createOrderFromCurrentShoppingCart(principal.getName(), LocalDateTime.now());
@@ -65,7 +65,7 @@ class OrderController {
      * @return Shopping Cart ID assigned to Order ID.
      */
     @GetMapping("/shopping-cart")
-    ResponseEntity<UUID> retrieveShoppingCartID(@Valid @RequestParam("id") UUID orderID, Principal principal) {
+    public ResponseEntity<UUID> retrieveShoppingCartID(@Valid @RequestParam("id") UUID orderID, Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -86,9 +86,9 @@ class OrderController {
      * @return MessageResponseDTO with status about operation results
      */
     @PutMapping("/details")
-    ResponseEntity<MessageResponseDTO> updateOrderDetails(@Valid @RequestParam("id") UUID orderID,
-                                                          @Valid @RequestBody OrderDetailsDTO orderDetailsDTO,
-                                                          Principal principal) {
+    public ResponseEntity<MessageResponseDTO> updateOrderDetails(@Valid @RequestParam("id") UUID orderID,
+                                                                 @Valid @RequestBody OrderDetailsDTO orderDetailsDTO,
+                                                                 Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -110,8 +110,8 @@ class OrderController {
      * @return Order DTO with all its related information.
      */
     @GetMapping
-    ResponseEntity<OrderDTO> retrieveCreatedOrderFromAccount(@Valid @RequestParam("id") UUID orderID,
-                                                             Principal principal) {
+    public ResponseEntity<OrderDTO> retrieveCreatedOrderFromAccount(@Valid @RequestParam("id") UUID orderID,
+                                                                    Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -134,8 +134,8 @@ class OrderController {
      * @return - MessageResponseDTO containing information about operation results.
      */
     @PutMapping("/validate")
-    ResponseEntity<MessageResponseDTO> validateOrderAndChangeItsStatus(@Valid @RequestParam("id") UUID orderID,
-                                                                       Principal principal) {
+    public ResponseEntity<MessageResponseDTO> validateOrderAndChangeItsStatus(@Valid @RequestParam("id") UUID orderID,
+                                                                              Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -157,7 +157,7 @@ class OrderController {
      */
     @GetMapping("/unfinished")
     @Nullable
-    ResponseEntity<OrderDTO> retrieveUnfinishedOrder(Principal principal) {
+    public ResponseEntity<OrderDTO> retrieveUnfinishedOrder(Principal principal) {
         log.traceEntry();
         ResponseEntity<OrderDTO> responseEntity;
 
@@ -183,7 +183,8 @@ class OrderController {
      * @return - MessageResponseDTO containing information about operation results.
      */
     @DeleteMapping
-    ResponseEntity<MessageResponseDTO> removeOrder(@Valid @RequestParam("id") UUID orderID, Principal principal) {
+    public ResponseEntity<MessageResponseDTO> removeOrder(@Valid @RequestParam("id") UUID orderID,
+                                                          Principal principal) {
         log.traceEntry();
         OrderStatus expectedStatus = OrderStatus.CREATED;
 
@@ -195,16 +196,17 @@ class OrderController {
 
     /**
      * Retrieves page of Orders assigned to account performing this request
-     *
+     * <p>
      * TODO: Add Test
      *
-     * @param page - which page to retrieve
+     * @param page      - which page to retrieve
      * @param principal - account from which to retrieve page
      * @return RestResponsePage with content containing OrderDTOs.
      */
     @GetMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPageFromAccount(@Valid @RequestParam("number") int page,
-                                                                             Principal principal) {
+    public ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPageFromAccount(
+            @Valid @RequestParam("number") int page,
+            Principal principal) {
         log.traceEntry();
         int pageSize = ProductProperties.PAGE_SIZE;
 

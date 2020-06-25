@@ -57,9 +57,7 @@ public final class Souvenir implements Product, Comparable<Souvenir> {
 
     public Souvenir(String name, MonetaryAmount price, String description,
                     String imageLarge, String imageMedium, String imageSmall) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
+        this(name, price, description);
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;

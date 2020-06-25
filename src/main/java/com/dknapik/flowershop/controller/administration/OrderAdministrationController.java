@@ -27,12 +27,12 @@ import java.util.UUID;
 @ToString
 @Log4j2
 @Secured({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
-class OrderAdministrationController {
+public class OrderAdministrationController {
     private final OrderAdministrationService service;
     private final OrderMapper orderMapper;
 
     @Autowired
-    OrderAdministrationController(OrderAdministrationService service, OrderMapper orderMapper) {
+    public OrderAdministrationController(OrderAdministrationService service, OrderMapper orderMapper) {
         this.service = service;
         this.orderMapper = orderMapper;
     }
@@ -49,7 +49,7 @@ class OrderAdministrationController {
      * that will ignore assignation of mentioned fields.
      */
     @PutMapping
-    ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<MessageResponseDTO> updateOrder(@Valid @RequestBody OrderDTO orderDTO) {
         log.traceEntry();
 
         service.updateOrder(orderMapper.mapToEntity(orderDTO));
@@ -63,7 +63,7 @@ class OrderAdministrationController {
      * Converts OrderSortingProperty enum data type into Set, and returns it.
      */
     @GetMapping("/page/sorting-properties")
-    ResponseEntity<Set<OrderSortingProperty>> retrieveSortingProperties() {
+    public ResponseEntity<Set<OrderSortingProperty>> retrieveSortingProperties() {
         log.traceEntry();
 
         Set<OrderSortingProperty> sortingProperties = service.retrieveSortingProperties();
@@ -81,7 +81,7 @@ class OrderAdministrationController {
      * @return Pageable with number of orders defined in ProductProperties class.
      */
     @GetMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
+    public ResponseEntity<RestResponsePage<OrderDTO>> retrieveOrdersPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "elements", defaultValue = "0") int numberOfElements,
             @RequestParam(value = "sorting", defaultValue = "NONE") OrderSortingProperty sortingProperty) {
@@ -102,7 +102,7 @@ class OrderAdministrationController {
      * TODO: Add Test
      */
     @PutMapping("/page")
-    ResponseEntity<RestResponsePage<OrderDTO>> updateOrdersPage(
+    public ResponseEntity<RestResponsePage<OrderDTO>> updateOrdersPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "elements", defaultValue = "20") int numberOfElements,
             @RequestParam(value = "sorting", defaultValue = "NONE") OrderSortingProperty sortingProperty,
@@ -123,7 +123,7 @@ class OrderAdministrationController {
      * TODO: Add Test
      */
     @GetMapping()
-    ResponseEntity<OrderDTO> retrieveOrder(@Valid @RequestParam("id") UUID orderID) {
+    public ResponseEntity<OrderDTO> retrieveOrder(@Valid @RequestParam("id") UUID orderID) {
         log.traceEntry();
 
         Order retrievedOrder = this.service.retrieveOrder(orderID);
@@ -137,7 +137,7 @@ class OrderAdministrationController {
      * Returns all available statuses that can be assigned to any existing order.
      */
     @GetMapping("/statuses")
-    ResponseEntity<Set<OrderStatus>> retrieveOrderStatuses() {
+    public ResponseEntity<Set<OrderStatus>> retrieveOrderStatuses() {
         log.traceEntry();
 
         Set<OrderStatus> retrievedOrderStatuses = service.retrieveOrderStatuses();

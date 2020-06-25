@@ -82,15 +82,10 @@ public final class Bouquet implements Model {
                    String imageMedium,
                    String imageSmall,
                    boolean userCreated) {
-        this.name = name;
-        this.productionCost = productionCost;
-        this.discountPercentage = discountPercentage;
-        this.bouquetFlowerList = bouquetFlowerList;
-        this.bouquetAddonList = bouquetAddonList;
+        this(name, productionCost, discountPercentage, bouquetFlowerList, bouquetAddonList, userCreated);
         this.description = description;
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;
-        this.userCreated = userCreated;
     }
 }

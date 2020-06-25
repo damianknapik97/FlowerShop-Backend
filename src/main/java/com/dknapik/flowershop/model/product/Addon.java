@@ -64,10 +64,7 @@ public final class Addon implements Product, Comparable<Addon> {
                  String imageLarge,
                  String imageMedium,
                  String imageSmall) {
-        this.name = name;
-        this.colour = colour;
-        this.price = price;
-        this.description = description;
+        this(name, colour, price, description);
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;

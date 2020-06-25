@@ -34,11 +34,11 @@ import java.security.Principal;
 @RequestMapping("/account")
 @CrossOrigin
 @Log4j2
-final class AccountController {
+public final class AccountController {
     private final AccountService service; // Processes account data
 
     @Autowired
-    AccountController(AccountService service) {
+    public AccountController(AccountService service) {
         this.service = service;
     }
 
@@ -51,7 +51,7 @@ final class AccountController {
      * @return string message with informations about data processing status.
      */
     @PostMapping()
-    ResponseEntity<MessageResponseDTO> createAccountWithUserRole(@Valid @RequestBody AccountDTO accountDto,
+    public ResponseEntity<MessageResponseDTO> createAccountWithUserRole(@Valid @RequestBody AccountDTO accountDto,
                                                      BindingResult bindingResult) {
         log.traceEntry();
         MessageResponseDTO response = new MessageResponseDTO(AccountMessage.ENTITY_CREATION_SUCCESSFUL.toString());
@@ -107,7 +107,7 @@ final class AccountController {
      * @return - string message with informations about data processing status.
      */
     @PutMapping()
-    ResponseEntity<MessageResponseDTO> updateAccount(
+    public ResponseEntity<MessageResponseDTO> updateAccount(
             @Valid @RequestBody AccountDetailsDTO accountDetailsViewModel,
             BindingResult bindingResult,
             Principal principal) {
@@ -138,7 +138,7 @@ final class AccountController {
      * @return string message with informations about data processing status.
      */
     @PutMapping("/password")
-    ResponseEntity<MessageResponseDTO> updatePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDto,
+    public ResponseEntity<MessageResponseDTO> updatePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDto,
                                                       BindingResult bindingResult,
                                                       Principal principal) {
         log.traceEntry();
@@ -168,7 +168,7 @@ final class AccountController {
      * @return string message with information about data processing status.
      */
     @DeleteMapping()
-    ResponseEntity<MessageResponseDTO> deleteAccount(@Valid @RequestParam("password") String password,
+    public ResponseEntity<MessageResponseDTO> deleteAccount(@Valid @RequestParam("password") String password,
                                                      Principal principal) {
         log.traceEntry();
 

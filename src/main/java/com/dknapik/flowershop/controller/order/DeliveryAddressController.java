@@ -22,12 +22,12 @@ import java.util.UUID;
 @CrossOrigin
 @ToString
 @Log4j2
-final class DeliveryAddressController {
+public final class DeliveryAddressController {
     private final DeliveryAddressService service;
     private final DeliveryAddressMapper mapper;
 
     @Autowired
-    DeliveryAddressController(DeliveryAddressService service, DeliveryAddressMapper mapper) {
+    public DeliveryAddressController(DeliveryAddressService service, DeliveryAddressMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -42,7 +42,7 @@ final class DeliveryAddressController {
      * @return MessageResponseDTO containing information about operation result.
      */
     @PostMapping()
-    ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
+    public ResponseEntity<MessageResponseDTO> createDeliveryAddressForOrder(
             @Valid @RequestParam("id") UUID orderID,
             @Valid @RequestBody DeliveryAddressDTO deliveryAddressDTO,
             Principal principal) {

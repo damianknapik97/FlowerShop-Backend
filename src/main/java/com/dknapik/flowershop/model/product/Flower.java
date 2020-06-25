@@ -59,10 +59,7 @@ public final class Flower implements Product, Comparable<Flower> {
 
     public Flower(String name, MonetaryAmount price, String description, int height,
                   String imageLarge, String imageMedium, String imageSmall) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.height = height;
+        this(name, price, description, height);
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;

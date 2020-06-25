@@ -18,13 +18,13 @@ import java.util.List;
 @RequestMapping("/product/flower")
 @CrossOrigin
 @Log4j2
-final class FlowerController {
+public final class FlowerController {
     private final FlowerService service;
     private final ProductMapper productMapper;
 
 
     @Autowired
-    FlowerController(FlowerService service, ProductMapper productMapper) {
+    public FlowerController(FlowerService service, ProductMapper productMapper) {
         this.service = service;
         this.productMapper = productMapper;
     }
@@ -36,7 +36,7 @@ final class FlowerController {
      * @return Pageable containing Flower entities.
      */
     @GetMapping
-    ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
+    public ResponseEntity<RestResponsePage<FlowerDTO>> getFlowers(
             @RequestParam(value = "page", defaultValue = "0") int page) {
         log.traceEntry();
 

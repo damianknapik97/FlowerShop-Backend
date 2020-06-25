@@ -41,10 +41,7 @@ public final class DeliveryAddress implements Model {
                            String streetName,
                            String houseNumber,
                            String apartmentNumber) {
-        this.cityName = cityName;
-        this.zipCode = zipCode;
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
+        this(cityName, zipCode, streetName, houseNumber);
         this.apartmentNumber = apartmentNumber;
     }
 }

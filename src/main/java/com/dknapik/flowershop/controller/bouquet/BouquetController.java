@@ -41,7 +41,7 @@ public final class BouquetController {
      * @return Payload with page of Bouquet DTOs
      */
     @GetMapping("/page")
-    ResponseEntity<RestResponsePage<BouquetDTO>> bouquetPage(
+    public ResponseEntity<RestResponsePage<BouquetDTO>> bouquetPage(
             @RequestParam(name = "number", defaultValue = "0") int pageNumber,
             @RequestParam(name = "sorting", defaultValue = "NONE") ProductSortingProperty sortingProperty) {
         log.traceEntry();

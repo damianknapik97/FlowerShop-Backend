@@ -60,10 +60,7 @@ public final class OccasionalArticle implements Product, Comparable<OccasionalAr
 
     public OccasionalArticle(String name, MonetaryAmount price, String description, String theme,
                              String imageLarge, String imageMedium, String imageSmall) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.theme = theme;
+        this(name, price, description, theme);
         this.imageLarge = imageLarge;
         this.imageMedium = imageMedium;
         this.imageSmall = imageSmall;

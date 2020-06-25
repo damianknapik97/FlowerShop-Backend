@@ -24,12 +24,12 @@ import java.util.UUID;
 @CrossOrigin
 @ToString
 @Log4j2
-final class PaymentController {
+public final class PaymentController {
     private final PaymentService service;
     private final PaymentMapper mapper;
 
     @Autowired
-    PaymentController(PaymentService service, PaymentMapper mapper) {
+    public PaymentController(PaymentService service, PaymentMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -43,7 +43,7 @@ final class PaymentController {
      * @return MessageResponseDTO with operation result status,
      */
     @PostMapping
-    ResponseEntity<MessageResponseDTO> createPaymentForOrder(@Valid @RequestParam("id") UUID orderID,
+    public ResponseEntity<MessageResponseDTO> createPaymentForOrder(@Valid @RequestParam("id") UUID orderID,
                                                              @Valid @RequestBody PaymentDTO paymentDTO,
                                                              Principal principal) {
         log.traceEntry();
@@ -65,7 +65,7 @@ final class PaymentController {
      * @return EnumSet created from PaymentType enum.
      */
     @GetMapping("/types")
-    ResponseEntity<Set<PaymentType>> getPaymentTypes() {
+    public ResponseEntity<Set<PaymentType>> getPaymentTypes() {
         log.traceEntry();
 
         Set<PaymentType> paymentTypes = service.retrieveAllPaymentOptions();
